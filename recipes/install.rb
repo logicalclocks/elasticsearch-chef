@@ -1,3 +1,5 @@
+include_recipe "java"
+
 elasticsearch_user 'elasticsearch' do
   username node[:elastic][:user]
   groupname node[:elastic][:group]

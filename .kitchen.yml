@@ -17,11 +17,11 @@ suites:
   - name: default
     run_list:
       - recipe[kagent::install]
-      - recipe[elasticsearch::install]
-      - recipe[elasticsearch::default]
+      - recipe[elastic::install]
+      - recipe[elastic::default]
 
     attributes:
-         elasticsearch:
+         elastic:
             default:
                 private_ips: ["10.0.2.15"]
                 public_ips: ["10.0.2.15"]

@@ -4,5 +4,5 @@ default[:elastic][:checksum] = "acf572c606552bc446cceef3f8e93814a363ba0d215b323a
 default[:elastic][:user] = "elastic"
 default[:elastic][:group] = "elastic"
 
-default[:elastic][:version_dir] = "/usr/local/elasticsearch-#{node[:elasticsearch-chef][:version]}"
+default[:elastic][:version_dir] = "/usr/local/elasticsearch-#{node[:elastic][:version]}"
 default[:elastic][:home_dir] = "/usr/local/elasticsearch"
