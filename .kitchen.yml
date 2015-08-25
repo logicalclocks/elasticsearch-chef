@@ -10,19 +10,19 @@ provisioner:
   name: chef_solo
 
 platforms:
-  - name: centos-6.5
+#  - name: centos-6.5
   - name: ubuntu-14.04
 
 suites: 
   - name: default
     run_list:
       - recipe[kagent::install]
-      - recipe[elasticsearch-chef::install]
-      - recipe[elasticsearch-chef::experiment]
+      - recipe[elasticsearch::install]
+      - recipe[elasticsearch::default]
 
     attributes:
-         elasticsearch-chef:
-            experiment:
+         elasticsearch:
+            default:
                 private_ips: ["10.0.2.15"]
                 public_ips: ["10.0.2.15"]
             private_ips: ["10.0.2.15"]
