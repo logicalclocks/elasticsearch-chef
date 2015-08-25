@@ -13,6 +13,7 @@ depends "kagent"
 depends 'apt'
 depends 'yum'
 depends 'chef-sugar'
+depends "java"
 depends "elasticsearch"
 
 
