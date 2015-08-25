@@ -1,0 +1,36 @@
+---
+driver:
+  name: vagrant
+  customize:
+    memory: 3000
+    natdnshostresolver1: "on"
+    natdnsproxy1: "on"
+
+provisioner:
+  name: chef_solo
+
+platforms:
+  - name: centos-6.5
+  - name: ubuntu-14.04
+
+suites: 
+  - name: default
+    run_list:
+      - recipe[kagent::install]
+      - recipe[elasticsearch-chef::install]
+      - recipe[elasticsearch-chef::experiment]
+
+    attributes:
+         elasticsearch-chef:
+            experiment:
+                private_ips: ["10.0.2.15"]
+                public_ips: ["10.0.2.15"]
+            private_ips: ["10.0.2.15"]
+            public_ips: ["10.0.2.15"]
+         kagent:
+            private_ips: ["10.0.2.15"]
+            public_ips: ["10.0.2.15"]
+         private_ips: ["10.0.2.15"]
+         public_ips: ["10.0.2.15"]
+         vagrant: "enabled"
+
