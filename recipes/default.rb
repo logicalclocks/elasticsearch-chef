@@ -22,7 +22,11 @@ elasticsearch_configure 'my_elasticsearch' do
               CONFIG
 
   configuration ({
-    'node.name' => 'hopsworks'
+    'cluster.name' => node[:elastic][:cluster_name],
+    'node.name' => node[:elastic][:node_name],
+    'network.host' =>  my_ip,
+    'http.cors.enabled' => true,
+    'http.cors.allow-origin' => "*"
   })
 
   action :manage
@@ -32,8 +36,7 @@ elasticsearch_plugin 'jprante/elasticsearch-jdbc' do
   user node[:elastic][:user]
   group node[:elastic][:group]
   action :install
-#  url "http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-river-jdbc/1.5.0.1/elasticsearch-river-jdbc-1.5.0.1-plugin.zip"
-# url "http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-river-jdbc/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-river-jdbc-#{node[:elastic][:jdbc_river][:version]}-plugin.zip"
+#  url "http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-river-jdbc/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-river-jdbc-#{node[:elastic][:jdbc_river][:version]}-plugin.zip"
   url "https://github.com/jprante/elasticsearch-jdbc/archive/#{node[:elastic][:jdbc_river][:version]}.tar.gz" 
 end
 
@@ -67,28 +70,27 @@ EOF
 end
 
 
+file "#{node[:elastic][:home_dir]}/conf/elasticsearch.yml" do 
+  user node[:elastic][:user]
+  action :delete
+end
+
+template "#{node[:elastic][:home_dir]}/conf/elasticsearch.yml" do
+  source "elasticsearch.yml.erb"
+  user node[:elastic][:user]
+  group node[:elastic][:group]
+  mode "755"
+  variables({
+              :my_ip => my_ip
+            })
+end
 
 
 elasticsearch_service 'elasticsearch-hopsworks' do
-  node_name 'hopsworks'
+  node_name node[:elastic][:node_name]
   path_conf '/usr/local/elasticsearch/etc/elasticsearch'
   pid_path '/usr/local/elasticsearch/var/run'
   user node[:elastic][:user]
   group node[:elastic][:group]
 end
 
-
-file "#{node[:elastic][:home_dir]}/conf/elasticsearch.yml" do 
-  owner node[:hdfs][:user]
-  action :delete
-end
-
-template "#{node[:elastic][:home_dir]}/conf/elasticsearch.yml" do
-  source "elasticsearch.yml.erb"
-  owner node[:hdfs][:user]
-  group node[:hadoop][:group]
-  mode "755"
-  variables({
-              :my_ip => my_ip
-            })
-end

@@ -200,16 +200,16 @@
 
 # Set the bind address specifically (IPv4 or IPv6):
 #
-#network.bind_host: <%= @my_ip %>
+network.bind_host: <%= @my_ip %>
 
 # Set the address other nodes will use to communicate with this node. If not
 # set, it is automatically derived. It must point to an actual IP address.
 #
-#network.publish_host: <%= @my_ip %>
+#network.publish_host: 192.168.0.1
 
 # Set both 'bind_host' and 'publish_host':
 #
-network.host: <%= @my_ip %>
+#network.host: 192.168.0.1
 
 # Set a custom port for the node to node communication (9300 by default):
 #
