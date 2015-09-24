@@ -11,6 +11,10 @@ nohup parent.sh &
 
 nohup dataset.sh &
 
+
+
 nohup child_pr.sh.erb &
 
 nohup child_ds.sh.erb &
+
+
