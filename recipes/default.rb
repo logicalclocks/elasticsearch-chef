@@ -32,12 +32,15 @@ elasticsearch_configure 'my_elasticsearch' do
   action :manage
 end
 
-elasticsearch_plugin 'jprante/elasticsearch-jdbc' do
+#elasticsearch_plugin 'jprante/elasticsearch-jdbc' do
+
+elasticsearch_plugin '/usr/local/elasticsearch-jdbc' do
   user node[:elastic][:user]
   group node[:elastic][:group]
   action :install
-#  url "http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-river-jdbc/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-river-jdbc-#{node[:elastic][:jdbc_river][:version]}-plugin.zip"
-  url "https://github.com/jprante/elasticsearch-jdbc/archive/#{node[:elastic][:jdbc_river][:version]}.tar.gz" 
+#  url "http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-jdbc/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-river-jdbc-#{node[:elastic][:jdbc_river][:version]}-plugin.zip"
+ url "http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/1.7.1.0/elasticsearch-jdbc-1.7.1.0-dist.zip"
+#  url "https://github.com/jprante/elasticsearch-jdbc/archive/#{node[:elastic][:jdbc_river][:version]}.tar.gz" 
 end
 
 mysql_tgz = File.basename(node[:elastic][:mysql_connector_url])
@@ -70,12 +73,22 @@ EOF
 end
 
 
-file "#{node[:elastic][:home_dir]}/conf/elasticsearch.yml" do 
+file "#{node[:elastic][:home_dir]}/config/elasticsearch.yml" do 
   user node[:elastic][:user]
   action :delete
 end
 
-template "#{node[:elastic][:home_dir]}/conf/elasticsearch.yml" do
+template "#{node[:elastic][:home_dir]}/config/elasticsearch.yml" do
+  source "elasticsearch.yml.erb"
+  user node[:elastic][:user]
+  group node[:elastic][:group]
+  mode "755"
+  variables({
+              :my_ip => my_ip
+            })
+end
+
+template "#{node[:elastic][:home_dir]}/config/elasticsearch.yml" do
   source "elasticsearch.yml.erb"
   user node[:elastic][:user]
   group node[:elastic][:group]
@@ -86,6 +99,8 @@ template "#{node[:elastic][:home_dir]}/conf/elasticsearch.yml" do
 end
 
 
+
+
 elasticsearch_service 'elasticsearch-hopsworks' do
   node_name node[:elastic][:node_name]
   path_conf '/usr/local/elasticsearch/etc/elasticsearch'
@@ -93,4 +108,6 @@ elasticsearch_service 'elasticsearch-hopsworks' do
   user node[:elastic][:user]
   group node[:elastic][:group]
 end
+
+
 
