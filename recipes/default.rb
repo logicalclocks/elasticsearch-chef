@@ -7,9 +7,12 @@ my_ip = my_private_ip()
 elastic_ip = private_recipe_ip("elastic","default")
 
 elasticsearch_configure 'my_elasticsearch' do
-  dir '/usr/local/elasticsearch'
   user node[:elastic][:user]
   group node[:elastic][:group]
+  dir node[:elastic][:home_dir]
+  path_conf node[:elastic][:home_dir] + "/etc/elasticsearch"
+  path_data node[:elastic][:home_dir] + "/var/data/elasticsearch"
+  path_logs node[:elastic][:home_dir] + "/var/log/elasticsearch"
   logging({:"action" => 'INFO'})
   allocated_memory '123m'
   thread_stack_size '512k'
@@ -22,7 +25,6 @@ elasticsearch_configure 'my_elasticsearch' do
                 -XX:+HeapDumpOnOutOfMemoryError
                 -XX:+PrintGCDetails
               CONFIG
-
   configuration ({
     'cluster.name' => node[:elastic][:cluster_name],
     'node.name' => node[:elastic][:node_name],
@@ -30,9 +32,19 @@ elasticsearch_configure 'my_elasticsearch' do
     'http.cors.enabled' => true,
     'http.cors.allow-origin' => "*"
   })
-
   action :manage
 end
+
+elasticsearch_service 'elasticsearch-hopsworks' do
+  user node[:elastic][:user]
+  group node[:elastic][:group]
+  node_name node[:elastic][:node_name]
+  path_conf node[:elastic][:home_dir] + "/etc/elasticsearch"
+  path_data node[:elastic][:home_dir] + "/var/data/elasticsearch"
+  path_logs node[:elastic][:home_dir] + "/var/log/elasticsearch"
+end
+
+
 
 #elasticsearch_plugin 'jprante/elasticsearch-jdbc' do
 
@@ -70,16 +82,7 @@ template "#{node[:elastic][:home_dir]}/config/elasticsearch.yml" do
 end
 
 
-elasticsearch_service 'elasticsearch-hopsworks' do
-  node_name node[:elastic][:node_name]
-  path_conf '/usr/local/elasticsearch/etc/elasticsearch'
-  pid_path '/usr/local/elasticsearch/var/run'
-  user node[:elastic][:user]
-  group node[:elastic][:group]
-end
-
 
 elastic_start "start_install_elastic" do
-
 elastic_ip elastic_ip
 end
