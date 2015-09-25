@@ -38,38 +38,7 @@ elasticsearch_plugin '/usr/local/elasticsearch-jdbc' do
   user node[:elastic][:user]
   group node[:elastic][:group]
   action :install
-#  url "http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-jdbc/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-river-jdbc-#{node[:elastic][:jdbc_river][:version]}-plugin.zip"
- url "http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/1.7.1.0/elasticsearch-jdbc-1.7.1.0-dist.zip"
-#  url "https://github.com/jprante/elasticsearch-jdbc/archive/#{node[:elastic][:jdbc_river][:version]}.tar.gz" 
-end
-
-mysql_tgz = File.basename(node[:elastic][:mysql_connector_url])
-mysql_base = File.basename(node[:elastic][:mysql_connector_url], ".tar.gz") 
-
-#path_mysql_tgz = "#{Chef::Config[:file_cache_path]}/#{mysql_tgz}"
-path_mysql_tgz = "/tmp/#{mysql_tgz}"
-
-remote_file path_mysql_tgz do
-  user node[:elastic][:user]
-  group node[:elastic][:group]
-  source node[:elastic][:mysql_connector_url]
-  mode 0755
-  action :create_if_missing
-end
-
-
-bash "unpack_mysql_connector" do
-  user node[:elastic][:user]
-  group node[:elastic][:group]
-    code <<-EOF
-   cd /tmp
-   tar -xzf #{path_mysql_tgz} 
-   # copy mysql-connector jar file to plugins/jdbc
-   mkdir -p #{node[:elastic][:home_dir]}/plugins/jdbc
-   cp #{mysql_base}/#{mysql_base}-bin.jar #{node[:elastic][:home_dir]}/plugins/jdbc/
-   touch #{node[:elastic][:home_dir]}/.#{mysql_base}_downloaded
-EOF
-  not_if { ::File.exists?( "#{node[:elastic][:home_dir]}/.#{mysql_base}_downloaded")}
+   url "http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip"
 end
 
 
@@ -99,8 +68,6 @@ template "#{node[:elastic][:home_dir]}/config/elasticsearch.yml" do
 end
 
 
-
-
 elasticsearch_service 'elasticsearch-hopsworks' do
   node_name node[:elastic][:node_name]
   path_conf '/usr/local/elasticsearch/etc/elasticsearch'
@@ -108,6 +75,4 @@ elasticsearch_service 'elasticsearch-hopsworks' do
   user node[:elastic][:user]
   group node[:elastic][:group]
 end
-
-
 

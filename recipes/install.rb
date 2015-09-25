@@ -26,3 +26,53 @@ elasticsearch_install 'elastic_installation' do
   action :install 
 end
 
+mysql_tgz = File.basename(node[:elastic][:mysql_connector_url])
+mysql_base = File.basename(node[:elastic][:mysql_connector_url], "-dist.zip") 
+
+path_mysql_tgz = "/tmp/#{mysql_tgz}"
+
+remote_file path_mysql_tgz do
+  user node[:elastic][:user]
+  group node[:elastic][:group]
+  source node[:elastic][:mysql_connector_url]
+  mode 0755
+  action :create_if_missing
+end
+
+Chef::Log.info "Downloading #{mysql_base}"
+Chef::Log.info "Unzipping #{mysql_tgz}"
+
+bash "unpack_mysql_river" do
+  user node[:elastic][:user]
+  group node[:elastic][:group]
+    code <<-EOF
+   set -e
+   cd /tmp
+   unzip -f #{path_mysql_tgz} 
+   touch #{node[:elastic][:home_dir]}/.#{mysql_base}_downloaded
+EOF
+  not_if { ::File.exists?( "#{node[:elastic][:home_dir]}/.#{mysql_base}_downloaded")}
+end
+
+bash "locate_mysql_river" do
+  user "root"
+    code <<-EOF
+   set -e
+   mv /tmp/#{mysql_base} /usr/local
+   chown -R #{node[:elastic][:user]} /usr/local/#{mysql_base}
+   touch #{node[:elastic][:home_dir]}/.#{mysql_base}_moved
+EOF
+  not_if { ::File.exists?( "#{node[:elastic][:home_dir]}/.#{mysql_base}_moved")}
+end
+
+
+
+
+for script in node[:elastic][:scripts] do
+  template "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/#{script}" do
+    source "#{script}.erb"
+    user node[:elastic][:user]
+    group node[:elastic][:group]
+    mode "755"
+  end
+end 
