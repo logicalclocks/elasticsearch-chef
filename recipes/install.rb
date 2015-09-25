@@ -40,7 +40,7 @@ remote_file path_mysql_tgz do
 end
 
 Chef::Log.info "Downloading #{mysql_base}"
-Chef::Log.info "Unzipping #{mysql_tgz}"
+Chef::Log.info "Unzipgping #{mysql_tgz}"
 
 bash "unpack_mysql_river" do
   user node[:elastic][:user]
@@ -48,7 +48,7 @@ bash "unpack_mysql_river" do
     code <<-EOF
    set -e
    cd /tmp
-   unzip -f #{path_mysql_tgz} 
+   unzip  #{path_mysql_tgz} 
    touch #{node[:elastic][:home_dir]}/.#{mysql_base}_downloaded
 EOF
   not_if { ::File.exists?( "#{node[:elastic][:home_dir]}/.#{mysql_base}_downloaded")}

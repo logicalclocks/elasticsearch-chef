@@ -4,6 +4,8 @@ node.override[:elastcsearch][:version] = node[:elastic][:version]
 
 my_ip = my_private_ip()
 
+elastic_ip = private_recipe_ip("elastic","default")
+
 elasticsearch_configure 'my_elasticsearch' do
   dir '/usr/local/elasticsearch'
   user node[:elastic][:user]
@@ -76,3 +78,8 @@ elasticsearch_service 'elasticsearch-hopsworks' do
   group node[:elastic][:group]
 end
 
+
+elastic_start "start_install_elastic" do
+
+elastic_ip elastic_ip
+end
