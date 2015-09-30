@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [ "${JDBC_IMPORTER_HOME}" = "" ] ; then
+ export JDBC_IMPORTER_HOME=<%= @install_path %>
+fi
+
+bin=$JDBC_IMPORTER_HOME/bin
+lib=$JDBC_IMPORTER_HOME/lib
+echo '{
+
+    "type" : "jdbc",
+    "jdbc" : {
+        "url" : "jdbc:mysql://<%= @mysql_endpoint %>/test",
+        "user" : "<%= @mysql_user %>",
+        "password" : "<%= @mysql_password %>",
+        "sql" : "select *, id as _id from orders"
+    }
+}' | java \
+       -cp "${lib}/*" \
+       -Dlog4j.configurationFile=${bin}/log4j2.xml \
+       org.xbib.tools.Runner \
+       org.xbib.tools.JDBCImporter
