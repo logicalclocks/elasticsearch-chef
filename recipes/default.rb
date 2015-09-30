@@ -110,8 +110,8 @@ end
 
 
 for script in %w{ start-river.sh stop-river.sh } do
-  template "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/${script}" do
-    source "${script}.erb"
+  template "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/#{script}" do
+    source "#{script}.erb"
     user node[:elastic][:user]
     group node[:elastic][:group]
     mode "755"
