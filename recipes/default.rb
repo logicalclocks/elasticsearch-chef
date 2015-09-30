@@ -84,6 +84,20 @@ template "#{node[:elastic][:home_dir]}/config/elasticsearch.yml" do
             })
 end
 
+for script in node[:elastic][:scripts] do
+  template "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/#{script}" do
+    source "#{script}.erb"
+    user node[:elastic][:user]
+    group node[:elastic][:group]
+    mode "755"
+  variables({
+              :install_path => "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}",
+              :mysql_endpoint => my_ip + ":3306",
+              :mysql_user => node[:mysql][:user],
+              :mysql_password => node[:mysql][:password]
+            })
+  end
+end 
 
 
 elastic_start "start_install_elastic" do

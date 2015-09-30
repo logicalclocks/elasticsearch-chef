@@ -1,4 +1,5 @@
 include_attribute "kagent"
+include_attribute "ndb"
 
 node.override[:elastic][:version]         = "1.7.1"
 default[:elastic][:url]                   = "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-#{node[:elastic][:version]}.tar.gz"

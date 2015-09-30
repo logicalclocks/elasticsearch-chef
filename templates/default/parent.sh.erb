@@ -2,17 +2,22 @@
 
 # SQL here is found in: Elastic_Rivers_Parent_Optimized.sql.erb
 
+if [ $JDBC_IMPORTER_HOME = "" ] ; then
+  JDBC_IMPORTER_HOME = <%= @install_path %>
+fi
+
+
 bin=$JDBC_IMPORTER_HOME/bin
 lib=$JDBC_IMPORTER_HOME/lib
 echo '
 {
     "type" : "jdbc",
     "jdbc" : {
-        "url" : "jdbc:mysql://193.10.66.125:3306/?useUnicode=true&characterEncoding=UTF-8",
+        "url" : "jdbc:mysql://<%= @mysql_endpoint %>/?useUnicode=true&characterEncoding=UTF-8",
 	"schedule" : "0/5 0-59 0-23 ? * *",
 	"elasticsearch.cluster" : "hopsworks",
-        "user" : "kthfs",
-        "password" : "kthfs",
+        "user" : "<%= @mysql_user %>",
+        "password" : "<%= @mysql_password %>",
         "locale" : "en_US",
         "sql" : [
 		{

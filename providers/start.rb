@@ -14,6 +14,16 @@ bash 'elastic-scripts' do
 EOF
 end
 
+bash 'elastic-index-creation' do
+    user node[:elastic][:user]
+    code <<-EOF
+    /usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/parent.sh
+    /usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/dataset.sh
+    /usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/child_pr.sh
+    /usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/child_ds.sh 
+EOF
+end
+
 
 bash 'elastic-install-indexes' do
     user node[:elastic][:user]
