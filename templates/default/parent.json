@@ -1,24 +1,15 @@
-#!/bin/sh
-
-# SQL here is found in: Elastic_Rivers_Parent_Optimized.sql.erb
-
-if [ "${JDBC_IMPORTER_HOME}" = "" ] ; then
- export JDBC_IMPORTER_HOME=<%= @install_path %>
-fi
-
-
-bin=$JDBC_IMPORTER_HOME/bin
-lib=$JDBC_IMPORTER_HOME/lib
-echo '
 {
     "type" : "jdbc",
     "jdbc" : {
         "url" : "jdbc:mysql://<%= @mysql_endpoint %>/?useUnicode=true&characterEncoding=UTF-8",
 	"schedule" : "0/5 0-59 0-23 ? * *",
 	"elasticsearch.cluster" : "hopsworks",
+	"elasticsearch.host" : "<%= @elastic_host %>",
         "user" : "<%= @mysql_user %>",
         "password" : "<%= @mysql_password %>",
         "locale" : "en_US",
+        "index" : "project",
+	"type" : "parent",
         "sql" : [
 		{
 		"statement": "INSERT INTO hopsworks.meta_inodes_ops_parents_buffer (inodeid, parentid, operation, logical_time, processed)(SELECT log.inode_id, log.dataset_id, log.operation, log.logical_time, 0 as processed FROM hops.hdfs_metadata_log log, (SELECT inn.id AS rootid FROM hops.hdfs_inodes inn WHERE inn.parent_id = 1) AS root WHERE log.dataset_id = root.rootid LIMIT 100);"
@@ -35,13 +26,6 @@ echo '
 		{
 		"statement": "UPDATE hopsworks.meta_inodes_ops_parents_buffer m SET m.processed = 1;"
 		}
-        ],
-        "index" : "project",
-	"type" : "parent"
+        ]
     }
 }
-'  | java \
-              -cp "${lib}/*" \
-              -Dlog4j.configurationFile=${bin}/log4j2.xml \
-              org.xbib.tools.Runner \
-              org.xbib.tools.JDBCImporter

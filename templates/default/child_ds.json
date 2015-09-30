@@ -1,14 +1,3 @@
-#!/bin/sh
-
-if [ "${JDBC_IMPORTER_HOME}" = "" ] ; then
- export JDBC_IMPORTER_HOME=<%= @install_path %>
-fi
-
-
-bin=$JDBC_IMPORTER_HOME/bin
-lib=$JDBC_IMPORTER_HOME/lib
-
-echo '
 {
     "type" : "jdbc",
     "jdbc" : {
@@ -18,6 +7,8 @@ echo '
         "user" : "<%= @mysql_user %>",
         "password" : "<%= @mysql_password %>",
         "locale" : "en_US",
+        "index" : "dataset",
+	"type" : "child",
         "sql" : [
 		{
 		"statement": "INSERT INTO hopsworks.meta_inodes_ops_children_ds_buffer (inodeid, parentid, operation, logical_time, processed) (SELECT DISTINCT log.inode_id, log.dataset_id, log.operation, log.logical_time, 0 as processed FROM hops.hdfs_metadata_log log, (SELECT p.inode_id as id, p.dataset_id as parentt, p.* FROM hops.hdfs_metadata_log p, (SELECT i.inode_id as id FROM hops.hdfs_metadata_log i, (SELECT inn.id FROM hops.hdfs_inodes inn WHERE inn.parent_id = 1) AS root WHERE i.dataset_id = root.id) AS project WHERE p.dataset_id = project.id) as dataset WHERE log.dataset_id = dataset.id LIMIT 100);"
@@ -43,13 +34,6 @@ echo '
 		"statement" : "DELETE FROM hopsworks.meta_inodes_ops_datasets_buffer WHERE processed = 1;"
 		}
 
-        ],
-        "index" : "dataset",
-	"type" : "child"
+        ]
     }
 }
-'  | java \
-              -cp "${lib}/*" \
-              -Dlog4j.configurationFile=${bin}/log4j2.xml \
-              org.xbib.tools.Runner \
-              org.xbib.tools.JDBCImporter

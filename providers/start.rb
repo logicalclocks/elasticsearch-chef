@@ -18,7 +18,7 @@ bash 'elastic-index-creation' do
     user node[:elastic][:user]
     code <<-EOF
     cd /usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}
-    ./bin/parent.sh
+    ./bin/start-river.sh parent.json
     ./bin/dataset.sh
     ./bin/child_pr.sh
     ./bin/child_ds.sh 

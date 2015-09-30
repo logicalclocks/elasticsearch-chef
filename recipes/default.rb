@@ -4,6 +4,8 @@ node.override[:elastcsearch][:version] = node[:elastic][:version]
 
 my_ip = my_private_ip()
 
+mysql_ip = my_ip
+#private_recipe_ip("ndb","mysqld")
 elastic_ip = private_recipe_ip("elastic","default")
 
 elasticsearch_configure 'my_elasticsearch' do
@@ -84,15 +86,22 @@ template "#{node[:elastic][:home_dir]}/config/elasticsearch.yml" do
             })
 end
 
-for script in node[:elastic][:scripts] do
-  template "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/#{script}" do
-    source "#{script}.erb"
+directory "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/rivers" do
+  owner node[:elastic][:user]
+  mode "755"
+  action :create
+end
+
+for river in node[:elastic][:rivers] do
+  template "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/rivers/#{river}.json" do
+    source "#{river}.json.erb"
     user node[:elastic][:user]
     group node[:elastic][:group]
     mode "755"
   variables({
               :install_path => "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}",
-              :mysql_endpoint => my_ip + ":3306",
+              :elastic_host => elastic_ip,
+              :mysql_endpoint => mysql_ip + ":3306",
               :mysql_user => node[:mysql][:user],
               :mysql_password => node[:mysql][:password]
             })
@@ -100,6 +109,19 @@ for script in node[:elastic][:scripts] do
 end 
 
 
+for script in %w{ start-river.sh stop-river.sh } do
+  template "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/${script}" do
+    source "${script}.erb"
+    user node[:elastic][:user]
+    group node[:elastic][:group]
+    mode "755"
+    variables({
+                :install_path => "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}"
+              })
+  end
+end
+
+
 elastic_start "start_install_elastic" do
-elastic_ip elastic_ip
+  elastic_ip elastic_ip
 end

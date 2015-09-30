@@ -14,7 +14,7 @@ default[:elastic][:version_dir]           = "/usr/local/elasticsearch-#{node[:el
 default[:elastic][:home_dir]              = "/usr/local/elasticsearch"
 default[:elastic][:plugins_dir]           = node[:elastic][:home_dir] + "/plugins"
 
-default[:elastic][:scripts]               = %w{ parent.sh child_pr.sh child_ds.sh dataset.sh test.sh }
+default[:elastic][:rivers]                = %w{ parent child_pr child_ds dataset }
 
 #default[:elastic][:mysql_connector_url]   = "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.36.tar.gz"
 
