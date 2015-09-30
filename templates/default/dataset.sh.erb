@@ -1,8 +1,9 @@
 #!/bin/sh
 
-if [ $JDBC_IMPORTER_HOME = "" ] ; then
-  JDBC_IMPORTER_HOME = <%= @install_path %>
+if [ "${JDBC_IMPORTER_HOME}" = "" ] ; then
+ export JDBC_IMPORTER_HOME=<%= @install_path %>
 fi
+
 
 
 bin=$JDBC_IMPORTER_HOME/bin

@@ -2,8 +2,8 @@
 
 # SQL here is found in: Elastic_Rivers_Parent_Optimized.sql.erb
 
-if [ $JDBC_IMPORTER_HOME = "" ] ; then
-  JDBC_IMPORTER_HOME = <%= @install_path %>
+if [ "${JDBC_IMPORTER_HOME}" = "" ] ; then
+ export JDBC_IMPORTER_HOME=<%= @install_path %>
 fi
 
 
