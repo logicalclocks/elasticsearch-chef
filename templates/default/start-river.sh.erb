@@ -20,6 +20,6 @@ lib=$JDBC_IMPORTER_HOME/lib
 rivers=$JDBC_IMPORTER_HOME/rivers
 river_dir="$(dirname $river)" 
 river_pid=${river#$river_dir}.pid
-river_log=$JDBC_IMPORTER_HOME/logs/${river#$river_dir}.log
+river_log=$JDBC_IMPORTER_HOME/log/${river#$river_dir}.log
 nohup java -cp "${lib}/*" -Dlog4j.configurationFile=${bin}/log4j2.xml org.xbib.tools.Runner org.xbib.tools.JDBCImporter $river > $river_log 2>&1 &
 echo $! > $rivers/$river_pid

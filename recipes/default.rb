@@ -86,6 +86,13 @@ directory "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]
   action :create
 end
 
+directory "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/log" do
+  owner node[:elastic][:user]
+  mode "755"
+  action :create
+end
+
+
 for river in node[:elastic][:rivers] do
   template "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/rivers/#{river}.json" do
     source "#{river}.json.erb"
