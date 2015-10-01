@@ -37,21 +37,16 @@ elasticsearch_configure 'my_elasticsearch' do
   action :manage
 end
 
-# elasticsearch_configure 'elasticsearch' do
-# end
-
-# elasticsearch_service 'elasticsearch-hopsworks' do
-#   user node[:elastic][:user]
-#   group node[:elastic][:group]
-#   node_name node[:elastic][:node_name]
-#   path_conf node[:elastic][:home_dir] + "/etc/elasticsearch"
-#   path_data node[:elastic][:home_dir] + "/var/data/elasticsearch"
-#   path_logs node[:elastic][:home_dir] + "/var/log/elasticsearch"
-# end
+elasticsearch_service 'elasticsearch-hopsworks' do
+  user node[:elastic][:user]
+  group node[:elastic][:group]
+  node_name node[:elastic][:node_name]
+  path_conf node[:elastic][:home_dir] + "/etc/elasticsearch"
+  path_data node[:elastic][:home_dir] + "/var/data/elasticsearch"
+  path_logs node[:elastic][:home_dir] + "/var/log/elasticsearch"
+end
 
 
-
-#elasticsearch_plugin 'jprante/elasticsearch-jdbc' do
 
 elasticsearch_plugin '/usr/local/elasticsearch-jdbc' do
   user node[:elastic][:user]

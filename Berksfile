@@ -7,5 +7,6 @@ cookbook 'kagent', github: 'karamelchef/kagent-chef', branch: 'master'
 cookbook 'elasticsearch', github: 'elastic/cookbook-elasticsearch',  branch: 'master'
 #tag: 'v1.0.0'
 cookbook 'java'
+cookbook 'ulimit', github: 'bmhatfield/chef-ulimit', tag: 'v0.3.3'
 metadata
 

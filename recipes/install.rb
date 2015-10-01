@@ -65,15 +65,6 @@ EOF
 end
 
 
-bash "increase_ulimit_files" do
-  user "root"
-    code <<-EOF
-EOF
-end
-
-case node['platform']
-when 'debian', 'ubuntu'
-
-when 'redhat', 'centos', 'fedora'
-
+user_ulimit node[:elastic][:user] do
+  filehandle_limit 65535
 end

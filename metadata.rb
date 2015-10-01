@@ -15,7 +15,7 @@ depends 'yum'
 depends 'chef-sugar'
 depends "java"
 depends "elasticsearch"
-
+depends "ulimit"
 
 %w{ ubuntu debian rhel centos }.each do |os|
   supports os
