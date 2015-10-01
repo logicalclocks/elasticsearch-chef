@@ -4,7 +4,6 @@ include_recipe "java"
 node.override[:elastcsearch][:url] = node[:elastic][:url]
 node.override[:elastcsearch][:version] = node[:elastic][:version]
 
-
 elasticsearch_user 'elasticsearch' do
   username node[:elastic][:user]
   groupname node[:elastic][:group]
@@ -66,3 +65,15 @@ EOF
 end
 
 
+bash "increase_ulimit_files" do
+  user "root"
+    code <<-EOF
+EOF
+end
+
+case node['platform']
+when 'debian', 'ubuntu'
+
+when 'redhat', 'centos', 'fedora'
+
+end
