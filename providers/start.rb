@@ -22,6 +22,7 @@ bash 'elastic-index-creation' do
     ./bin/start-river.sh rivers/dataset.json
     ./bin/start-river.sh rivers/child_pr.json
     ./bin/start-river.sh rivers/child_ds.json
+    sleep 2
 EOF
 end
 
