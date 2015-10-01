@@ -1,9 +1,14 @@
 {
     "type" : "jdbc",
     "jdbc" : {
+        "elasticsearch" : {
+          "cluster" : "hops",
+          "node" : "hopsworks",
+          "host" : "<%= @elastic_host %>",
+          "autodiscover" : "true"
+        },
         "url" : "jdbc:mysql://<%= @mysql_endpoint %>/?useUnicode=true&characterEncoding=UTF-8",
 	"schedule" : "0/5 0-59 0-23 ? * *",
-	"elasticsearch.cluster" : "hopsworks",
         "user" : "<%= @mysql_user %>",
         "password" : "<%= @mysql_password %>",
         "locale" : "en_US",
