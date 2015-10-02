@@ -1,7 +1,7 @@
 action :run do
 
-package "curl" do 
-end
+# package "curl" do 
+# end
 
 
 # Run the scripts
@@ -26,22 +26,31 @@ bash 'elastic-index-creation' do
 EOF
 end
 
+http_request 'curl_request_project' do
+  url "#{new_resource.elastic_ip}:9200/project/child/_mapping"
+  message '{ "child":{ "_parent": {"type": "parent"} } }'
+  action :post
+  retries 2
+  retry_delay 2
+end
+
+http_request 'curl_request_dataset' do
+  url "#{new_resource.elastic_ip}:9200/dataset/child/_mapping"
+  message '{ "child":{ "_parent": {"type": "parent"} } }'
+  action :post
+  retries 2
+  retry_delay 2
+end
+
 
 bash 'elastic-install-indexes' do
     user node[:elastic][:user]
     code <<-EOF
-curl -XPOST "#{new_resource.elastic_ip}:9200/project/child/_mapping" -d '{ "child":{ "_parent": {"type": "parent"} } }'
-
+#curl -XPOST "#{new_resource.elastic_ip}:9200/project/child/_mapping" -d '{ "child":{ "_parent": {"type": "parent"} } }'
 # To inform elastic that the parent data type in the dataset index accepts a 'child' data type as a child:
-
-curl -XPOST "#{new_resource.elastic_ip}:9200/dataset/child/_mapping" -d '{ "child":{ "_parent": {"type": "parent"} } }'
-
+#curl -XPOST "#{new_resource.elastic_ip}:9200/dataset/child/_mapping" -d '{ "child":{ "_parent": {"type": "parent"} } }'
 EOF
 end
-
-
-
-
 
 #  new_resource.updated_by_last_action(false)
 end
