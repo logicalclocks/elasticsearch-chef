@@ -27,7 +27,7 @@ EOF
 end
 
 http_request 'curl_request_project' do
-  url "#{new_resource.elastic_ip}:9200/project/child/_mapping"
+  url "http://#{new_resource.elastic_ip}:9200/project/child/_mapping"
   message '{ "child":{ "_parent": {"type": "parent"} } }'
   action :post
   retries 2
@@ -35,7 +35,7 @@ http_request 'curl_request_project' do
 end
 
 http_request 'curl_request_dataset' do
-  url "#{new_resource.elastic_ip}:9200/dataset/child/_mapping"
+  url "http://#{new_resource.elastic_ip}:9200/dataset/child/_mapping"
   message '{ "child":{ "_parent": {"type": "parent"} } }'
   action :post
   retries 2
