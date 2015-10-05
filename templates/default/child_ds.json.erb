@@ -31,12 +31,26 @@
 		"statement" : "SELECT DISTINCT c.inodeid as _id, c.parentid as _parent, c.logical_time, c.operation FROM hopsworks.meta_inodes_ops_children_ds_buffer c WHERE c.operation = 1 LIMIT 100;"
 		},
 
-		{
-		"statement" : "DELETE FROM hopsworks.meta_inodes_ops_children_ds_buffer;"
-		},
 
+
+		//delete your parent logs
 		{
-		"statement" : "DELETE FROM hopsworks.meta_inodes_ops_datasets_buffer WHERE processed = 1;"
+		"statement": "DELETE FROM hops.hdfs_metadata_log WHERE inode_id IN (SELECT inodeid FROM hopsworks.meta_inodes_ops_datasets_buffer WHERE processed=1);"
+		},
+		
+		//clear your parent buffer table
+		{
+		"statement": "DELETE FROM hopsworks.meta_inodes_ops_datasets_buffer WHERE processed = 1;"
+		},
+		
+		//update your buffer status
+		{
+		"statement": "UPDATE hopsworks.meta_inodes_ops_child_ds_buffer SET processed = 1;"
+		},
+		
+		//delete your "cousin's" logs
+		{
+		"statement": "DELETE FROM hops.hdfs_metadata_log WHERE inode_id IN (SELECT inodeid FROM hopsworks.meta_inodes_ops_child_pr_buffer WHERE processed = 1;"
 		}
 
         ]
