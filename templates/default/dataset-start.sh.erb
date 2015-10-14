@@ -1,0 +1,3 @@
+#!/bin/bash
+cd /usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}
+./bin/start-river.sh rivers/dataset.json

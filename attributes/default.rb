@@ -1,5 +1,4 @@
 include_attribute "kagent"
-include_attribute "ndb"
 
 node.override[:elastic][:version]         = "1.7.1"
 default[:elastic][:url]                   = "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-#{node[:elastic][:version]}.tar.gz"
@@ -9,6 +8,7 @@ default[:elastic][:group]                 = "elastic"
 
 default[:elastic][:cluster_name]          = "hops"
 default[:elastic][:node_name]             = "hopsworks"
+default[:elastic][:rivers_enabled]        = "true"
 
 default[:elastic][:version_dir]           = "/usr/local/elasticsearch-#{node[:elastic][:version]}"
 default[:elastic][:home_dir]              = "/usr/local/elasticsearch"

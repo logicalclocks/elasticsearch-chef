@@ -9,8 +9,9 @@ action :run do
 bash 'elastic-scripts' do
     user node[:elastic][:user]
     code <<-EOF
-   nohup #{node[:elastic][:home_dir]}/bin/elasticsearch > /tmp/elasticsearch.log &
-   echo $! > /tmp/elasticsearch.pid
+#   nohup #{node[:elastic][:home_dir]}/bin/elasticsearch > /tmp/elasticsearch.log &
+#   echo $! > /tmp/elasticsearch.pid
+    service elasticsearch start
 EOF
 end
 
@@ -26,7 +27,7 @@ bash 'elastic-index-creation' do
 EOF
 end
 
-numRetries=10
+numRetries=15
 retryDelay=2
 
 http_request 'curl_request_project' do

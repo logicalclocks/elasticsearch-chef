@@ -123,6 +123,83 @@ for script in %w{ start-river.sh stop-river.sh } do
 end
 
 
+template "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/elastic-start.sh" do
+  source "elastic-start.sh.erb"
+  user node[:elastic][:user]
+  group node[:elastic][:group]
+  mode "751"
+end
+
+template "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/elastic-stop.sh" do
+  source "elastic-stop.sh.erb"
+  user node[:elastic][:user]
+  group node[:elastic][:group]
+  mode "751"
+end
+
+
+for river in node[:elastic][:rivers] do
+  template "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/#{river}-start.sh" do
+    source "river-start.sh.erb"
+    user node[:elastic][:user]
+    group node[:elastic][:group]
+    mode "751"
+    variables({
+        :river => river
+    })
+  end
+  template "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/#{river}-stop.sh" do
+    source "river-stop.sh.erb"
+    user node[:elastic][:user]
+    group node[:elastic][:group]
+    mode "751"
+    variables({
+        :river => river
+    })
+  end
+end
+
+
+if node[:kagent][:enabled] == "true"
+
+  riverdir="/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}"
+
+    kagent_config "elasticsearch-#{node[:host]}" do
+      service "elasticsearch-#{node[:host]}"
+      start_script "#{riverdir}/bin/elastic-start.sh"
+      stop_script "#{riverdir}/bin/elastic-stop.sh"
+      log_file "#{node[:elastic][:home]}/logs/#{node[:elastic][:cluster_name]}.log"
+      pid_file "#{node[:elastic][:home]}/var/run/#{node[:elastic][:node_name]}.pid"
+    end
+
+  if node[:elastic][:rivers_enabled] == "true"
+
+   for river in node[:elastic][:rivers] do
+    kagent_config "elasticsearch-#{river}" do
+      service "elasticsearch-#{river}"
+      start_script "#{riverdir}/bin/#{river}-start.sh" 
+      stop_script "#{riverdir}/bin/#{river}-stop.sh"
+      log_file "#{riverdir}/rivers/#{river}.log"
+      pid_file "#{riverdir}/rivers/#{river}.pid"
+    end
+   end
+  end
+end
+
+
+file "/etc/init.d/elasticsearch-#{node[:elastic][:node_name]}" do
+   action :delete
+end
+
+template "/etc/init.d/elasticsearch" do
+  source "elasticsearch.erb"
+  user "root"
+  mode "755"
+  variables({
+      :elastic_ip => elastic_ip
+  })
+end
+
 elastic_start "start_install_elastic" do
   elastic_ip elastic_ip
 end

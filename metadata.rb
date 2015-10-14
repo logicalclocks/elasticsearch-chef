@@ -22,4 +22,6 @@ depends "ulimit"
 end
 
 
-
+attribute "elastic/rivers_enabled",
+          :description =>  "Install the JDBC rivers for HopsWorks on this machine",
+          :type => 'string'
