@@ -9,9 +9,9 @@ action :run do
 bash 'elastic-scripts' do
     user node[:elastic][:user]
     code <<-EOF
-#   nohup #{node[:elastic][:home_dir]}/bin/elasticsearch > /tmp/elasticsearch.log &
-#   echo $! > /tmp/elasticsearch.pid
-    service elasticsearch-#{node[:elastic][:node_name]} start
+   nohup #{node[:elastic][:home_dir]}/bin/elasticsearch > /tmp/elasticsearch.log &
+   echo $! > /tmp/elasticsearch.pid
+#    service elasticsearch-#{node[:elastic][:node_name]} start
 EOF
 end
 

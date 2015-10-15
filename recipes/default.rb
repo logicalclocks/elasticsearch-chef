@@ -37,7 +37,7 @@ elasticsearch_configure 'my_elasticsearch' do
   action :manage
 end
 
-elasticsearch_service 'elasticsearch-hopsworks' do
+elasticsearch_service "elasticsearch-#{node[:elastic][:node_name]}" do
   user node[:elastic][:user]
   group node[:elastic][:group]
   node_name node[:elastic][:node_name]
@@ -191,15 +191,19 @@ end
 #    action :delete
 # end
 
-template "/etc/init.d/elasticsearch" do
-  source "elasticsearch.erb"
-  user "root"
-  mode "755"
-  variables({
-      :elastic_ip => elastic_ip
-  })
-end
+# template "/etc/init.d/elasticsearch" do
+#   source "elasticsearch.erb"
+#   user "root"
+#   mode "755"
+#   variables({
+#       :elastic_ip => elastic_ip
+#   })
+# end
 
 elastic_start "start_install_elastic" do
   elastic_ip elastic_ip
 end
+
+#service "elasticsearch-#{node[:elastic][:node_name]}" do
+#  action [:enable]
+#end
