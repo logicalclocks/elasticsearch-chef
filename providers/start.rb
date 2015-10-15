@@ -13,7 +13,7 @@ bash 'elastic-scripts' do
 #   echo $! > /tmp/elasticsearch.pid
 #    perl -i.bak -p -e 's{ES_INCLUDE=$ES_INCLUDE}{. $ES_INCLUDE &&}g' /etc/init.d/elasticsearch-#{node[:elastic][:node_name]}
     perl -i.bak -p -e "/s/localhost/#{new_resource.elastic_ip}/g" /etc/init.d/elasticsearch-#{node[:elastic][:node_name]}
-    service elasticsearch-#{node[:elastic][:node_name]} start
+    service elasticsearch-#{node[:elastic][:node_name]} restart
 EOF
 end
 
