@@ -25,3 +25,16 @@ end
 attribute "elastic/rivers_enabled",
           :description =>  "Install the JDBC rivers for HopsWorks on this machine",
           :type => 'string'
+
+attribute "elastic/port",
+          :description =>  "Port for elasticsearch service (default: 9200)",
+          :type => 'string'
+
+attribute "elastic/ulimit_files",
+          :description =>  "Number of files to set ulimit to.",
+          :type => 'string'
+
+attribute "elastic/ulimit_memlock",
+          :description =>  "Memlock size for ulimit",
+          :type => 'string'
+

@@ -2,6 +2,7 @@
 #
 # elasticsearch
 #
+<% if @platform_family == 'debian' %>
 ### BEGIN INIT INFO
 # Provides:          elasticsearch
 # Required-Start:    $network $remote_fs $named
@@ -11,6 +12,12 @@
 # Short-Description: Starts elasticsearch
 # Description:       Starts elasticsearch using start-stop-daemon
 ### END INIT INFO
+<% else %>
+# chkconfig:   - 57 47
+# description: elasticsearch
+# processname: elasticsearch
+# config:      <%= node[:elastic][:home_dir] %>/etc/elasticsearch/elasticsearch.yml
+<% end %>
 
 # Source networking configuration
 #
@@ -18,23 +25,24 @@ if [ -f /etc/sysconfig/network ]; then source /etc/sysconfig/network; fi
 
 # Set limits for environments ignoring `/etc/security/limits.d`
 #
-ulimit -n 64000
-ulimit -l unlimited
+ulimit -n <%= @nofile_limit %>
+ulimit -l <%= @memlock_limit %>
 
 # Exit if networking is not up
 #
 [ "$NETWORKING" = "no" ] && exit
+
 HOMEDIR="<%= #{node[:elastic][:home_dir]} %>"
-PIDFILE="${HOMEDIR}/var/run/hopsworks.pid"
+PIDFILE="${HOMEDIR}/var/run/<%= #{node[:elastic][:node_name]} %>.pid"
 ES_INCLUDE="${HOMEDIR}/etc/elasticsearch/elasticsearch.in.sh"
-CHECK_PID_RUNNING=`ps ax` | grep 'java' | grep -e "es.pidfile=$PIDFILE" | sed 's/^\s*\([0-9]*\)\s.*/\1/'
+CHECK_PID_RUNNING=$(ps ax | grep 'java' | grep -e "es.pidfile=$PIDFILE" | sed 's/^\s*\([0-9]*\)\s.*/\1/')
 
 start() {
     if [ -f $PIDFILE ]; then
       # PIDFILE EXISTS -- ES RUNNING?
       echo -e "PID file found in $PIDFILE"
-      es_pid=`cat $PIDFILE`
-      pid_running=`ps ax` | grep 'java' | grep $es_pid
+      es_pid="$(cat $PIDFILE)"
+      pid_running="$( ps ax | grep 'java' | grep $es_pid )"
 
       if [ ! -z "$pid_running" ] ; then
         # EXIT IF ES IS ALREADY RUNNING
@@ -44,10 +52,13 @@ start() {
     fi
 
     echo -en "\033[1mStarting Elasticsearch...\033[0m"
-    touch $PIDFILE && chown elastic $PIDFILE
-    #    ES_INCLUDE=$ES_INCLUDE
-    . $ES_INCLUDE
-    start-stop-daemon --start --background --quiet --pidfile $PIDFILE --chuid elastic --exec ${HOMEDIR} -- -p $PIDFILE
+    touch $PIDFILE && chown <%= node[:elastic][:user] %> $PIDFILE
+    <% if @platform_family == 'debian' %>
+     . $ES_INCLUDE 
+     start-stop-daemon --start --background --quiet --pidfile $PIDFILE --chuid <%= node[:elastic][:user] %> --exec $HOMEDIR/bin/elasticsearch -- -p $PIDFILE
+    <% else %>
+      su <%= node[:elastic][:user] %> -c "ES_INCLUDE=$ES_INCLUDE $HOMEDIR/bin/elasticsearch <%= @args %> -p $PIDFILE"
+    <% end %>
 
     if [ $? ]; then
       echo -e " \e[32m[OK]\e[0m"
@@ -71,13 +82,13 @@ stop() {
       fi
 
       # KILL PROCESS
-      pid=`cat $PIDFILE`
-      su elastic -m -c "kill `cat $PIDFILE`"
+      pid=$(cat $PIDFILE)
+      su <%= node[:elastic][:user] %> -m -c "kill $(cat $PIDFILE)"
       r=$?
 
       # Check for process
       timeout=0
-      while [ `ps -p $pid | wc -l` -gt '1' ]; do
+      while [ $(ps -p $pid | wc -l ) -gt '1' ]; do
         echo -n '.'
         (( timeout ++))
         if [ $timeout -gt '30' ]; then return; fi
@@ -115,15 +126,15 @@ restart() {
 
 status() {
   # GOT PIDFILE?
-  [ -f $PIDFILE ] && pid=`cat $PIDFILE`
+  [ -f $PIDFILE ] && pid=$(cat $PIDFILE)
 
   # RUNNING
   if [[ $pid && -d "/proc/$pid" ]]; then
-    version=`curl -s "http://<%= @elastic_ip %>:9200" | ruby -rubygems -e 'require "json"; print JSON.parse(STDIN.read)["version"]["number"]'`
+    version=$(curl -s 'http://<%= @elastic_ip %>:<%= @http_port %>' | ruby -rubygems -e 'require "json"; print JSON.parse(STDIN.read)["version"]["number"]')
     echo -e "\033[1;37;46melasticsearch $version running with PID $pid\033[0m"
     # VERBOSE
     if [[ $pid && $1 == '-v' || $1 == '--verbose' ]]; then
-      curl -s "http://<%= @elastic_ip %>:9200"/_cluster/nodes/hopsworks?os&process&jvm&network&transport&settings&pretty" | \
+      curl -s 'http://<%= @elastic_ip %>:<%= node[:elastic][:port] %>/_cluster/<%= node[:elastic][:cluster_name] %>/<%= node[:elastic][:node_name] %>?os&process&jvm&network&transport&settings&pretty' | \
       ruby -rubygems -e '
         begin
           require "json"; h = JSON.parse(STDIN.read); id, node = h["nodes"].first;

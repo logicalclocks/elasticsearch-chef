@@ -6,6 +6,8 @@ default[:elastic][:url]                   = "https://download.elasticsearch.org/
 default[:elastic][:user]                  = "elastic"
 default[:elastic][:group]                 = "elastic"
 
+default[:elastic][:port]                  = "9200"
+
 default[:elastic][:cluster_name]          = "hops"
 default[:elastic][:node_name]             = "hopsworks"
 default[:elastic][:rivers_enabled]        = "true"
@@ -22,3 +24,5 @@ default[:elastic][:jdbc_river][:version]  = "1.7.1.0"
 
 default[:elastic][:mysql_connector_url]   = "http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip"
 
+default[:elastic][:ulimit_files]          = "65535"
+default[:elastic][:ulimit_memlock]        = "65535"
