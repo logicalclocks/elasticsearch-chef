@@ -11,7 +11,7 @@ bash 'elastic-scripts' do
     code <<-EOF
 #   nohup #{node[:elastic][:home_dir]}/bin/elasticsearch > /tmp/elasticsearch.log &
 #   echo $! > /tmp/elasticsearch.pid
-    service elasticsearch start
+    service elasticsearch-#{node[:elastic][:node_name]} start
 EOF
 end
 

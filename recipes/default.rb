@@ -187,9 +187,9 @@ if node[:kagent][:enabled] == "true"
 end
 
 
-file "/etc/init.d/elasticsearch-#{node[:elastic][:node_name]}" do
-   action :delete
-end
+# file "/etc/init.d/elasticsearch-#{node[:elastic][:node_name]}" do
+#    action :delete
+# end
 
 template "/etc/init.d/elasticsearch" do
   source "elasticsearch.erb"
