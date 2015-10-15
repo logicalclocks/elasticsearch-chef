@@ -11,9 +11,8 @@ bash 'elastic-scripts' do
     code <<-EOF
 #   nohup #{node[:elastic][:home_dir]}/bin/elasticsearch > /tmp/elasticsearch.log &
 #   echo $! > /tmp/elasticsearch.pid
-
-    perl -i.bak -p -e 's{ES_INCLUDE=$ES_INCLUDE}{. $ES_INCLUDE &&}g' /etc/init.d/elasticsearch-#{node[:elastic][:node_name]}
-
+#    perl -i.bak -p -e 's{ES_INCLUDE=$ES_INCLUDE}{. $ES_INCLUDE &&}g' /etc/init.d/elasticsearch-#{node[:elastic][:node_name]}
+    perl -i.bak -p -e "/s/localhost/#{new_resource.elastic_ip}/g" /etc/init.d/elasticsearch-#{node[:elastic][:node_name]}
     service elasticsearch-#{node[:elastic][:node_name]} start
 EOF
 end
