@@ -7,7 +7,7 @@ action :run do
 # Run the scripts
 
 bash 'elastic-scripts' do
-    user node[:elastic][:user]
+    user "root"
     code <<-EOF
 #   nohup #{node[:elastic][:home_dir]}/bin/elasticsearch > /tmp/elasticsearch.log &
 #   echo $! > /tmp/elasticsearch.pid
