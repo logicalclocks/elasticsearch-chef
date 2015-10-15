@@ -187,23 +187,22 @@ if node[:kagent][:enabled] == "true"
 end
 
 
-file "/etc/init.d/elasticsearch-#{node[:elastic][:node_name]}" do
-   action :delete
-end
-
-template "/etc/init.d/elasticsearch-#{node[:elastic][:node_name]}" do
-  source "elasticsearch.erb"
-  user "root"
-  mode "755"
-  variables({
-      :elastic_ip => elastic_ip,
-      :http_port => node[:elastic][:port],
-      :path_conf => node[:elastic][:home_dir] + "/etc/elasticsearch",
-      :nofile_limit => node[:elastic][:ulimit_files],
-      :memlock_limit => node[:elastic][:ulimit_memlock],
-      :args => ""
-  })
-end
+# file "/etc/init.d/elasticsearch-#{node[:elastic][:node_name]}" do
+#    action :delete
+# end
+# template "/etc/init.d/elasticsearch-#{node[:elastic][:node_name]}" do
+#   source "elasticsearch.erb"
+#   user "root"
+#   mode "755"
+#   variables({
+#       :elastic_ip => elastic_ip,
+#       :http_port => node[:elastic][:port],
+#       :path_conf => node[:elastic][:home_dir] + "/etc/elasticsearch",
+#       :nofile_limit => node[:elastic][:ulimit_files],
+#       :memlock_limit => node[:elastic][:ulimit_memlock],
+#       :args => ""
+#   })
+# end
 
 elastic_start "start_install_elastic" do
   elastic_ip elastic_ip

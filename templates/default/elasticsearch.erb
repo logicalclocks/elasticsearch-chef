@@ -32,9 +32,9 @@ ulimit -l <%= @memlock_limit %>
 #
 [ "$NETWORKING" = "no" ] && exit
 
-HOMEDIR="<%= #{node[:elastic][:home_dir]} %>"
-PIDFILE="${HOMEDIR}/var/run/<%= #{node[:elastic][:node_name]} %>.pid"
-ES_INCLUDE="${HOMEDIR}/etc/elasticsearch/elasticsearch.in.sh"
+
+PIDFILE="<%= #{node[:elastic][:home_dir]} %>/var/run/<%= #{node[:elastic][:node_name]} %>.pid"
+ES_INCLUDE="<%= #{node[:elastic][:home_dir]} %>/etc/elasticsearch/elasticsearch.in.sh"
 CHECK_PID_RUNNING=$(ps ax | grep 'java' | grep -e "es.pidfile=$PIDFILE" | sed 's/^\s*\([0-9]*\)\s.*/\1/')
 
 start() {
@@ -55,9 +55,9 @@ start() {
     touch $PIDFILE && chown <%= node[:elastic][:user] %> $PIDFILE
     <% if @platform_family == 'debian' %>
      . $ES_INCLUDE 
-     start-stop-daemon --start --background --quiet --pidfile $PIDFILE --chuid <%= node[:elastic][:user] %> --exec $HOMEDIR/bin/elasticsearch -- -p $PIDFILE
+     start-stop-daemon --start --background --quiet --pidfile $PIDFILE --chuid <%= node[:elastic][:user] %> --exec <%= node[:elastic][:home_dir] %>/bin/elasticsearch -- -p $PIDFILE
     <% else %>
-      su <%= node[:elastic][:user] %> -c "ES_INCLUDE=$ES_INCLUDE $HOMEDIR/bin/elasticsearch <%= @args %> -p $PIDFILE"
+      su <%= node[:elastic][:user] %> -c "ES_INCLUDE=$ES_INCLUDE <%= #{node[:elastic][:home_dir]} %>/bin/elasticsearch <%= @args %> -p $PIDFILE"
     <% end %>
 
     if [ $? ]; then
