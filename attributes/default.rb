@@ -12,8 +12,9 @@ default[:elastic][:cluster_name]          = "hops"
 default[:elastic][:node_name]             = "hopsworks"
 default[:elastic][:rivers_enabled]        = "true"
 
-default[:elastic][:version_dir]           = "/usr/local/elasticsearch-#{node[:elastic][:version]}"
-default[:elastic][:home_dir]              = "/usr/local/elasticsearch"
+default[:elastic][:dir]                   = "/usr/local"
+default[:elastic][:version_dir]           = "#{node[:elastic][:dir]}/elasticsearch-#{node[:elastic][:version]}"
+default[:elastic][:home_dir]              = "#{node[:elastic][:dir]}/elasticsearch"
 default[:elastic][:plugins_dir]           = node[:elastic][:home_dir] + "/plugins"
 
 default[:elastic][:rivers]                = %w{ parent child_pr child_ds dataset }

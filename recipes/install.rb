@@ -15,7 +15,7 @@ end
 
 elasticsearch_install 'elastic_installation' do
   type :tarball
-  dir '/usr/local' 
+  dir node[:elastic][:dir]
   owner node[:elastic][:user]
   group node[:elastic][:group]
   version node[:elastic][:version]
@@ -37,6 +37,7 @@ remote_file path_mysql_tgz do
   mode 0755
   action :create_if_missing
 end
+
 
 Chef::Log.info "Downloading #{mysql_base}"
 Chef::Log.info "Unzipgping #{mysql_tgz}"
