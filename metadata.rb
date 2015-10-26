@@ -38,3 +38,6 @@ attribute "elastic/ulimit_memlock",
           :description =>  "Memlock size for ulimit",
           :type => 'string'
 
+attribute "elastic/dir",
+          :description =>  "Base directory to install elastic search into.",
+          :type => 'string'

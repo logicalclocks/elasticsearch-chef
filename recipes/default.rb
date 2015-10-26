@@ -47,7 +47,7 @@ end
 
 
 
-elasticsearch_plugin '/usr/local/elasticsearch-jdbc' do
+elasticsearch_plugin "#{node[:elastic][:dir]}/elasticsearch-jdbc" do
   user node[:elastic][:user]
   group node[:elastic][:group]
   action :install
@@ -80,13 +80,13 @@ template "#{node[:elastic][:home_dir]}/config/elasticsearch.yml" do
             })
 end
 
-directory "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/rivers" do
+directory "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/rivers" do
   owner node[:elastic][:user]
   mode "755"
   action :create
 end
 
-directory "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/log" do
+directory "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/log" do
   owner node[:elastic][:user]
   mode "755"
   action :create
@@ -94,13 +94,13 @@ end
 
 
 for river in node[:elastic][:rivers] do
-  template "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/rivers/#{river}.json" do
+  template "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/rivers/#{river}.json" do
     source "#{river}.json.erb"
     user node[:elastic][:user]
     group node[:elastic][:group]
     mode "755"
   variables({
-              :install_path => "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}",
+              :install_path => "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}",
               :elastic_host => elastic_ip,
               :mysql_endpoint => mysql_ip + ":3306",
               :mysql_user => node[:mysql][:user],
@@ -111,26 +111,26 @@ end
 
 
 for script in %w{ start-river.sh stop-river.sh } do
-  template "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/#{script}" do
+  template "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/#{script}" do
     source "#{script}.erb"
     user node[:elastic][:user]
     group node[:elastic][:group]
     mode "755"
     variables({
-                :install_path => "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}"
+                :install_path => "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}"
               })
   end
 end
 
 
-template "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/elastic-start.sh" do
+template "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/elastic-start.sh" do
   source "elastic-start.sh.erb"
   user node[:elastic][:user]
   group node[:elastic][:group]
   mode "751"
 end
 
-template "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/elastic-stop.sh" do
+template "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/elastic-stop.sh" do
   source "elastic-stop.sh.erb"
   user node[:elastic][:user]
   group node[:elastic][:group]
@@ -139,7 +139,7 @@ end
 
 
 for river in node[:elastic][:rivers] do
-  template "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/#{river}-start.sh" do
+  template "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/#{river}-start.sh" do
     source "river-start.sh.erb"
     user node[:elastic][:user]
     group node[:elastic][:group]
@@ -148,7 +148,7 @@ for river in node[:elastic][:rivers] do
         :river => river
     })
   end
-  template "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/#{river}-stop.sh" do
+  template "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/#{river}-stop.sh" do
     source "river-stop.sh.erb"
     user node[:elastic][:user]
     group node[:elastic][:group]
@@ -162,7 +162,7 @@ end
 
 if node[:kagent][:enabled] == "true"
 
-  riverdir="/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}"
+  riverdir="#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}"
 
     kagent_config "elasticsearch-#{node[:host]}" do
       service "elasticsearch-#{node[:host]}"
