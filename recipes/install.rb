@@ -58,7 +58,7 @@ bash "locate_mysql_river" do
   user "root"
     code <<-EOF
    set -e
-   mv /tmp/#{mysql_base} /usr/local
+   mv /tmp/#{mysql_base} #{node[:elastic][:dir]}
    chown -R #{node[:elastic][:user]} #{node[:elastic][:dir]}/#{mysql_base}
    touch #{node[:elastic][:home_dir]}/.#{mysql_base}_moved
 EOF

@@ -19,7 +19,7 @@ node[:elastic][:rivers].each { |d|
 
 elasticsearch_install 'my_es_installation' do
   type :tarball
-  dir '/usr/local' 
+  dir "#{node[:elastic][:dir]}"
   owner node[:elastic][:user]
   group node[:elastic][:group]
   tarball_url node[:elastic][:url]
@@ -39,7 +39,7 @@ link node[:elastic][:home_dir] do
 end
 
 
-directory "/usr/local/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}" do
+directory " #{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}" do
   recursive true
   action :delete
   ignore_failure :true
