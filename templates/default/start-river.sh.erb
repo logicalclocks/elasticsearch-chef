@@ -20,9 +20,10 @@ lib=$JDBC_IMPORTER_HOME/lib
 rivers=$JDBC_IMPORTER_HOME/rivers
 river_dir="$(dirname $river)" 
 river_pid=${river#$river_dir}.pid
-if [ -f $river_pid ] ; then
-  PID=`cat $river_pid`
-  if [ kill -0 $PID 2> /dev/null ] ; then
+if [ -f 2> $rivers/$river_pid ] ; then
+  PID=`cat $rivers/$river_pid`
+  # Test if process is already running, if yes, dont restart it
+  if [ $(kill -0 $PID 2> /dev/null ; echo $?) -eq 0 ] ; then
     echo "$river is already running. Cannot start it."
     exit 2
   fi
