@@ -1,6 +1,8 @@
 action :run do
 
-
+package "curl" do
+  action :install
+end
 
 bash 'elastic-scripts' do
     user node[:elastic][:user]
@@ -54,10 +56,11 @@ end
 
 bash 'elastic-install-indexes' do
     user node[:elastic][:user]
+    ignore_failure true
     code <<-EOF
-#curl -XPOST "#{new_resource.elastic_ip}:9200/project/child/_mapping" -d '{ "child":{ "_parent": {"type": "parent"} } }'
+curl -XPOST "#{new_resource.elastic_ip}:9200/project/child/_mapping" -d '{ "child":{ "_parent": {"type": "parent"} } }'
 # To inform elastic that the parent data type in the dataset index accepts a 'child' data type as a child:
-#curl -XPOST "#{new_resource.elastic_ip}:9200/dataset/child/_mapping" -d '{ "child":{ "_parent": {"type": "parent"} } }'
+curl -XPOST "#{new_resource.elastic_ip}:9200/dataset/child/_mapping" -d '{ "child":{ "_parent": {"type": "parent"} } }'
 EOF
 end
 

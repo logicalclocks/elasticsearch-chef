@@ -5,7 +5,6 @@ node.override[:elastcsearch][:version] = node[:elastic][:version]
 my_ip = my_private_ip()
 
 mysql_ip = my_ip
-#private_recipe_ip("ndb","mysqld")
 elastic_ip = private_recipe_ip("elastic","default")
 
 elasticsearch_configure 'my_elasticsearch' do
