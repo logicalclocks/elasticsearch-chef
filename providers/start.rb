@@ -22,8 +22,10 @@ EOF
 end
 
 
+# If starting a river fails, it means it is already running, which is ok.
 bash 'elastic-index-creation' do
-    user node[:elastic][:user]
+  user node[:elastic][:user]
+  ignore_failure true
     code <<-EOF
     cd #{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}
     ./bin/start-river.sh rivers/parent.json
