@@ -165,10 +165,7 @@ template "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_rive
   mode "751"
 end
 
-
-
 if node[:kagent][:enabled] == "true"
-
   riverdir="#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}"
 
     kagent_config "elasticsearch-#{node[:host]}" do
