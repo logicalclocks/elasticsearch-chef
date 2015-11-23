@@ -7,7 +7,7 @@ node.override[:elastcsearch][:version] = node[:elastic][:version]
 elasticsearch_user 'elasticsearch' do
   username node[:elastic][:user]
   groupname node[:elastic][:group]
-#  homedir node[:elastic][:home_dir]
+  homedir node[:elastic][:home_dir]
   shell '/bin/bash'
   comment 'Elasticsearch User'
   action :create
@@ -18,7 +18,8 @@ install_dir['package'] = node[:elastic][:dir]
 
 elasticsearch_install 'elastic_installation' do
   type :tarball
-  dir install_dir
+#  dir install_dir
+  dir node[:elastic][:dir]
   owner node[:elastic][:user]
   group node[:elastic][:group]
   version node[:elastic][:version]
