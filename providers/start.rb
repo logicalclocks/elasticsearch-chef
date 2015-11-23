@@ -22,6 +22,7 @@ EOF
 end
 
 
+
 bash 'elastic-index-creation' do
     user node[:elastic][:user]
     code <<-EOF
@@ -36,6 +37,9 @@ end
 
 numRetries=15
 retryDelay=2
+  
+
+Chef::Log.info  "Elastic Ip is: http://#{new_resource.elastic_ip}:9200"
 
 http_request 'curl_request_project' do
   url "http://#{new_resource.elastic_ip}:9200/project/child/_mapping"

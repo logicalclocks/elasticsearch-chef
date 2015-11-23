@@ -7,7 +7,7 @@ node.override[:elastcsearch][:version] = node[:elastic][:version]
 elasticsearch_user 'elasticsearch' do
   username node[:elastic][:user]
   groupname node[:elastic][:group]
-  homedir node[:elastic][:home_dir]
+#  homedir node[:elastic][:home_dir]
   shell '/bin/bash'
   comment 'Elasticsearch User'
   action :create
