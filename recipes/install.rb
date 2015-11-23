@@ -13,9 +13,12 @@ elasticsearch_user 'elasticsearch' do
   action :create
 end
 
+install_dir = Hash.new
+install_dir['package'] = node[:elastic][:dir]
+
 elasticsearch_install 'elastic_installation' do
   type :tarball
-  dir node[:elastic][:dir]
+  dir install_dir
   owner node[:elastic][:user]
   group node[:elastic][:group]
   version node[:elastic][:version]
