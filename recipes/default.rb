@@ -158,9 +158,14 @@ for river in node[:elastic][:rivers] do
   end
 end
 
+template "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/kill-process.sh" do
+  source "kill-process.sh.erb"
+  user node[:elastic][:user]
+  group node[:elastic][:group]
+  mode "751"
+end
 
 if node[:kagent][:enabled] == "true"
-
   riverdir="#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}"
 
     kagent_config "elasticsearch-#{node[:host]}" do
