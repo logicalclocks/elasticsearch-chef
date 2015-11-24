@@ -6,7 +6,7 @@ source 'https://supermarket.chef.io'
 cookbook 'kagent', github: 'karamelchef/kagent-chef', branch: 'master'
 metadata
 
-cookbook 'elasticsearch', github: 'elastic/cookbook-elasticsearch',  branch: 'master'
+cookbook 'elasticsearch', github: 'elastic/cookbook-elasticsearch', tag: "v1.2.0"
 #tag: 'v1.0.0'
 cookbook 'java'
 cookbook 'ulimit', github: 'bmhatfield/chef-ulimit', tag: 'v0.3.3'
