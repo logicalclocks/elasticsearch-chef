@@ -85,7 +85,7 @@ directory "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_riv
   action :create
 end
 
-directory "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/log" do
+directory "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/logs" do
   owner node[:elastic][:user]
   mode "755"
   action :create

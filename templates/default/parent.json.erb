@@ -16,7 +16,8 @@
 	"type" : "parent",
         "sql" : [
 		{
-		"statement": "INSERT INTO hopsworks.meta_inodes_ops_parents_buffer (inodeid, parentid, operation, logical_time, processed)(SELECT log.inode_id, log.dataset_id, log.operation, log.logical_time, 0 as processed FROM hops.hdfs_metadata_log log, (SELECT inn.id AS rootid FROM hops.hdfs_inodes inn WHERE inn.parent_id = 1) AS root WHERE log.dataset_id = root.rootid LIMIT 100);"
+		"statement": "INSERT INTO hopsworks.meta_inodes_ops_parents_buffer (inodeid, parentid, operation, logical_time, processed)(SELECT log.inode_id, log.dataset_id, log.operation, log.logical_time, 0 as processed FROM hops.hdfs_metadata_log log, (SELECT inn.id AS rootid FROM hops.hdfs_inodes inn WHERE inn.parent_id = 1) AS root WHERE log.dataset_id = root.rootid LIMIT 100);",
+		"write" : "true"
 		},
 
 		{
@@ -28,7 +29,8 @@
 		},
 
 		{
-		"statement": "UPDATE hopsworks.meta_inodes_ops_parents_buffer m SET m.processed = 1;"
+		"statement": "UPDATE hopsworks.meta_inodes_ops_parents_buffer m SET m.processed = 1;",
+		"write" : "true"
 		}
         ]
     }
