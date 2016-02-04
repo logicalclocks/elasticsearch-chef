@@ -1,8 +1,6 @@
 dependencies:
   - recipe: elasticsearch-chef::install
   - recipe: elasticsearch-chef::default
-    local:
-      - elasticsearch-chef::install
     global:
 
 
