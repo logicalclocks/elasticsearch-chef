@@ -2,7 +2,9 @@ include_attribute "kagent"
 include_attribute "ndb"
 
 node.override[:elastic][:version]         = "1.7.1"
-default[:elastic][:url]                   = "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-#{node[:elastic][:version]}.tar.gz"
+#default[:elastic][:url]                   = "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-#{node[:elastic][:version]}.tar.gz"
+#default[:elastic][:checksum]              = "86a0c20eea6ef55b14345bff5adf896e6332437b19180c4582a346394abde019"
+
 #default[:elastic][:url]                   = node[:download_url] + "/elasticsearch-#{node[:elastic][:version]}.tar.gz"
 default[:elastic][:user]                  = "elastic"
 default[:elastic][:group]                 = "elastic"
@@ -28,3 +30,5 @@ default[:elastic][:mysql_connector_url]   = "http://xbib.org/repository/org/xbib
 
 default[:elastic][:ulimit_files]          = "65535"
 default[:elastic][:ulimit_memlock]        = "65535"
+
+default[:elastic][:systemd]               = "true"

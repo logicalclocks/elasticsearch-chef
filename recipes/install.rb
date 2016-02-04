@@ -18,13 +18,14 @@ install_dir['package'] = node[:elastic][:dir]
 
 elasticsearch_install 'elastic_installation' do
   type :tarball
-#  dir install_dir
   dir node[:elastic][:dir]
   owner node[:elastic][:user]
   group node[:elastic][:group]
   version node[:elastic][:version]
-  tarball_url node[:elastic][:url]
-  tarball_checksum "86a0c20eea6ef55b14345bff5adf896e6332437b19180c4582a346394abde019"
+  tarball_url node['elasticsearch']['checksums']["#{node[:elastic][:url]}"]['tar'] 
+  tarball_checksum node['elasticsearch']['checksums']["#{node[:elastic][:url]}"]['tar']
+#  tarball_url node[:elastic][:url]
+#  tarball_checksum node[:elastic][:checksum]
 # node['elasticsearch']['checksums']["#{node[:elastic][:version]}"]['tar'] 
   action :install 
 end

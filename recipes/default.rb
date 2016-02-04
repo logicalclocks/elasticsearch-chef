@@ -1,9 +1,17 @@
 
-node.override[:elastcsearch][:url] = node[:elastic][:url]
-node.override[:elastcsearch][:version] = node[:elastic][:version]
+node.override[:elasticsearch][:url] = node[:elastic][:url]
+node.override[:elasticsearch][:version] = node[:elastic][:version]
+
+case node.platform
+when "ubuntu"
+ if node.platform_version.to_f <= 14.04
+   node.override.elastic.systemd = "false"
+ end
+end
+
 
 my_ip = my_private_ip()
-
+riverdir="#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}"
 mysql_ip = my_ip
 elastic_ip = private_recipe_ip("elastic","default")
 
@@ -44,15 +52,12 @@ elasticsearch_service "elasticsearch-#{node[:elastic][:node_name]}" do
   path_conf node[:elastic][:home_dir] + "/etc/elasticsearch"
 end
 
-
-
 elasticsearch_plugin "#{node[:elastic][:dir]}/elasticsearch-jdbc" do
   user node[:elastic][:user]
   group node[:elastic][:group]
   action :install
    url "http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip"
 end
-
 
 file "#{node[:elastic][:home_dir]}/config/elasticsearch.yml" do 
   user node[:elastic][:user]
@@ -79,13 +84,13 @@ template "#{node[:elastic][:home_dir]}/config/elasticsearch.yml" do
             })
 end
 
-directory "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/rivers" do
+directory "#{riverdir}/rivers" do
   owner node[:elastic][:user]
   mode "755"
   action :create
 end
 
-directory "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/logs" do
+directory "#{riverdir}/logs" do
   owner node[:elastic][:user]
   mode "755"
   action :create
@@ -93,13 +98,13 @@ end
 
 
 for river in node[:elastic][:rivers] do
-  template "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/rivers/#{river}.json" do
+  template "#{riverdir}/rivers/#{river}.json" do
     source "#{river}.json.erb"
     user node[:elastic][:user]
     group node[:elastic][:group]
     mode "755"
   variables({
-              :install_path => "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}",
+              :install_path => "#{riverdir}",
               :elastic_host => elastic_ip,
               :mysql_endpoint => mysql_ip + ":3306",
               :mysql_user => node[:mysql][:user],
@@ -110,26 +115,26 @@ end
 
 
 for script in %w{ start-river.sh stop-river.sh } do
-  template "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/#{script}" do
+  template "#{riverdir}/bin/#{script}" do
     source "#{script}.erb"
     user node[:elastic][:user]
     group node[:elastic][:group]
     mode "755"
     variables({
-                :install_path => "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}"
+                :install_path => "#{riverdir}"
               })
   end
 end
 
 
-template "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/elastic-start.sh" do
+template "#{riverdir}/bin/elastic-start.sh" do
   source "elastic-start.sh.erb"
   user node[:elastic][:user]
   group node[:elastic][:group]
   mode "751"
 end
 
-template "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/elastic-stop.sh" do
+template "#{riverdir}/bin/elastic-stop.sh" do
   source "elastic-stop.sh.erb"
   user node[:elastic][:user]
   group node[:elastic][:group]
@@ -138,7 +143,7 @@ end
 
 
 for river in node[:elastic][:rivers] do
-  template "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/#{river}-start.sh" do
+  template "#{riverdir}/bin/#{river}-start.sh" do
     source "river-start.sh.erb"
     user node[:elastic][:user]
     group node[:elastic][:group]
@@ -147,7 +152,7 @@ for river in node[:elastic][:rivers] do
         :river => river
     })
   end
-  template "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/#{river}-stop.sh" do
+  template "#{riverdir}/bin/#{river}-stop.sh" do
     source "river-stop.sh.erb"
     user node[:elastic][:user]
     group node[:elastic][:group]
@@ -156,9 +161,43 @@ for river in node[:elastic][:rivers] do
         :river => river
     })
   end
+
+
+service "#{river}" do
+  case node[:elastic][:systemd]
+    when "true"
+    provider Chef::Provider::Service::Systemd
+    else
+    provider Chef::Provider::Service::Init::Debian
+  end
+  supports :restart => true, :stop => true, :start => true, :status => true
+  action :nothing
 end
 
-template "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}/bin/kill-process.sh" do
+  
+case node[:platform_family]
+  when "debian"
+  template "/lib/systemd/system/#{river}.service" do
+  when "rhel"
+  template "/usr/lib/systemd/system/#{river}.service" do
+end
+    source "river.service.erb"
+    user node[:elastic][:user]
+    group node[:elastic][:group]
+    mode "751"
+    variables({
+                :river => river,
+                :start_script => "#{riverdir}/bin/#{river}-start.sh",
+                :stop_script => "#{riverdir}/bin/#{river}-stop.sh",
+                :pid =>  => "#{riverdir}/rivers/#{river}.pid
+              })
+    notifies :enable, "service[#{river}]"
+    notifies :restart, "service[#{river}]"    
+  end
+
+end
+
+template "#{riverdir}/bin/kill-process.sh" do
   source "kill-process.sh.erb"
   user node[:elastic][:user]
   group node[:elastic][:group]
@@ -166,7 +205,6 @@ template "#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_rive
 end
 
 if node[:kagent][:enabled] == "true"
-  riverdir="#{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}"
 
     kagent_config "elasticsearch-#{node[:host]}" do
       service "elasticsearch-#{node[:host]}"
@@ -210,8 +248,20 @@ end
 
 elastic_start "start_install_elastic" do
   elastic_ip elastic_ip
+  action :run
+end
+
+
+
 end
 
 service "elasticsearch-#{node[:elastic][:node_name]}" do
+  case node[:elastic][:systemd]
+    when "true"
+    provider Chef::Provider::Service::Systemd
+    else
+    provider Chef::Provider::Service::Init::Debian
+  end
+  supports :restart => true, :stop => true, :start => true, :status => true
   action [:enable]
 end

@@ -12,15 +12,6 @@ bash 'elastic-scripts' do
 EOF
 end
 
-bash 'elastic-init-scripts' do
-    user "root"
-    code <<-EOF
-    # perl -i.bak -p -e 's{ES_INCLUDE=$ES_INCLUDE}{. $ES_INCLUDE &&}g' /etc/init.d/elasticsearch-#{node[:elastic][:node_name]}
-    # perl -i -p -e "s/localhost/#{new_resource.elastic_ip}/g" /etc/init.d/elasticsearch-#{node[:elastic][:node_name]}
-#     service elasticsearch-#{node[:elastic][:node_name]} start
-EOF
-end
-
 
 # If starting a river fails, it means it is already running, which is ok.
 bash 'elastic-index-creation' do
@@ -36,7 +27,7 @@ bash 'elastic-index-creation' do
 EOF
 end
 
-numRetries=15
+numRetries=25
 retryDelay=2
   
 
