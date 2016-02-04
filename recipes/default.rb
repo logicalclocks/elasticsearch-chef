@@ -2,6 +2,7 @@
 node.override[:elasticsearch][:url] = node[:elastic][:url]
 node.override[:elasticsearch][:version] = node[:elastic][:version]
 
+
 case node.platform
 when "ubuntu"
  if node.platform_version.to_f <= 14.04
@@ -16,15 +17,21 @@ mysql_ip = my_ip
 elastic_ip = private_recipe_ip("elastic","default")
 
 elasticsearch_configure 'my_elasticsearch' do
-  user node[:elastic][:user]
-  group node[:elastic][:group]
-  dir node[:elastic][:home_dir]
-  path_conf node[:elastic][:home_dir] + "/etc/elasticsearch"
-  path_data node[:elastic][:home_dir] + "/var/data/elasticsearch"
-  path_logs node[:elastic][:home_dir] + "/var/log/elasticsearch"
+#  user node[:elastic][:user]
+#  group node[:elastic][:group]
+#  path_home node[:elastic][:home_dir]
+#  path_conf node[:elastic][:home_dir] + "/etc/elasticsearch"
+#  path_data node[:elastic][:home_dir] + "/var/data/elasticsearch"
+#  path_logs node[:elastic][:home_dir] + "/var/log/elasticsearch"
+  # path_pid ({
+  #    'tarball' => node[:elastic][:home_dir] + "/var"
+  # })
+  # path_bin ({
+  #    'tarball' => node[:elastic][:home_dir] + "/bin"
+  # })
   logging({:"action" => 'INFO'})
-  allocated_memory '123m'
-  thread_stack_size '512k'
+  allocated_memory node.elastic.memory
+  thread_stack_size node.elastic.thread_stack_size
   env_options '-DFOO=BAR'
   gc_settings <<-CONFIG
 #                 -XX:+UseParNewGC
@@ -34,6 +41,7 @@ elasticsearch_configure 'my_elasticsearch' do
                 -XX:+HeapDumpOnOutOfMemoryError
                 -XX:+PrintGCDetails
               CONFIG
+#  nofile_limit 64000
   configuration ({
     'cluster.name' => node[:elastic][:cluster_name],
     'node.name' => node[:elastic][:node_name],
@@ -41,23 +49,43 @@ elasticsearch_configure 'my_elasticsearch' do
     'http.cors.enabled' => true,
     'http.cors.allow-origin' => "*"
   })
+  instance_name node[:elastic][:node_name]
   action :manage
 end
 
 elasticsearch_service "elasticsearch-#{node[:elastic][:node_name]}" do
-  user node[:elastic][:user]
-  group node[:elastic][:group]
-  node_name node[:elastic][:node_name]
-  pid_path node[:elastic][:home_dir] + "/var/run"
-  path_conf node[:elastic][:home_dir] + "/etc/elasticsearch"
+   instance_name node[:elastic][:node_name]
+#  user node[:elastic][:user]
+#  group node[:elastic][:group]
+#  node_name node[:elastic][:node_name]
+#  pid_path node[:elastic][:home_dir] + "/var/run"
+#  path_conf node[:elastic][:home_dir] + "/etc/elasticsearch"
+
 end
 
-elasticsearch_plugin "#{node[:elastic][:dir]}/elasticsearch-jdbc" do
-  user node[:elastic][:user]
-  group node[:elastic][:group]
-  action :install
-   url "http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip"
+#elasticsearch_plugin "#{node[:elastic][:dir]}/elasticsearch-jdbc" do
+#   action :install
+#   url "http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip"
+#   instance_name node[:elastic][:node_name]
+# end
+
+
+bash "install_jdbc_river" do
+  user "root"
+    code <<-EOF
+   set -e
+   cd /tmp
+   rm -f elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip
+   wget http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip
+   unzip elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip -d #{node.elastic.dir}
+   touch #{riverdir}/.jdbc_river_installed
+   chown -R #{node.elastic.user}:#{node.elastic.group} #{riverdir}
+EOF
+  not_if { ::File.exists?( "#{riverdir}/.jdbc_river_installed")}
 end
+
+
+
 
 file "#{node[:elastic][:home_dir]}/config/elasticsearch.yml" do 
   user node[:elastic][:user]
@@ -163,24 +191,26 @@ for river in node[:elastic][:rivers] do
   end
 
 
-service "#{river}" do
-  case node[:elastic][:systemd]
+  service "#{river}" do
+    case node[:elastic][:systemd]
     when "true"
-    provider Chef::Provider::Service::Systemd
+      provider Chef::Provider::Service::Systemd
     else
-    provider Chef::Provider::Service::Init::Debian
+      provider Chef::Provider::Service::Init::Debian
+    end
+    supports :restart => true, :stop => true, :start => true, :status => true
+    action :nothing
   end
-  supports :restart => true, :stop => true, :start => true, :status => true
-  action :nothing
-end
 
   
-case node[:platform_family]
-  when "debian"
-  template "/lib/systemd/system/#{river}.service" do
-  when "rhel"
-  template "/usr/lib/systemd/system/#{river}.service" do
-end
+  service_name = "/lib/systemd/system/#{river}.service"
+  case node[:platform_family]
+    when "rhel"
+    service_name =  "/usr/lib/systemd/system/#{river}.service"
+  end
+
+  template "#{service_name}" do
+    only_if { node[:ndb][:systemd] == "true" }
     source "river.service.erb"
     user node[:elastic][:user]
     group node[:elastic][:group]
@@ -189,11 +219,28 @@ end
                 :river => river,
                 :start_script => "#{riverdir}/bin/#{river}-start.sh",
                 :stop_script => "#{riverdir}/bin/#{river}-stop.sh",
-                :pid =>  => "#{riverdir}/rivers/#{river}.pid
+                :pid => "#{riverdir}/rivers/#{river}.pid"
               })
     notifies :enable, "service[#{river}]"
     notifies :restart, "service[#{river}]"    
   end
+
+  template "/etc/init.d/#{river}" do
+    not_if { node[:ndb][:systemd] == "true" }
+    source "river.erb"
+    user node[:elastic][:user]
+    group node[:elastic][:group]
+    mode "751"
+    variables({
+                :river => river,
+                :start_script => "#{riverdir}/bin/#{river}-start.sh",
+                :stop_script => "#{riverdir}/bin/#{river}-stop.sh",
+                :pid_file => "#{riverdir}/rivers/#{river}.pid"
+              })
+    notifies :enable, "service[#{river}]"
+    notifies :restart, "service[#{river}]"    
+  end
+
 
 end
 
@@ -206,25 +253,25 @@ end
 
 if node[:kagent][:enabled] == "true"
 
-    kagent_config "elasticsearch-#{node[:host]}" do
-      service "elasticsearch-#{node[:host]}"
-      start_script "#{riverdir}/bin/elastic-start.sh"
-      stop_script "#{riverdir}/bin/elastic-stop.sh"
-      log_file "#{node[:elastic][:home]}/logs/#{node[:elastic][:cluster_name]}.log"
-      pid_file "#{node[:elastic][:home]}/var/run/#{node[:elastic][:node_name]}.pid"
-    end
+  kagent_config "elasticsearch-#{node[:host]}" do
+    service "elasticsearch-#{node[:host]}"
+    start_script "#{riverdir}/bin/elastic-start.sh"
+    stop_script "#{riverdir}/bin/elastic-stop.sh"
+    log_file "#{node[:elastic][:home]}/logs/#{node[:elastic][:cluster_name]}.log"
+    pid_file "#{node[:elastic][:home]}/var/run/#{node[:elastic][:node_name]}.pid"
+  end
 
   if node[:elastic][:rivers_enabled] == "true"
 
-   for river in node[:elastic][:rivers] do
-    kagent_config "elasticsearch-#{river}" do
-      service "elasticsearch-#{river}"
-      start_script "#{riverdir}/bin/#{river}-start.sh" 
-      stop_script "#{riverdir}/bin/#{river}-stop.sh"
-      log_file "#{riverdir}/rivers/#{river}.log"
-      pid_file "#{riverdir}/rivers/#{river}.pid"
+    for river in node[:elastic][:rivers] do
+      kagent_config "elasticsearch-#{river}" do
+        service "elasticsearch-#{river}"
+        start_script "#{riverdir}/bin/#{river}-start.sh" 
+        stop_script "#{riverdir}/bin/#{river}-stop.sh"
+        log_file "#{riverdir}/rivers/#{river}.log"
+        pid_file "#{riverdir}/rivers/#{river}.pid"
+      end
     end
-   end
   end
 end
 
@@ -253,7 +300,7 @@ end
 
 
 
-end
+
 
 service "elasticsearch-#{node[:elastic][:node_name]}" do
   case node[:elastic][:systemd]

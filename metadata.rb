@@ -42,3 +42,7 @@ attribute "elastic/ulimit_memlock",
 attribute "elastic/dir",
           :description =>  "Base directory to install elastic search into.",
           :type => 'string'
+
+attribute "elastic/memory",
+          :description =>  "Amount of memory for Elasticsearch.",
+          :type => 'string'

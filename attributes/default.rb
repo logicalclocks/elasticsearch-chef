@@ -1,10 +1,11 @@
 include_attribute "kagent"
 include_attribute "ndb"
+include_attribute "elasticsearch"
 
-node.override[:elastic][:version]         = "1.7.1"
-#default[:elastic][:url]                   = "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-#{node[:elastic][:version]}.tar.gz"
-#default[:elastic][:checksum]              = "86a0c20eea6ef55b14345bff5adf896e6332437b19180c4582a346394abde019"
-
+default[:elastic][:version]               = "1.7.3"
+default[:elastic][:jdbc_river][:version]  = "1.7.3.0"
+default[:elastic][:install_type]          = "tarball"
+default[:elastic][:checksum]              = "af517611493374cfb2daa8897ae17e63e2efea4d0377d316baa351c1776a2bca"
 #default[:elastic][:url]                   = node[:download_url] + "/elasticsearch-#{node[:elastic][:version]}.tar.gz"
 default[:elastic][:user]                  = "elastic"
 default[:elastic][:group]                 = "elastic"
@@ -24,7 +25,6 @@ default[:elastic][:rivers]                = %w{ parent child_pr child_ds dataset
 
 #default[:elastic][:mysql_connector_url]   = "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.36.tar.gz"
 
-default[:elastic][:jdbc_river][:version]  = "1.7.1.0"
 
 default[:elastic][:mysql_connector_url]   = "http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip"
 
@@ -32,3 +32,6 @@ default[:elastic][:ulimit_files]          = "65535"
 default[:elastic][:ulimit_memlock]        = "65535"
 
 default[:elastic][:systemd]               = "true"
+
+default[:elastic][:memory]                = "123m"
+default.elastic.thread_stack_size         = "512k" 

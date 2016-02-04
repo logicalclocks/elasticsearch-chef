@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+#
+# <%= @river %>
+#
+<% if @platform_family == 'debian' %>
+### BEGIN INIT INFO
+# Provides:          <%= @river %>
+# Required-Start:    $network $remote_fs $named
+# Required-Stop:     $network $remote_fs $named
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Starts <%= @river %>
+# Description:       Starts <%= @river %> using start-stop-daemon
+### END INIT INFO
+<% else %>
+# chkconfig:   - 57 47
+# description: <%= @river %>
+# processname: <%= @river %>
+<% end %>
+
+PIDFILE=<%= @pid_file %>
+CHECK_PID_RUNNING=$(ps ax | grep 'java' | grep -e "es.pidfile=$PIDFILE" | sed 's/^\s*\([0-9]*\)\s.*/\1/')
+
+start() {
+    if [ -f $PIDFILE ]; then
+      # PIDFILE EXISTS -- RUNNING?
+      echo -e "PID file found in $PIDFILE"
+      es_pid="$(cat $PIDFILE)"
+      pid_running="$( ps ax | grep 'java' | grep $es_pid )"
+
+      if [ ! -z "$pid_running" ] ; then
+	      echo -e "\033[31;1mPID $es_pid still alive, <%= @river %> already running...\033[0m"
+	      return 1
+      fi
+    fi
+
+    echo -en "\033[1mStarting <%= @river %>...\033[0m"
+    touch $PIDFILE && chown <%= node[:elastic][:user] %> $PIDFILE
+#    <% if @platform_family == 'debian' %>
+#     . $ES_INCLUDE 
+#     start-stop-daemon --start --background --quiet --pidfile $PIDFILE --chuid <%= node[:elastic][:user] %> --exec <%= @river_bin %> -- -p $PIDFILE
+#     start-stop-daemon --start --background --quiet --pidfile $PIDFILE --chuid <%= node[:elastic][:user] %> --exec <%= @river_bin %> -- -p $PIDFILE
+#    <% else %>
+#      su <%= node[:elastic][:user] %> -c "ES_INCLUDE=$ES_INCLUDE <%= #{node[:elastic][:home_dir]} %>/bin/elasticsearch <%= @args %> -p $PIDFILE"
+#    <% end %>
+          su <%= node[:elastic][:user] %> -c "<%= @start_script %>"
+
+    if [ $? ]; then
+      echo -e " \e[32m[OK]\e[0m"
+    else
+      echo -e " \e[31m[FAILURE]\e[0m"
+    fi
+
+    return $?
+}
+
+stop() {
+    su <%= node[:elastic][:user] %> -c "<%= @stop_script %>"
+}
+
+restart() {
+    stop
+    sleep 5
+    start
+}
+
+status() {
+  # GOT PIDFILE?
+  [ -f $PIDFILE ] && pid=$(cat $PIDFILE)
+
+  # RUNNING
+  if [[ $pid && -d "/proc/$pid" ]]; then
+    # INCORRECT PID?
+    if [ $pid != $CHECK_PID_RUNNING ]; then
+      echo -e "\033[1;31;40m[!] Incorrect PID found in $PIDFILE: $pid\033[0m"
+      return 1
+    fi
+    return 0
+  fi
+
+  # NOT RUNNING
+  if [[ ! $pid || ! -d "/proc/$pid" ]]; then
+    echo -e "\033[1;33;40m<%= @river %> not running\033[0m"
+    return 3
+  fi
+
+  # STALE PID FOUND
+  if [[ ! -d "/proc/$pid" && -f $PIDFILE ]]; then
+    echo -e "\033[1;31;40m[!] Stale PID found in $PIDFILE\033[0m"
+    return 1
+  fi
+}
+
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  restart)
+        restart
+        ;;
+  status)
+        status $2
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|restart|status [-v]|}"
+        exit 1
+esac
+
+exit $?

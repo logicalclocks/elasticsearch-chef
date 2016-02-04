@@ -1,15 +1,16 @@
 node.default['java']['jdk_version'] = 7
 include_recipe "java"
 
-node.override[:elastcsearch][:url] = node[:elastic][:url]
-node.override[:elastcsearch][:version] = node[:elastic][:version]
+#node.override[:elasticsearch][:url] = node[:elastic][:url]
+node.override[:elasticsearch][:version] = node[:elastic][:version]
+
 
 elasticsearch_user 'elasticsearch' do
   username node[:elastic][:user]
   groupname node[:elastic][:group]
-  homedir node[:elastic][:home_dir]
   shell '/bin/bash'
   comment 'Elasticsearch User'
+  instance_name node[:elastic][:node_name]
   action :create
 end
 
@@ -18,15 +19,12 @@ install_dir['package'] = node[:elastic][:dir]
 
 elasticsearch_install 'elastic_installation' do
   type :tarball
-  dir node[:elastic][:dir]
-  owner node[:elastic][:user]
-  group node[:elastic][:group]
   version node[:elastic][:version]
-  tarball_url node['elasticsearch']['checksums']["#{node[:elastic][:url]}"]['tar'] 
-  tarball_checksum node['elasticsearch']['checksums']["#{node[:elastic][:url]}"]['tar']
-#  tarball_url node[:elastic][:url]
-#  tarball_checksum node[:elastic][:checksum]
-# node['elasticsearch']['checksums']["#{node[:elastic][:version]}"]['tar'] 
+  instance_name node[:elastic][:node_name]
+#  download_url node['elasticsearch']['download_urls_v2']['tar']
+  download_url node['elasticsearch']['download_urls']['tar']
+#  download_checksum node['elasticsearch']['checksums']["#{node[:elasticsearch][:version]}"]['tar']
+  download_checksum node.elastic.checksum
   action :install 
 end
 
