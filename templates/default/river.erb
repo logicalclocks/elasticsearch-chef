@@ -29,26 +29,19 @@ start() {
       pid_running="$( ps ax | grep 'java' | grep $es_pid )"
 
       if [ ! -z "$pid_running" ] ; then
-	      echo -e "\033[31;1mPID $es_pid still alive, <%= @river %> already running...\033[0m"
+ 	      echo -e "PID $es_pid still alive,  @river  already running..."
 	      return 1
       fi
     fi
 
-    echo -en "\033[1mStarting <%= @river %>...\033[0m"
+    echo -en "Starting  @river ..." 
     touch $PIDFILE && chown <%= node[:elastic][:user] %> $PIDFILE
-#    <% if @platform_family == 'debian' %>
-#     . $ES_INCLUDE 
-#     start-stop-daemon --start --background --quiet --pidfile $PIDFILE --chuid <%= node[:elastic][:user] %> --exec <%= @river_bin %> -- -p $PIDFILE
-#     start-stop-daemon --start --background --quiet --pidfile $PIDFILE --chuid <%= node[:elastic][:user] %> --exec <%= @river_bin %> -- -p $PIDFILE
-#    <% else %>
-#      su <%= node[:elastic][:user] %> -c "ES_INCLUDE=$ES_INCLUDE <%= #{node[:elastic][:home_dir]} %>/bin/elasticsearch <%= @args %> -p $PIDFILE"
-#    <% end %>
-          su <%= node[:elastic][:user] %> -c "<%= @start_script %>"
+    su <%= node[:elastic][:user] %> -c "<%= @start_script %>"
 
     if [ $? ]; then
-      echo -e " \e[32m[OK]\e[0m"
+      echo -e " OK"
     else
-      echo -e " \e[31m[FAILURE]\e[0m"
+      echo -e "FAILURE"
     fi
 
     return $?
@@ -72,7 +65,7 @@ status() {
   if [[ $pid && -d "/proc/$pid" ]]; then
     # INCORRECT PID?
     if [ $pid != $CHECK_PID_RUNNING ]; then
-      echo -e "\033[1;31;40m[!] Incorrect PID found in $PIDFILE: $pid\033[0m"
+      echo -e "[!] Incorrect PID found in $PIDFILE: $pid"
       return 1
     fi
     return 0
@@ -80,13 +73,13 @@ status() {
 
   # NOT RUNNING
   if [[ ! $pid || ! -d "/proc/$pid" ]]; then
-    echo -e "\033[1;33;40m<%= @river %> not running\033[0m"
+    echo -e "<%= @river %> not running"
     return 3
   fi
 
   # STALE PID FOUND
   if [[ ! -d "/proc/$pid" && -f $PIDFILE ]]; then
-    echo -e "\033[1;31;40m[!] Stale PID found in $PIDFILE\033[0m"
+    echo -e "[!] Stale PID found in $PIDFILE"
     return 1
   fi
 }

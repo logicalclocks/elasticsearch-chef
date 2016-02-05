@@ -77,7 +77,7 @@ bash "install_jdbc_river" do
    cd /tmp
    rm -f elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip
    wget http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip
-   unzip elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip -d #{node.elastic.dir}
+   unzip -fo elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip -d #{node.elastic.dir}
    touch #{riverdir}/.jdbc_river_installed
    chown -R #{node.elastic.user}:#{node.elastic.group} #{riverdir}
 EOF
@@ -210,7 +210,7 @@ for river in node[:elastic][:rivers] do
   end
 
   template "#{service_name}" do
-    only_if { node[:ndb][:systemd] == "true" }
+    only_if { node[:elastic][:systemd] == "true" }
     source "river.service.erb"
     user node[:elastic][:user]
     group node[:elastic][:group]
@@ -226,7 +226,7 @@ for river in node[:elastic][:rivers] do
   end
 
   template "/etc/init.d/#{river}" do
-    not_if { node[:ndb][:systemd] == "true" }
+    not_if { node[:elastic][:systemd] == "true" }
     source "river.erb"
     user node[:elastic][:user]
     group node[:elastic][:group]
