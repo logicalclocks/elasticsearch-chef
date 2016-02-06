@@ -219,7 +219,7 @@ for river in node[:elastic][:rivers] do
                 :river => river,
                 :start_script => "#{riverdir}/bin/#{river}-start.sh",
                 :stop_script => "#{riverdir}/bin/#{river}-stop.sh",
-                :pid => "#{riverdir}/rivers/#{river}.pid"
+                :pid => "#{riverdir}/rivers/#{river}.json.pid"
               })
     notifies :enable, "service[#{river}]"
     notifies :restart, "service[#{river}]"    
@@ -235,7 +235,7 @@ for river in node[:elastic][:rivers] do
                 :river => river,
                 :start_script => "#{riverdir}/bin/#{river}-start.sh",
                 :stop_script => "#{riverdir}/bin/#{river}-stop.sh",
-                :pid_file => "#{riverdir}/rivers/#{river}.pid"
+                :pid_file => "#{riverdir}/rivers/#{river}.json.pid"
               })
     notifies :enable, "service[#{river}]"
     notifies :restart, "service[#{river}]"    
