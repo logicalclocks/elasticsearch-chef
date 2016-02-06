@@ -6,7 +6,7 @@ After = syslog.target network.target remote-fs.target
 User = <%= node.elastic.user %>
 PIDFile = <%= @pid %>
 ExecStart = <%= @start_script %>
-ExecStop = <%= @start_script %>
+ExecStop = <%= @stop_script %>
 
 Type = forking
 

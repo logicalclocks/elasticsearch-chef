@@ -60,7 +60,6 @@ elasticsearch_service "elasticsearch-#{node[:elastic][:node_name]}" do
 #  node_name node[:elastic][:node_name]
 #  pid_path node[:elastic][:home_dir] + "/var/run"
 #  path_conf node[:elastic][:home_dir] + "/etc/elasticsearch"
-
 end
 
 #elasticsearch_plugin "#{node[:elastic][:dir]}/elasticsearch-jdbc" do
@@ -222,7 +221,7 @@ for river in node[:elastic][:rivers] do
                 :pid => "#{riverdir}/rivers/#{river}.json.pid"
               })
     notifies :enable, "service[#{river}]"
-    notifies :restart, "service[#{river}]"    
+    notifies :restart, "service[#{river}]", :immediately
   end
 
   template "/etc/init.d/#{river}" do
@@ -238,7 +237,7 @@ for river in node[:elastic][:rivers] do
                 :pid_file => "#{riverdir}/rivers/#{river}.json.pid"
               })
     notifies :enable, "service[#{river}]"
-    notifies :restart, "service[#{river}]"    
+    notifies :restart, "service[#{river}]", :immediately
   end
 
 
@@ -276,30 +275,72 @@ if node[:kagent][:enabled] == "true"
 end
 
 
-# file "/etc/init.d/elasticsearch-#{node[:elastic][:node_name]}" do
-#    action :delete
-# end
-# template "/etc/init.d/elasticsearch-#{node[:elastic][:node_name]}" do
-#   source "elasticsearch.erb"
-#   user "root"
-#   mode "755"
-#   variables({
-#       :elastic_ip => elastic_ip,
-#       :http_port => node[:elastic][:port],
-#       :path_conf => node[:elastic][:home_dir] + "/etc/elasticsearch",
-#       :nofile_limit => node[:elastic][:ulimit_files],
-#       :memlock_limit => node[:elastic][:ulimit_memlock],
-#       :args => ""
-#   })
+# elastic_start "start_install_elastic" do
+#   elastic_ip elastic_ip
+#   action :run
 # end
 
-elastic_start "start_install_elastic" do
-  elastic_ip elastic_ip
-  action :run
+
+
+
+template "#{node[:elastic][:home_dir]}/bin/elasticsearch-stop.sh" do
+  source "elasticsearch-stop.sh.erb"
+  user node[:elastic][:user]
+  group node[:elastic][:group]
+  mode "751"
+end
+
+template "#{node[:elastic][:home_dir]}/bin/elasticsearch-start.sh" do
+  source "elasticsearch-start.sh.erb"
+  user node[:elastic][:user]
+  group node[:elastic][:group]
+  mode "751"
 end
 
 
 
+
+file "/etc/init.d/elasticsearch-#{node[:elastic][:node_name]}" do
+   not_if { node[:elastic][:systemd] == "true" }
+   action :delete
+end
+template "/etc/init.d/elasticsearch-#{node[:elastic][:node_name]}" do
+  not_if { node[:elastic][:systemd] == "true" }
+  source "elasticsearch.erb"
+  user "root"
+  mode "755"
+  variables({
+      :elastic_ip => elastic_ip,
+      :http_port => node[:elastic][:port],
+      :nofile_limit => node[:elastic][:ulimit_files],
+      :memlock_limit => node[:elastic][:ulimit_memlock],
+      :args => ""
+  })
+    notifies :enable, "service[elasticsearch-#{node[:elastic][:node_name]}]"
+    notifies :restart, "service[elasticsearch-#{node[:elastic][:node_name]}]", :immediately
+end
+
+
+elastic_service = "/lib/systemd/system/elasticsearch-#{node[:elastic][:node_name]}.service"
+case node[:platform_family]
+  when "rhel"
+  elastic_service =  "/usr/lib/systemd/system/elasticsearch-#{node[:elastic][:node_name]}.service"
+end
+
+  template "#{elastic_service}" do
+    only_if { node[:elastic][:systemd] == "true" }
+    source "elasticsearch.service.erb"
+    user node[:elastic][:user]
+    group node[:elastic][:group]
+    mode "751"
+    variables({
+                :start_script => "#{node[:elastic][:home_dir]}/bin/elasticsearch-start.sh",
+                :stop_script => "#{node[:elastic][:home_dir]}/bin/elasticsearch-stop.sh",
+                :pid => "/tmp/elasticsearch.pid"
+              })
+    notifies :enable, "service[elasticsearch-#{node[:elastic][:node_name]}]"
+    notifies :restart, "service[elasticsearch-#{node[:elastic][:node_name]}]", :immediately
+  end
 
 
 service "elasticsearch-#{node[:elastic][:node_name]}" do

@@ -4,7 +4,7 @@ After = syslog.target network.target remote-fs.target
 
 [Service]
 User = <%= node.elastic.user %>
-PIDFile = <%= node[:elastic][:home_dir] %>/var/run/<%= node[:elastic][:node_name] %>.pid
+PIDFile = /tmp/elasticsearch.pid
 ExecStart = <%= @start_script %>
 ExecStop = <%= @start_script %>
 

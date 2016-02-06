@@ -64,6 +64,7 @@ bash "locate_mysql_river" do
    mv /tmp/#{mysql_base} #{node[:elastic][:dir]}
    chown -R #{node[:elastic][:user]} #{node[:elastic][:dir]}/#{mysql_base}
    touch #{node[:elastic][:home_dir]}/.#{mysql_base}_moved
+   chown #{node[:elastic][:user]} #{node[:elastic][:home_dir]}/.#{mysql_base}_moved
 EOF
   not_if { ::File.exists?( "#{node[:elastic][:home_dir]}/.#{mysql_base}_moved")}
 end
