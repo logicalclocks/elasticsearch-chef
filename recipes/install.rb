@@ -5,6 +5,12 @@ include_recipe "java"
 node.override[:elasticsearch][:version] = node[:elastic][:version]
 
 
+case node[:platform_family]
+when 'rhel'
+  package 'unzip' 
+end
+
+
 elasticsearch_user 'elasticsearch' do
   username node[:elastic][:user]
   groupname node[:elastic][:group]
