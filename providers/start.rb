@@ -4,28 +4,68 @@ package "curl" do
   action :install
 end
 
-bash 'elastic-scripts' do
-    user node[:elastic][:user]
+if new_resource.systemd == true
+  bash 'elastic-start-systemd' do
+     user "root"
     code <<-EOF
-   nohup #{node[:elastic][:home_dir]}/bin/elasticsearch > /tmp/elasticsearch.log &
-   echo $! > /tmp/elasticsearch.pid
+#    systemctl enable elasticsearch-#{node[:elastic][:node_name]}
+    systemctl stop elasticsearch-#{node[:elastic][:node_name]}
+    systemctl start elasticsearch-#{node[:elastic][:node_name]}
+  EOF
+  end
+
+
+  # If starting a river fails, it means it is already running, which is ok.
+  bash 'elastic-river-start' do
+    #  user node[:elastic][:user]
+    user "root"
+    ignore_failure true
+    code <<-EOF
+     systemctl stop parent
+     systemctl stop dataset
+     systemctl stop child_ds
+     systemctl stop child_pr
+
+     systemctl start parent
+     systemctl start dataset
+     systemctl start child_ds
+     systemctl start child_pr
+     sleep 2
 EOF
-end
+  end
 
-
-# If starting a river fails, it means it is already running, which is ok.
-bash 'elastic-index-creation' do
-  user node[:elastic][:user]
-  ignore_failure true
+else 
+  bash 'elastic-start-systemv' do
+#    user node[:elastic][:user]
+     user "root"
     code <<-EOF
-    cd #{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}
-    ./bin/start-river.sh rivers/parent.json
-    ./bin/start-river.sh rivers/dataset.json
-    ./bin/start-river.sh rivers/child_pr.json
-    ./bin/start-river.sh rivers/child_ds.json
+    service elasticsearch-#{node[:elastic][:node_name]} stop
+    service elasticsearch-#{node[:elastic][:node_name]} start
+  EOF
+  end
+
+  # If starting a river fails, it means it is already running, which is ok.
+  bash 'elastic-river-start' do
+    #  user node[:elastic][:user]
+    user "root"
+    ignore_failure true
+    code <<-EOF
+      service parent stop
+     service dataset stop
+     service child_ds stop
+     service child_pr stop
+
+     service parent start
+     service dataset start
+     service child_ds start
+     service child_pr start
+
     sleep 2
 EOF
+  end
+
 end
+
 
 numRetries=25
 retryDelay=2
