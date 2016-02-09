@@ -13,7 +13,7 @@ node[:elastic][:rivers].each { |d|
 
   bash 'kill_running_service_#{d}' do
     user "root"
-    ignore_failure :true
+    ignore_failure true
     code <<-EOF
       service #{d} stop
     EOF
@@ -21,14 +21,14 @@ node[:elastic][:rivers].each { |d|
 
   file "/etc/init.d/#{d}" do
     action :delete
-    ignore_failure :true
+    ignore_failure true
   end
 }
 
 
   bash 'kill_running_elastic_service' do
     user "root"
-    ignore_failure :true
+    ignore_failure true
     code <<-EOF
       service elasticsearch-#{node[:elastic][:node_name]} stop
       pkill elasticsearch-#{node[:elastic][:node_name]}
@@ -44,7 +44,7 @@ node[:elastic][:rivers].each { |d|
 
   bash 'kill_running_service_#{d}' do
     user "root"
-    ignore_failure :true
+    ignore_failure true
     code <<-EOF
       systemctl stop #{d}
     EOF
@@ -52,18 +52,18 @@ node[:elastic][:rivers].each { |d|
 
   file "/usr/lib/systemd/system/#{d}.service" do
     action :delete
-    ignore_failure :true
+    ignore_failure true
   end
   file "/lib/systemd/system/#{d}.service" do
     action :delete
-    ignore_failure :true
+    ignore_failure true
   end
 }
 
 
   bash 'kill_running_elastic_service' do
     user "root"
-    ignore_failure :true
+    ignore_failure true
     code <<-EOF
       systemctl stop elasticsearch-#{node[:elastic][:node_name]}
       pkill elasticsearch-#{node[:elastic][:node_name]}
@@ -80,24 +80,24 @@ end
 #   owner node[:elastic][:user]
 #   group node[:elastic][:group]
 #   tarball_url node[:elastic][:url]
-#   ignore_failure :true
+#   ignore_failure true
 #   action :remove
 # end
 
 directory node[:elastic][:version_dir] do
   recursive true
   action :delete
-  ignore_failure :true
+  ignore_failure true
 end
 
 link node[:elastic][:home_dir] do
   action :delete
-  ignore_failure :true
+  ignore_failure true
 end
 
 
 directory " #{node[:elastic][:dir]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}" do
   recursive true
   action :delete
-  ignore_failure :true
+  ignore_failure true
 end
