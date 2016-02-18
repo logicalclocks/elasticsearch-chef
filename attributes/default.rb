@@ -23,7 +23,7 @@ default[:elastic][:plugins_dir]           = node[:elastic][:home_dir] + "/plugin
 
 default[:elastic][:rivers]                = %w{ parent child_pr child_ds dataset }
 
-default[:elastic][:mysql_connector_url]   = "#{download_url}/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip"
+default[:elastic][:mysql_connector_url]   = "#{download_url}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip"
 #default[:elastic][:mysql_connector_url]   = "http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip"
 
 default[:elastic][:ulimit_files]          = "65535"
