@@ -156,7 +156,7 @@ bash "install_jdbc_river" do
    set -e
    cd /tmp
    rm -f elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip
-   wget http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip
+   wget #{node[:elastic][:mysql_connector_url]}
    unzip -fo elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip -d #{node.elastic.dir}
    touch #{riverdir}/.jdbc_river_installed
    chown -R #{node.elastic.user}:#{node.elastic.group} #{riverdir}
