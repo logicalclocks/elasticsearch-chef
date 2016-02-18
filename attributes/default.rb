@@ -23,10 +23,8 @@ default[:elastic][:plugins_dir]           = node[:elastic][:home_dir] + "/plugin
 
 default[:elastic][:rivers]                = %w{ parent child_pr child_ds dataset }
 
-#default[:elastic][:mysql_connector_url]   = "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.36.tar.gz"
-
-
-default[:elastic][:mysql_connector_url]   = "http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip"
+default[:elastic][:mysql_connector_url]   = "#{download_url}/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip"
+#default[:elastic][:mysql_connector_url]   = "http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/#{node[:elastic][:jdbc_river][:version]}/elasticsearch-jdbc-#{node[:elastic][:jdbc_river][:version]}-dist.zip"
 
 default[:elastic][:ulimit_files]          = "65535"
 default[:elastic][:ulimit_memlock]        = "65535"
