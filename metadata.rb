@@ -1,4 +1,4 @@
-name             'elastic'
+name             "elastic"
 maintainer       "Jim Dowling"
 maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
