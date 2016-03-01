@@ -16,7 +16,7 @@
 # chkconfig:   - 57 47
 # description: elasticsearch
 # processname: elasticsearch
-# config:      <%= node[:elastic][:home_dir] %>/etc/elasticsearch/elasticsearch.yml
+# config:      <%= node.elastic.home_dir %>/etc/elasticsearch/elasticsearch.yml
 <% end %>
 
 # Source networking configuration
@@ -47,12 +47,12 @@ start() {
     fi
 
 
-    touch $PIDFILE && chown <%= node[:elastic][:user] %> $PIDFILE
-    su <%= node[:elastic][:user] %> -c "<%= node[:elastic][:home_dir] %>/bin/elasticsearch-start.sh"
+    touch $PIDFILE && chown <%= node.elastic.user %> $PIDFILE
+    su <%= node.elastic.user %> -c "<%= node.elastic.home_dir %>/bin/elasticsearch-start.sh"
 }
 
 stop() {
-    su <%= node[:elastic][:user] %> -c "<%= node[:elastic][:home_dir] %>/bin/elasticsearch-stop.sh"
+    su <%= node.elastic.user %> -c "<%= node.elastic.home_dir %>/bin/elasticsearch-stop.sh"
 }
 
 restart() {
@@ -71,7 +71,7 @@ status() {
     echo -e "elasticsearch $version running with PID $pid"
     # VERBOSE
     if [[ $pid && $1 == '-v' || $1 == '--verbose' ]]; then
-      curl -s 'http://<%= @elastic_ip %>:<%= node[:elastic][:port] %>/_cluster/<%= node[:elastic][:cluster_name] %>/<%= node[:elastic][:node_name] %>?os&process&jvm&network&transport&settings&pretty' | \
+      curl -s 'http://<%= @elastic_ip %>:<%= node.elastic.port %>/_cluster/<%= node.elastic.cluster_name %>/<%= node.elastic.node_name %>?os&process&jvm&network&transport&settings&pretty' | \
       ruby -rubygems -e '
         begin
           require "json"; h = JSON.parse(STDIN.read); id, node = h["nodes"].first;

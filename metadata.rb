@@ -10,9 +10,8 @@ recipe            "elastic::default",  "Configures and starts an elasticsearch s
 
 
 depends "kagent"
-depends 'apt'
-depends 'yum'
-depends 'chef-sugar'
+#depends 'apt'
+#depends 'chef-sugar'
 depends "java"
 depends "elasticsearch"
 depends "ulimit"
@@ -22,6 +21,9 @@ depends "ndb"
   supports os
 end
 
+attribute "java/jdk_version",
+          :display_name =>  "Jdk version",
+          :type => 'string'
 
 attribute "elastic/rivers_enabled",
           :description =>  "Install the JDBC rivers for HopsWorks on this machine",

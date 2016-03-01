@@ -1,12 +1,12 @@
 #!/bin/bash
 
-if [ "$#" -ne 1 ] ; then
+if [ "$#" -ne 1  ; then
   echo "usage: <prog> river-name.json"
   exit 1
 fi
 
 river=$1
-if [ "${JDBC_IMPORTER_HOME}" = "" ] ; then
+if [ "${JDBC_IMPORTER_HOME}" = ""  ; then
  export JDBC_IMPORTER_HOME=<%= @install_path %>
 fi
 
@@ -19,7 +19,7 @@ PID=`cat ${river_pid}`
 kill $PID
 res=$?
 
-if [ $res -eq 0 ] ; then
+if [ $res -eq 0  ; then
  echo "Killed river... $1"
 else 
  echo "Could not kill river... $1"

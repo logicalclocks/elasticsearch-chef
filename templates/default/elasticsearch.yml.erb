@@ -13,7 +13,7 @@
 # Most of the time, these defaults are just fine for running a production
 # cluster. If you're fine-tuning your cluster, or wondering about the
 # effect of certain configuration option, please _do ask_ on the
-# mailing list or IRC channel [http://elasticsearch.org/community].
+# mailing list or IRC channel [http://elasticsearch.org/community.
 
 # Any element in the configuration can be replaced with environment variables
 # by placing them in ${...} notation. For example:
@@ -29,7 +29,7 @@
 # Cluster name identifies your cluster for auto-discovery. If you're running
 # multiple clusters on the same network, make sure you're using unique names.
 #
-cluster.name: <%= node[:elastic][:cluster_name] %>
+cluster.name: <%= node.elastic.cluster_name %>
 
 
 #################################### Node #####################################
@@ -37,7 +37,7 @@ cluster.name: <%= node[:elastic][:cluster_name] %>
 # Node names are generated dynamically on startup, so you're relieved
 # from configuring them manually. You can tie this node to a specific name:
 #
-node.name: "<%= node[:elastic][:node_name] %>"
+node.name: "<%= node.elastic.node_name %>"
 
 # Every node can be configured to allow or deny being eligible as the master,
 # and to allow or deny to store the data.
@@ -71,8 +71,8 @@ node.name: "<%= node[:elastic][:node_name] %>"
 #node.master: false
 #node.data: false
 
-# Use the Cluster Health API [http://localhost:9200/_cluster/health], the
-# Node Info API [http://localhost:9200/_nodes] or GUI tools
+# Use the Cluster Health API [http://localhost:9200/_cluster/health, the
+# Node Info API [http://localhost:9200/_nodes or GUI tools
 # such as <http://www.elasticsearch.org/overview/marvel/>,
 # <http://github.com/karmi/elasticsearch-paramedic>,
 # <http://github.com/lukas-vlcek/bigdesk> and
@@ -194,7 +194,7 @@ node.name: "<%= node[:elastic][:node_name] %>"
 ############################## Network And HTTP ###############################
 
 # Elasticsearch, by default, binds itself to the 0.0.0.0 address, and listens
-# on port [9200-9300] for HTTP traffic and on port [9300-9400] for node-to-node
+# on port [9200-9300 for HTTP traffic and on port [9300-9400 for node-to-node
 # communication. (the range means that if the port is busy, it will automatically
 # try the next port).
 
@@ -328,7 +328,7 @@ http.cors.allow-origin : "*"
 # 2. Configure an initial list of master nodes in the cluster
 #    to perform discovery when new nodes (master or data) are started:
 #
-#discovery.zen.ping.unicast.hosts: ["host1", "host2:port"]
+#discovery.zen.ping.unicast.hosts: ["host1", "host2:port"
 
 # EC2 discovery allows to use AWS EC2 API in order to perform discovery.
 #

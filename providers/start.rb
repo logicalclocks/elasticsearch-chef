@@ -8,16 +8,16 @@ if new_resource.systemd == true
   bash 'elastic-start-systemd' do
      user "root"
     code <<-EOF
-#    systemctl enable elasticsearch-#{node[:elastic][:node_name]}
-    systemctl stop elasticsearch-#{node[:elastic][:node_name]}
-    systemctl start elasticsearch-#{node[:elastic][:node_name]}
+#    systemctl enable elasticsearch-#{node.elastic.node_name}
+    systemctl stop elasticsearch-#{node.elastic.node_name}
+    systemctl start elasticsearch-#{node.elastic.node_name}
   EOF
   end
 
 
   # If starting a river fails, it means it is already running, which is ok.
   bash 'elastic-river-start' do
-    #  user node[:elastic][:user]
+    #  user node.elastic.user
     user "root"
     ignore_failure true
     code <<-EOF
@@ -36,17 +36,17 @@ EOF
 
 else 
   bash 'elastic-start-systemv' do
-#    user node[:elastic][:user]
+#    user node.elastic.user
      user "root"
     code <<-EOF
-    service elasticsearch-#{node[:elastic][:node_name]} stop
-    service elasticsearch-#{node[:elastic][:node_name]} start
+    service elasticsearch-#{node.elastic.node_name} stop
+    service elasticsearch-#{node.elastic.node_name} start
   EOF
   end
 
   # If starting a river fails, it means it is already running, which is ok.
   bash 'elastic-river-start' do
-    #  user node[:elastic][:user]
+    #  user node.elastic.user
     user "root"
     ignore_failure true
     code <<-EOF
@@ -91,7 +91,7 @@ end
 
 
 # bash 'elastic-install-indexes' do
-#     user node[:elastic][:user]
+#     user node.elastic.user
 #     ignore_failure true
 #     code <<-EOF
 # curl -XPOST "#{new_resource.elastic_ip}:9200/project/child/_mapping" -d '{ "child":{ "_parent": {"type": "parent"} } }'

@@ -1,4 +1,4 @@
 #!/bin/bash
 
-<%= node[:elastic][:dir] %>/elasticsearch-jdbc-<%= node[:elastic][:jdbc_river][:version] %>/bin/kill-process.sh elasticsearch /tmp/elasticsearch.pid 
+<%= node.elastic.dir %>/elasticsearch-jdbc-<%= node.elastic.jdbc_river.version %>/bin/kill-process.sh elasticsearch /tmp/elasticsearch.pid 
 

@@ -2,7 +2,7 @@
 
 # SQL here is found in: Elastic_Rivers_Parent_Optimized.sql.erb
 
-if [ "$#" -ne 1 ] ; then
+if [ "$#" -ne 1  ; then
   echo "usage: <prog> river-name.json"
   exit 1
 fi
@@ -10,7 +10,7 @@ fi
 river=$1
 
 
-if [ "${JDBC_IMPORTER_HOME}" = "" ] ; then
+if [ "${JDBC_IMPORTER_HOME}" = ""  ; then
  export JDBC_IMPORTER_HOME=<%= @install_path %>
 fi
 
@@ -20,10 +20,10 @@ lib=$JDBC_IMPORTER_HOME/lib
 rivers=$JDBC_IMPORTER_HOME/rivers
 river_dir="$(dirname $river)" 
 river_pid=${river#$river_dir}.pid
-if [ -f $rivers/$river_pid ] ; then
+if [ -f $rivers/$river_pid  ; then
   PID=`cat $rivers/$river_pid`
   # Test if process is already running, if yes, dont restart it
-  if [ $(kill -0 $PID 2> /dev/null ; echo $?) -eq 0 ] ; then
+  if [ $(kill -0 $PID 2> /dev/null ; echo $?) -eq 0  ; then
     echo "$river is already running. Cannot start it."
     exit 2
   fi
