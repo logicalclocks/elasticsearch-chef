@@ -314,8 +314,8 @@ template "/etc/init.d/elasticsearch-#{node.elastic.node_name}" do
       :memlock_limit => node.elastic.ulimit_memlock,
       :args => ""
   })
-    notifies :enable, "service[elasticsearch-#{node.elastic.node_name}"
-    notifies :restart, "service[elasticsearch-#{node.elastic.node_name}", :immediately
+    notifies :enable, "service[elasticsearch-#{node.elastic.node_name}]"
+    notifies :restart, "service[elasticsearch-#{node.elastic.node_name}]", :immediately
 end
 
 
@@ -336,8 +336,8 @@ end
                 :stop_script => "#{node.elastic.home_dir}/bin/elasticsearch-stop.sh",
                 :pid => "/tmp/elasticsearch.pid"
               })
-    notifies :enable, "service[elasticsearch-#{node.elastic.node_name}"
-    notifies :restart, "service[elasticsearch-#{node.elastic.node_name}", :immediately
+    notifies :enable, "service[elasticsearch-#{node.elastic.node_name}]"
+    notifies :restart, "service[elasticsearch-#{node.elastic.node_name}]", :immediately
   end
 
 
@@ -349,7 +349,7 @@ service "elasticsearch-#{node.elastic.node_name}" do
     provider Chef::Provider::Service::Init::Debian
   end
   supports :restart => true, :stop => true, :start => true, :status => true
-  action .enable
+  action :enable
 end
 
 
@@ -405,8 +405,8 @@ for river in node.elastic.rivers do
                 :stop_script => "#{riverdir}/bin/#{river}-stop.sh",
                 :pid => "#{riverdir}/rivers/#{river}.json.pid"
               })
-    notifies :enable, "service[#{river}"
- #   notifies :restart, "service[#{river}", :immediately
+    notifies :enable, "service[#{river}]"
+ #   notifies :restart, "service[#{river}]", :immediately
   end
 
   template "/etc/init.d/#{river}" do
@@ -421,8 +421,8 @@ for river in node.elastic.rivers do
                 :stop_script => "#{riverdir}/bin/#{river}-stop.sh",
                 :pid_file => "#{riverdir}/rivers/#{river}.json.pid"
               })
-    notifies :enable, "service[#{river}"
-#    notifies :restart, "service[#{river}", :immediately
+    notifies :enable, "service[#{river}]"
+#    notifies :restart, "service[#{river}]", :immediately
   end
 
 
