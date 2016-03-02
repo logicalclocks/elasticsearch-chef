@@ -6,7 +6,7 @@ default.elastic.version               = "1.7.3"
 default.elastic.jdbc_river.version    = "1.7.3.0"
 default.elastic.install_type          = "tarball"
 default.elastic.checksum              = "af517611493374cfb2daa8897ae17e63e2efea4d0377d316baa351c1776a2bca"
-#default.elastic.url                   = node.download_url + "/elasticsearch-#{node.elastic.version}.tar.gz"
+default.elastic.url                   = node.download_url + "/elasticsearch-#{node.elastic.version}.tar.gz"
 default.elastic.user                  = "elastic"
 default.elastic.group                 = "elastic"
 
