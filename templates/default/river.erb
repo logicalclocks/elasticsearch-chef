@@ -35,8 +35,8 @@ start() {
     fi
 
     echo -en "Starting  @river ..." 
-    touch $PIDFILE && chown <%= node[:elastic][:user] %> $PIDFILE
-    su <%= node[:elastic][:user] %> -c "<%= @start_script %>"
+    touch $PIDFILE && chown <%= node.elastic.user %> $PIDFILE
+    su <%= node.elastic.user %> -c "<%= @start_script %>"
 
     if [ $? ]; then
       echo -e " OK"
@@ -48,7 +48,7 @@ start() {
 }
 
 stop() {
-    su <%= node[:elastic][:user] %> -c "<%= @stop_script %>"
+    su <%= node.elastic.user %> -c "<%= @stop_script %>"
 }
 
 restart() {

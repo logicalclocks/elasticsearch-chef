@@ -1,4 +1,4 @@
 #!/bin/bash
 
-nohup <%= node[:elastic][:home_dir] %>/bin/elasticsearch > /tmp/elasticsearch.log & 
+nohup <%= node.elastic.home_dir %>/bin/elasticsearch > /tmp/elasticsearch.log & 
 echo $! > /tmp/elasticsearch.pid

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "${JDBC_IMPORTER_HOME}" = "" ] ; then
+if [ "${JDBC_IMPORTER_HOME}" = ""  ; then
  export JDBC_IMPORTER_HOME=<%= @install_path %>
 fi
 
@@ -22,7 +22,7 @@ echo '
             {
                 "statement" : "select \"myjdbc\" as _index, \"mytype\" as _type, name as _id, city, zip, address, lat as \"location.lat\", lon as \"location.lon\" from geo"
             }
-        ],
+        ,
         "index" : "myjdbc",
         "type" : "mytype",
         "index_settings" : {
