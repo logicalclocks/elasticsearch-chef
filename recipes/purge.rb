@@ -96,7 +96,7 @@ link node.elastic.home_dir do
 end
 
 
-directory " #{node.elastic.dir}/elasticsearch-jdbc-#{node.elastic.jdbc_river.version}" do
+directory " #{node.elastic.dir}/elasticsearch-jdbc-#{node.elastic.jdbc_importer.version}" do
   recursive true
   action :delete
   ignore_failure true

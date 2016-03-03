@@ -91,7 +91,7 @@ end
 
 
 my_ip = my_private_ip()
-riverdir="#{node.elastic.dir}/elasticsearch-jdbc-#{node.elastic.jdbc_river.version}"
+riverdir="#{node.elastic.dir}/elasticsearch-jdbc-#{node.elastic.jdbc_importer.version}"
 mysql_ip = my_ip
 elastic_ip = private_recipe_ip("elastic","default")
 
@@ -143,7 +143,7 @@ end
 
 #elasticsearch_plugin "#{node.elastic.dir}/elasticsearch-jdbc" do
 #   action :install
-#   url "http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/#{node.elastic.jdbc_river.version}/elasticsearch-jdbc-#{node.elastic.jdbc_river.version}-dist.zip"
+#   url "http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/#{node.elastic.jdbc_importer.version}/elasticsearch-jdbc-#{node.elastic.jdbc_importer.version}-dist.zip"
 #   instance_name node.elastic.node_name
 # end
 
@@ -153,9 +153,9 @@ bash "install_jdbc_river" do
     code <<-EOF
    set -e
    cd /tmp
-   rm -f elasticsearch-jdbc-#{node.elastic.jdbc_river.version}-dist.zip
+   rm -f elasticsearch-jdbc-#{node.elastic.jdbc_importer.version}-dist.zip
    wget #{node.elastic.mysql_connector_url}
-   unzip -fo elasticsearch-jdbc-#{node.elastic.jdbc_river.version}-dist.zip -d #{node.elastic.dir}
+   unzip -fo elasticsearch-jdbc-#{node.elastic.jdbc_importer.version}-dist.zip -d #{node.elastic.dir}
    touch #{riverdir}/.jdbc_river_installed
    chown -R #{node.elastic.user}:#{node.elastic.group} #{riverdir}
 EOF

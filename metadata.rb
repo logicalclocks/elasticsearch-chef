@@ -46,3 +46,11 @@ attribute "elastic/dir",
 attribute "elastic/memory",
           :description =>  "Amount of memory for Elasticsearch.",
           :type => 'string'
+
+attribute "elastic/version",
+          :description =>  "Elasticsearch version, .e.g, '2.1.2'",
+          :type => 'string'
+
+attribute "elastic/jdbc_importer/version",
+          :description =>  "Elasticsearch JDBC Importer version, .e.g, '2.1.1.2'",
+          :type => 'string'
