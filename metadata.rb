@@ -54,3 +54,7 @@ attribute "elastic/version",
 attribute "elastic/jdbc_importer/version",
           :description =>  "Elasticsearch JDBC Importer version, .e.g, '2.1.1.2'",
           :type => 'string'
+
+attribute "elastic/checksum",
+          :description =>  "Sha-1 checksum for the elasticsearch .tar.gz file",
+          :type => 'string'

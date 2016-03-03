@@ -5,6 +5,7 @@ include_attribute "elasticsearch"
 default.elastic.version               = "1.7.3"
 default.elastic.jdbc_importer.version    = "1.7.3.0"
 default.elastic.install_type          = "tarball"
+#default.elastic.checksum              = "1713b7e1f6511f89d72b1df018bdf696bd01008c"
 default.elastic.checksum              = "af517611493374cfb2daa8897ae17e63e2efea4d0377d316baa351c1776a2bca"
 # http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/2.1.1.2/elasticsearch-jdbc-2.1.1.2-dist.zip
 default.elastic.url                   = node.download_url + "/elasticsearch-#{node.elastic.version}.tar.gz"
