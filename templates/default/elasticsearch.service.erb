@@ -1,12 +1,12 @@
 [Unit]
-Description = River <%= @river %> for Elasticsearch.
-After = syslog.target network.target remote-fs.target
+Description = Elasticsearch daemon.
 
 [Service]
 User = <%= node.elastic.user %>
 PIDFile = /tmp/elasticsearch.pid
 ExecStart = <%= @start_script %>
-ExecStop = <%= @start_script %>
+ExecStop = <%= @stop_script %>
+WorkingDirectory=<%= @install_dir %>
 
 Type = forking
 

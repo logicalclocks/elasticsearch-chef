@@ -139,6 +139,9 @@ elasticsearch_service "elasticsearch-#{node.elastic.node_name}" do
 #  node_name node.elastic.node_name
 #  pid_path node.elastic.home_dir + "/var/run"
 #  path_conf node.elastic.home_dir + "/etc/elasticsearch"
+   init_source 'elasticsearch.erb'
+   init_cookbook 'elastic'
+#   service_actions [:enable, :start]
 end
 
 #elasticsearch_plugin "#{node.elastic.dir}/elasticsearch-jdbc" do
@@ -161,9 +164,6 @@ bash "install_jdbc_river" do
 EOF
   not_if { ::File.exists?( "#{riverdir}/.jdbc_river_installed")}
 end
-
-
-
 
 file "#{node.elastic.home_dir}/config/elasticsearch.yml" do 
   user node.elastic.user
@@ -296,9 +296,15 @@ template "#{node.elastic.home_dir}/bin/elasticsearch-start.sh" do
   mode "751"
 end
 
+service "elasticsearch-#{node.elastic.node_name}" do
+  provider Chef::Provider::Service::Systemd
+  supports :restart => true, :stop => true, :start => true, :status => true
+  action :disable
+end
+
 
 file "/etc/init.d/elasticsearch-#{node.elastic.node_name}" do
-   not_if { node.elastic.systemd == "true" }
+#   not_if { node.elastic.systemd == "true" }
    action :delete
 end
 
@@ -328,18 +334,18 @@ end
   template "#{elastic_service}" do
     only_if { node.elastic.systemd == "true" }
     source "elasticsearch.service.erb"
-    user node.elastic.user
-    group node.elastic.group
-    mode "751"
+    user "root"
+    group "root"
+    mode "644"
     variables({
                 :start_script => "#{node.elastic.home_dir}/bin/elasticsearch-start.sh",
                 :stop_script => "#{node.elastic.home_dir}/bin/elasticsearch-stop.sh",
+                :install_dir => "#{node.elastic.home_dir}",
                 :pid => "/tmp/elasticsearch.pid"
               })
     notifies :enable, "service[elasticsearch-#{node.elastic.node_name}]"
     notifies :restart, "service[elasticsearch-#{node.elastic.node_name}]", :immediately
   end
-
 
 service "elasticsearch-#{node.elastic.node_name}" do
   case node.elastic.systemd

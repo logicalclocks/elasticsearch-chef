@@ -1,4 +1,5 @@
 #!/bin/bash
-
-nohup <%= node.elastic.home_dir %>/bin/elasticsearch > /tmp/elasticsearch.log & 
+set -e
+nohup <%= node.elastic.home_dir %>/bin/elasticsearch > <%= node.elastic.dir %>/elasticsearch-jdbc-<%= node.elastic.jdbc_importer.version %>/logs/elasticsearch.log 2>&1 & 
 echo $! > /tmp/elasticsearch.pid
+exit 0
