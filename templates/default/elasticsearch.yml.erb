@@ -44,11 +44,11 @@ node.name: "<%= node.elastic.node_name %>"
 #
 # Allow this node to be eligible as a master node (enabled by default):
 #
-#node.master: true
+node.master: true
 #
 # Allow this node to store data (enabled by default):
 #
-#node.data: true
+node.data: true
 
 # You can exploit these settings to design advanced cluster topologies.
 #
@@ -142,11 +142,11 @@ node.name: "<%= node.elastic.node_name %>"
 
 # Path to directory containing configuration (this file and logging.yml):
 #
-#path.conf: /path/to/conf
+path.conf: <%= node.elastic.home_dir %>/config
 
 # Path to directory where to store index data allocated for this node.
 #
-#path.data: /path/to/data
+path.data: <%= node.elastic.home_dir %>/data
 #
 # Can optionally include more than one location, causing data to be striped across
 # the locations (a la RAID 0) on a file level, favouring locations with most free
@@ -160,7 +160,7 @@ node.name: "<%= node.elastic.node_name %>"
 
 # Path to log files:
 #
-#path.logs: /path/to/logs
+path.logs: <%= node.elastic.home_dir %>/logs
 
 # Path to where plugins are installed:
 #
@@ -221,7 +221,7 @@ network.host: <%= @my_ip %>
 
 # Set a custom port to listen for HTTP traffic:
 #
-#http.port: 9200
+http.port: 9200
 
 # Set a custom allowed content length:
 #

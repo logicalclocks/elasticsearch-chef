@@ -13,7 +13,7 @@
         "password" : "<%= @mysql_password %>",
         "locale" : "en_US",
         "index" : "dataset",
-	"type" : "child",
+	"type" : "file",
         "sql" : [
 		{
 		"statement": "INSERT INTO hopsworks.meta_inodes_ops_children_ds_buffer (inodeid, parentid, operation, logical_time, processed) (SELECT DISTINCT log.inode_id, log.dataset_id, log.operation, log.logical_time, 0 as processed FROM hops.hdfs_metadata_log log, (SELECT p.inode_id as id, p.dataset_id as parentt, p.* FROM hops.hdfs_metadata_log p, (SELECT i.inode_id as id FROM hops.hdfs_metadata_log i, (SELECT inn.id FROM hops.hdfs_inodes inn WHERE inn.parent_id = 1) AS root WHERE i.dataset_id = root.id) AS project WHERE p.dataset_id = project.id) as dataset WHERE log.dataset_id = dataset.id LIMIT 100);",
