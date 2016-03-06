@@ -17,9 +17,9 @@ when "ubuntu"
 end
 
 
-Chef::Log.info "Using systemd: #{node.elastic.systemd}"
+Chef::Log.info "Using systemd (1): #{node.elastic.systemd}"
 
-name="elasticsearch-#{node.elastic.node_name}"
+name = "elasticsearch-#{node.elastic.node_name}"
 
 case node.platform_family
 when 'rhel'
@@ -324,11 +324,8 @@ if node.elastic.systemd == "true"
   file "/etc/rc.d/init.d/#{name}" do
     action :delete
   end
-end
 
-elastic_service = "/lib/systemd/system/#{name}.service"
-
-if node.elastic.systemd == "true" 
+  elastic_service = "/lib/systemd/system/#{name}.service"
 
   case node.platform_family
   when "rhel"
@@ -372,7 +369,7 @@ if node.elastic.systemd == "true"
 #    notifies :restart, "service[#{name}]", :immediately
   end
 
-else
+else  # systemd is false
 
   # template "/etc/init.d/#{name}" do
   #   source "elasticsearch.erb"
@@ -390,6 +387,8 @@ else
   # end
 
 end
+
+Chef::Log.info "Using systemd (2): #{node.elastic.systemd}"
 
 service "#{name}" do
   case node.elastic.systemd
@@ -443,6 +442,8 @@ for river in node.elastic.rivers do
     service_name =  "/usr/lib/systemd/system/#{river}.service"
   end
 
+  Chef::Log.info "Using systemd (3): #{node.elastic.systemd}"
+
   template "#{service_name}" do
     only_if { node.elastic.systemd == "true" }
     source "river.service.erb"
@@ -456,7 +457,6 @@ for river in node.elastic.rivers do
                 :pid => "#{riverdir}/rivers/#{river}.json.pid"
               })
     notifies :enable, "service[#{river}]"
- #   notifies :restart, "service[#{river}]", :immediately
   end
 
   template "/etc/init.d/#{river}" do
@@ -472,7 +472,6 @@ for river in node.elastic.rivers do
                 :pid_file => "#{riverdir}/rivers/#{river}.json.pid"
               })
     notifies :enable, "service[#{river}]"
-#    notifies :restart, "service[#{river}]", :immediately
   end
 
 
@@ -483,6 +482,7 @@ if node.elastic.systemd == "true" || node.elastic.systemd == true
   systemd = true
 end
 
+Chef::Log.info "Using systemd (4): #{systemd}"
  elastic_start "start_install_elastic" do
    elastic_ip elastic_ip
    systemd systemd
