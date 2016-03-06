@@ -8,7 +8,6 @@ if new_resource.systemd == true
   bash 'elastic-start-systemd' do
      user "root"
     code <<-EOF
-#    systemctl enable elasticsearch-#{node.elastic.node_name}
     systemctl stop elasticsearch-#{node.elastic.node_name}
     systemctl start elasticsearch-#{node.elastic.node_name}
   EOF
@@ -21,15 +20,15 @@ if new_resource.systemd == true
     user "root"
     ignore_failure true
     code <<-EOF
-     systemctl stop parent
-     systemctl stop dataset
-     systemctl stop child_ds
-     systemctl stop child_pr
+     systemctl stop parent.service
+     systemctl stop dataset.service
+     systemctl stop child_ds.service
+     systemctl stop child_pr.service
 
-     systemctl start parent
-     systemctl start dataset
-     systemctl start child_ds
-     systemctl start child_pr
+     systemctl start parent.service
+     systemctl start dataset.service
+     systemctl start child_ds.service
+     systemctl start child_pr.service
      sleep 2
 EOF
   end
@@ -50,7 +49,7 @@ else
     user "root"
     ignore_failure true
     code <<-EOF
-      service parent stop
+     service parent stop
      service dataset stop
      service child_ds stop
      service child_pr stop
@@ -73,32 +72,36 @@ retryDelay=2
 
 Chef::Log.info  "Elastic Ip is: http://#{new_resource.elastic_ip}:9200"
 
-http_request 'curl_request_project' do
-  url "http://#{new_resource.elastic_ip}:9200/project/child/_mapping"
-  message '{ "child":{ "_parent": {"type": "parent"} } }'
-  action :post
-  retries numRetries
-  retry_delay retryDelay
-end
-
-http_request 'curl_request_dataset' do
-  url "http://#{new_resource.elastic_ip}:9200/dataset/child/_mapping"
-  message '{ "child":{ "_parent": {"type": "parent"} } }'
-  action :post
-  retries numRetries
-  retry_delay retryDelay
-end
-
-
-# bash 'elastic-install-indexes' do
-#     user node.elastic.user
-#     ignore_failure true
-#     code <<-EOF
-# curl -XPOST "#{new_resource.elastic_ip}:9200/project/child/_mapping" -d '{ "child":{ "_parent": {"type": "parent"} } }'
-# # To inform elastic that the parent data type in the dataset index accepts a 'child' data type as a child:
-# curl -XPOST "#{new_resource.elastic_ip}:9200/dataset/child/_mapping" -d '{ "child":{ "_parent": {"type": "parent"} } }'
-# EOF
+# http_request 'curl_request_project' do
+#   url "http://#{new_resource.elastic_ip}:9200/project/child/_mapping"
+#   message '{ "child":{ "_parent": {"type": "parent"} } }'
+#   action :post
+#   retries numRetries
+#   retry_delay retryDelay
 # end
+
+# http_request 'curl_request_dataset' do
+#   url "http://#{new_resource.elastic_ip}:9200/dataset/child/_mapping"
+#   message '{ "child":{ "_parent": {"type": "parent"} } }'
+#   action :post
+#   retries numRetries
+#   retry_delay retryDelay
+# end
+
+
+bash 'elastic-install-indexes' do
+    user node.elastic.user
+    ignore_failure true
+    code <<-EOF
+ curl -XPOST "#{new_resource.elastic_ip}:9200/project" -d ' "mappings" : { "site" : {},  "proj":{ "_parent": {"type": "site"} } }'
+ curl -XPOST "#{new_resource.elastic_ip}:9200/dataset" -d '{ "mappings" : { "ds" : {}, "inode":{ "_parent": {"type": "ds"} } }'
+
+
+# curl -XPOST "#{new_resource.elastic_ip}:9200/project/child/_mapping" -d '{ "child":{ "_parent": {"type": "parent"} } }'
+# To inform elastic that the parent data type in the dataset index accepts a 'child' data type as a child:
+#curl -XPOST "#{new_resource.elastic_ip}:9200/dataset/child/_mapping" -d '{ "child":{ "_parent": {"type": "parent"} } }'
+EOF
+end
 
 #  new_resource.updated_by_last_action(false)
 end

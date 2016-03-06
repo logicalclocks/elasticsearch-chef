@@ -2,6 +2,23 @@ include_recipe "java"
 
 node.override.elasticsearch.version = node.elastic.version
 
+if  node.elastic.systemd == false
+  node.override.elastic.systemd == "false"
+end
+if  node.elastic.systemd == true
+  node.override.elastic.systemd == "true"
+end
+
+case node.platform
+when "ubuntu"
+ if node.platform_version.to_f <= 14.04
+   node.override.elastic.systemd = "false"
+ end
+end
+
+
+
+name="elasticsearch-#{node.elastic.node_name}"
 
 case node.platform_family
 when 'rhel'
@@ -82,13 +99,6 @@ node.override.elasticsearch.url = node.elastic.url
 node.override.elasticsearch.version = node.elastic.version
 
 
-case node.platform
-when "ubuntu"
- if node.platform_version.to_f <= 14.04
-   node.override.elastic.systemd = "false"
- end
-end
-
 
 my_ip = my_private_ip()
 riverdir="#{node.elastic.dir}/elasticsearch-jdbc-#{node.elastic.jdbc_importer.version}"
@@ -132,7 +142,7 @@ elasticsearch_configure 'my_elasticsearch' do
   action :manage
 end
 
-elasticsearch_service "elasticsearch-#{node.elastic.node_name}" do
+elasticsearch_service "#{name}" do
    instance_name node.elastic.node_name
 #  user node.elastic.user
 #  group node.elastic.group
@@ -296,43 +306,52 @@ template "#{node.elastic.home_dir}/bin/elasticsearch-start.sh" do
   mode "751"
 end
 
-service "elasticsearch-#{node.elastic.node_name}" do
-  provider Chef::Provider::Service::Systemd
-  supports :restart => true, :stop => true, :start => true, :status => true
-  action :disable
-end
+# service "#{name}" do
+#   provider Chef::Provider::Service::Systemd
+#   supports :restart => true, :stop => true, :start => true, :status => true
+#   action :disable
+# end
 
 
-file "/etc/init.d/elasticsearch-#{node.elastic.node_name}" do
-#   not_if { node.elastic.systemd == "true" }
+file "/etc/init.d/#{name}" do
    action :delete
 end
 
-template "/etc/init.d/elasticsearch-#{node.elastic.node_name}" do
-  not_if { node.elastic.systemd == "true" }
-  source "elasticsearch.erb"
-  user "root"
-  mode "755"
-  variables({
-      :elastic_ip => elastic_ip,
-      :http_port => node.elastic.port,
-      :nofile_limit => node.elastic.ulimit_files,
-      :memlock_limit => node.elastic.ulimit_memlock,
-      :args => ""
-  })
-    notifies :enable, "service[elasticsearch-#{node.elastic.node_name}]"
-    notifies :restart, "service[elasticsearch-#{node.elastic.node_name}]", :immediately
+file "/etc/rc.d/init.d/#{name}" do
+   action :delete
 end
 
 
-elastic_service = "/lib/systemd/system/elasticsearch-#{node.elastic.node_name}.service"
-case node.platform_family
+elastic_service = "/lib/systemd/system/#{name}.service"
+
+if node.elastic.systemd == "true" 
+
+  case node.platform_family
   when "rhel"
-  elastic_service =  "/usr/lib/systemd/system/elasticsearch-#{node.elastic.node_name}.service"
-end
+    elastic_service =  "/usr/lib/systemd/system/#{name}.service"
+  end
+
+  directory "/etc/systemd/system/#{name}.service.d" do
+    owner "root"
+    mode "755"
+    action :create
+  end
+
+
+  template "/etc/systemd/system/#{name}.service.d/limits.conf" do
+    source "limits.conf.erb"
+    user "root"
+    group "root"
+    mode "644"
+    variables({
+                :nofile_limit => node.elastic.ulimit_files,
+                :memlock_limit => node.elastic.ulimit_memlock,
+              })
+  end
+
+  execute "systemctl daemon-reload"
 
   template "#{elastic_service}" do
-    only_if { node.elastic.systemd == "true" }
     source "elasticsearch.service.erb"
     user "root"
     group "root"
@@ -341,13 +360,34 @@ end
                 :start_script => "#{node.elastic.home_dir}/bin/elasticsearch-start.sh",
                 :stop_script => "#{node.elastic.home_dir}/bin/elasticsearch-stop.sh",
                 :install_dir => "#{node.elastic.home_dir}",
-                :pid => "/tmp/elasticsearch.pid"
+                :pid => "/tmp/elasticsearch.pid",
+                :nofile_limit => node.elastic.ulimit_files,
+                :memlock_limit => node.elastic.ulimit_memlock                
               })
-    notifies :enable, "service[elasticsearch-#{node.elastic.node_name}]"
-    notifies :restart, "service[elasticsearch-#{node.elastic.node_name}]", :immediately
+    notifies :enable, "service[#{name}]"
+    notifies :restart, "service[#{name}]", :immediately
   end
 
-service "elasticsearch-#{node.elastic.node_name}" do
+else
+
+  template "/etc/init.d/#{name}" do
+    source "elasticsearch.erb"
+    user "root"
+    mode "755"
+    variables({
+                :elastic_ip => elastic_ip,
+                :http_port => node.elastic.port,
+                :nofile_limit => node.elastic.ulimit_files,
+                :memlock_limit => node.elastic.ulimit_memlock,
+                :args => ""
+              })
+    notifies :enable, "service[#{name}]"
+    notifies :restart, "service[#{name}]", :immediately
+  end
+
+end
+
+service "#{name}" do
   case node.elastic.systemd
     when "true"
     provider Chef::Provider::Service::Systemd
