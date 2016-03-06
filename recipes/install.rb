@@ -2,6 +2,22 @@ include_recipe "java"
 
 node.override.elasticsearch.version = node.elastic.version
 
+if  node.elastic.systemd == false
+  node.override.elastic.systemd == "false"
+end
+if  node.elastic.systemd == true
+  node.override.elastic.systemd == "true"
+end
+
+case node.platform
+when "ubuntu"
+ if node.platform_version.to_f <= 14.04
+   node.override.elastic.systemd = "false"
+ end
+end
+
+
+
 name="elasticsearch-#{node.elastic.node_name}"
 
 case node.platform_family
@@ -82,13 +98,6 @@ end
 node.override.elasticsearch.url = node.elastic.url
 node.override.elasticsearch.version = node.elastic.version
 
-
-case node.platform
-when "ubuntu"
- if node.platform_version.to_f <= 14.04
-   node.override.elastic.systemd = "false"
- end
-end
 
 
 my_ip = my_private_ip()
@@ -305,7 +314,6 @@ end
 
 
 file "/etc/init.d/#{name}" do
-#   not_if { node.elastic.systemd == "true" }
    action :delete
 end
 
