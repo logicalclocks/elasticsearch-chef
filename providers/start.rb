@@ -35,10 +35,10 @@ EOF
 
 else 
   bash 'elastic-start-systemv' do
-#    user node.elastic.user
      user "root"
     code <<-EOF
     service elasticsearch-#{node.elastic.node_name} stop
+    sleep 2
     service elasticsearch-#{node.elastic.node_name} start
   EOF
   end

@@ -17,6 +17,7 @@ when "ubuntu"
 end
 
 
+Chef::Log.info "Using systemd: #{node.elastic.systemd}"
 
 name="elasticsearch-#{node.elastic.node_name}"
 
@@ -98,8 +99,6 @@ end
 node.override.elasticsearch.url = node.elastic.url
 node.override.elasticsearch.version = node.elastic.version
 
-
-
 my_ip = my_private_ip()
 riverdir="#{node.elastic.dir}/elasticsearch-jdbc-#{node.elastic.jdbc_importer.version}"
 mysql_ip = my_ip
@@ -151,6 +150,7 @@ elasticsearch_service "#{name}" do
 #  path_conf node.elastic.home_dir + "/etc/elasticsearch"
    init_source 'elasticsearch.erb'
    init_cookbook 'elastic'
+   service_actions [:nothing]
 #   service_actions [:enable, :start]
 end
 
@@ -312,15 +312,19 @@ end
 #   action :disable
 # end
 
+if node.elastic.systemd == "true" 
+  file "/etc/init.d/#{name}" do
+     action :delete
+  end
 
-file "/etc/init.d/#{name}" do
-   action :delete
+  file "/etc/defaults/#{name}" do
+     action :delete
+  end
+
+  file "/etc/rc.d/init.d/#{name}" do
+    action :delete
+  end
 end
-
-file "/etc/rc.d/init.d/#{name}" do
-   action :delete
-end
-
 
 elastic_service = "/lib/systemd/system/#{name}.service"
 
@@ -331,23 +335,23 @@ if node.elastic.systemd == "true"
     elastic_service =  "/usr/lib/systemd/system/#{name}.service"
   end
 
-  directory "/etc/systemd/system/#{name}.service.d" do
-    owner "root"
-    mode "755"
-    action :create
-  end
+  # directory "/etc/systemd/system/#{name}.service.d" do
+  #   owner "root"
+  #   mode "755"
+  #   action :create
+  # end
 
 
-  template "/etc/systemd/system/#{name}.service.d/limits.conf" do
-    source "limits.conf.erb"
-    user "root"
-    group "root"
-    mode "644"
-    variables({
-                :nofile_limit => node.elastic.ulimit_files,
-                :memlock_limit => node.elastic.ulimit_memlock,
-              })
-  end
+  # template "/etc/systemd/system/#{name}.service.d/limits.conf" do
+  #   source "limits.conf.erb"
+  #   user "root"
+  #   group "root"
+  #   mode "644"
+  #   variables({
+  #               :nofile_limit => node.elastic.ulimit_files,
+  #               :memlock_limit => node.elastic.ulimit_memlock,
+  #             })
+  # end
 
   execute "systemctl daemon-reload"
 
@@ -364,26 +368,26 @@ if node.elastic.systemd == "true"
                 :nofile_limit => node.elastic.ulimit_files,
                 :memlock_limit => node.elastic.ulimit_memlock                
               })
-    notifies :enable, "service[#{name}]"
-    notifies :restart, "service[#{name}]", :immediately
+#    notifies :enable, "service[#{name}]"
+#    notifies :restart, "service[#{name}]", :immediately
   end
 
 else
 
-  template "/etc/init.d/#{name}" do
-    source "elasticsearch.erb"
-    user "root"
-    mode "755"
-    variables({
-                :elastic_ip => elastic_ip,
-                :http_port => node.elastic.port,
-                :nofile_limit => node.elastic.ulimit_files,
-                :memlock_limit => node.elastic.ulimit_memlock,
-                :args => ""
-              })
-    notifies :enable, "service[#{name}]"
-    notifies :restart, "service[#{name}]", :immediately
-  end
+  # template "/etc/init.d/#{name}" do
+  #   source "elasticsearch.erb"
+  #   user "root"
+  #   mode "755"
+  #   variables({
+  #               :elastic_ip => elastic_ip,
+  #               :http_port => node.elastic.port,
+  #               :nofile_limit => node.elastic.ulimit_files,
+  #               :memlock_limit => node.elastic.ulimit_memlock,
+  #               :args => ""
+  #             })
+  #   notifies :enable, "service[#{name}]"
+  #   notifies :restart, "service[#{name}]", :immediately
+  # end
 
 end
 
