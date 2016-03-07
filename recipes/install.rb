@@ -444,36 +444,39 @@ for river in node.elastic.rivers do
 
   Chef::Log.info "Using systemd (3): #{node.elastic.systemd}"
 
-  template "#{service_name}" do
-    only_if { node.elastic.systemd == "true" }
-    source "river.service.erb"
-    user node.elastic.user
-    group node.elastic.group
-    mode "751"
-    variables({
-                :river => river,
-                :start_script => "#{riverdir}/bin/#{river}-start.sh",
-                :stop_script => "#{riverdir}/bin/#{river}-stop.sh",
-                :pid => "#{riverdir}/rivers/#{river}.json.pid"
-              })
-    notifies :enable, "service[#{river}]"
-  end
+  if node.elastic.systemd == "true" 
 
-  template "/etc/init.d/#{river}" do
-    not_if { node.elastic.systemd == "true" }
-    source "river.erb"
-    user node.elastic.user
-    group node.elastic.group
-    mode "751"
-    variables({
-                :river => river,
-                :start_script => "#{riverdir}/bin/#{river}-start.sh",
-                :stop_script => "#{riverdir}/bin/#{river}-stop.sh",
-                :pid_file => "#{riverdir}/rivers/#{river}.json.pid"
-              })
-    notifies :enable, "service[#{river}]"
-  end
+    template "#{service_name}" do
+      source "river.service.erb"
+      user node.elastic.user
+      group node.elastic.group
+      mode "751"
+      variables({
+                  :river => river,
+                  :start_script => "#{riverdir}/bin/#{river}-start.sh",
+                  :stop_script => "#{riverdir}/bin/#{river}-stop.sh",
+                  :pid => "#{riverdir}/rivers/#{river}.json.pid"
+                })
+      notifies :enable, "service[#{river}]"
+    end
 
+  else # sysv
+
+    template "/etc/init.d/#{river}" do
+      source "river.erb"
+      user node.elastic.user
+      group node.elastic.group
+      mode "751"
+      variables({
+                  :river => river,
+                  :start_script => "#{riverdir}/bin/#{river}-start.sh",
+                  :stop_script => "#{riverdir}/bin/#{river}-stop.sh",
+                  :pid_file => "#{riverdir}/rivers/#{river}.json.pid"
+                })
+      notifies :enable, "service[#{river}]"
+    end
+
+  end
 
 end
 
