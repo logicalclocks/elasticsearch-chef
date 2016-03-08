@@ -273,7 +273,7 @@ if node.kagent.enabled == "true"
     start_script "#{riverdir}/bin/elastic-start.sh"
     stop_script "#{riverdir}/bin/elastic-stop.sh"
     log_file "#{node.elastic.home}/logs/#{node.elastic.cluster_name}.log"
-    pid_file "#{node.elastic.home}/var/run/#{node.elastic.node_name}.pid"
+    pid_file "/tmp/elasticsearch.pid"
   end
 
   if node.elastic.rivers_enabled == "true"

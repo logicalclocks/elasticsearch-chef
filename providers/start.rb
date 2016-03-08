@@ -38,6 +38,7 @@ else
      user "root"
     code <<-EOF
     service elasticsearch-#{node.elastic.node_name} stop
+    rm /tmp/elasticsearch.pid
     sleep 2
     service elasticsearch-#{node.elastic.node_name} start
   EOF
