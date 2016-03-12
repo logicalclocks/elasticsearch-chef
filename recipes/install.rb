@@ -92,9 +92,22 @@ EOF
 end
 
 
-user_ulimit node.elastic.user do
-  filehandle_limit 65535
-end
+# user_ulimit node.elastic.user do
+#   filehandle_limit 65535
+# end
+
+   ulimit_domain "#{node.elastic.user}" do
+        node.elastic.limits.each do |k, v|
+          rule do
+            item k
+            type '-'
+            value v
+          end
+          only_if { node.elastic.key?('limits') && !node.elastic.limits.empty? }
+        end
+   end # End limits.d
+
+
 
 node.override.elasticsearch.url = node.elastic.url
 node.override.elasticsearch.version = node.elastic.version
@@ -362,8 +375,8 @@ if node.elastic.systemd == "true"
                 :stop_script => "#{node.elastic.home_dir}/bin/elasticsearch-stop.sh",
                 :install_dir => "#{node.elastic.home_dir}",
                 :pid => "/tmp/elasticsearch.pid",
-                :nofile_limit => node.elastic.ulimit_files,
-                :memlock_limit => node.elastic.ulimit_memlock                
+                :nofile_limit => node.elastic.limits.nofile,
+                :memlock_limit => node.elastic.limits.memory_limit                
               })
 #    notifies :enable, "service[#{name}]"
 #    notifies :restart, "service[#{name}]", :immediately

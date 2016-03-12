@@ -27,12 +27,13 @@ default.elastic.rivers                = %w{ parent child_pr child_ds dataset }
 default.elastic.mysql_connector_url   = "#{download_url}/elasticsearch-jdbc-#{node.elastic.jdbc_importer.version}-dist.zip"
 #default.elastic.mysql_connector_url   = "http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/#{node.elastic.jdbc_importer.version}/elasticsearch-jdbc-#{node.elastic.jdbc_river.version}-dist.zip"
 
-default.elastic.ulimit_files          = "65535"
-default.elastic.ulimit_memlock        = "65535"
+default.elastic.limits.nofile         = "65535"
+default.elastic.limits.memory_limit   = "100000"
+default.elastic.limits_nproc          = '65536'
 
 default.elastic.systemd               = "true"
 
-default.elastic.memory                = "123m"
+default.elastic.memory                = "50m"
 default.elastic.thread_stack_size     = "512k" 
 
 node.default.java.jdk_version         = 7
