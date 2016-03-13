@@ -364,8 +364,8 @@ if node.elastic.systemd == "true"
                 :stop_script => "#{node.elastic.home_dir}/bin/elasticsearch-stop.sh",
                 :install_dir => "#{node.elastic.home_dir}",
                 :pid => "/tmp/elasticsearch.pid",
-                :nofile_limit => node.elastic.ulimit_files,
-                :memlock_limit => node.elastic.ulimit_memlock                
+                :nofile_limit => node.elastic.limits.nofile,
+                :memlock_limit => node.elastic.limits.memory_limit                
               })
 #    notifies :enable, "service[#{name}]"
 #    notifies :restart, "service[#{name}]", :immediately
