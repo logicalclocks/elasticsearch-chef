@@ -94,6 +94,8 @@ end
 
 user_ulimit node.elastic.user do
   filehandle_limit 65535
+  process_limit 30000
+  memory_limit 100000
 end
 
 node.override.elasticsearch.url = node.elastic.url
