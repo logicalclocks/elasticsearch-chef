@@ -368,7 +368,7 @@ if node.elastic.systemd == "true"
     source "elasticsearch.service.erb"
     user "root"
     group "root"
-    mode "644"
+    mode "754"
     variables({
                 :start_script => "#{node.elastic.home_dir}/bin/elasticsearch-start.sh",
                 :stop_script => "#{node.elastic.home_dir}/bin/elasticsearch-stop.sh",
@@ -460,9 +460,9 @@ for river in node.elastic.rivers do
 
     template "#{service_name}" do
       source "river.service.erb"
-      user node.elastic.user
-      group node.elastic.group
-      mode "751"
+      user "root"
+      group "root"
+      mode "754"
       variables({
                   :river => river,
                   :start_script => "#{riverdir}/bin/#{river}-start.sh",
