@@ -34,7 +34,7 @@ if new_resource.systemd == true
 EOF
   end
 
-else 
+else
   bash 'elastic-start-systemv' do
      user "root"
     code <<-EOF
@@ -70,7 +70,7 @@ end
 
 numRetries=25
 retryDelay=2
-  
+
 
 Chef::Log.info  "Elastic Ip is: http://#{new_resource.elastic_ip}:9200"
 
@@ -95,8 +95,8 @@ bash 'elastic-install-indexes' do
     user node.elastic.user
     ignore_failure true
     code <<-EOF
- curl -XPOST "http://#{new_resource.elastic_ip}:9200/project" -d ' "mappings" : { "site" : {},  "proj":{ "_parent": {"type": "site"} } }'
- curl -XPOST "http://#{new_resource.elastic_ip}:9200/dataset" -d '{ "mappings" : { "ds" : {}, "inode":{ "_parent": {"type": "ds"} } }'
+ curl -XPOST "http://#{new_resource.elastic_ip}:9200/project" -d '{ "mappings" : { "site" : {},  "proj":{ "_parent": {"type": "site"} } } }'
+ curl -XPOST "http://#{new_resource.elastic_ip}:9200/dataset" -d '{ "mappings" : { "ds" : {}, "inode":{ "_parent": {"type": "ds"} } } }'
 
 
 # curl -XPOST "#{new_resource.elastic_ip}:9200/project/child/_mapping" -d '{ "child":{ "_parent": {"type": "parent"} } }'
