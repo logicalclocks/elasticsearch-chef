@@ -1,5 +1,5 @@
 include_attribute "kagent"
-include_attribute "ndb"
+#include_attribute "ndb"
 include_attribute "elasticsearch"
 
 default.elastic.version               = "1.7.0"
