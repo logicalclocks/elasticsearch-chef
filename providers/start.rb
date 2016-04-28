@@ -34,7 +34,7 @@ if new_resource.systemd == true
 EOF
   end
 
-else 
+else
   bash 'elastic-start-systemv' do
      user "root"
     code <<-EOF
@@ -70,7 +70,7 @@ end
 
 numRetries=25
 retryDelay=2
-  
+
 
 Chef::Log.info  "Elastic Ip is: http://#{new_resource.elastic_ip}:9200"
 
