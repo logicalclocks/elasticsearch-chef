@@ -93,10 +93,13 @@ Chef::Log.info  "Elastic Ip is: http://#{new_resource.elastic_ip}:9200"
 
 bash 'elastic-install-indexes' do
     user node.elastic.user
-#    ignore_failure true
+    ignore_failure true
     code <<-EOF
  curl -XPOST "http://#{new_resource.elastic_ip}:9200/project" -d '{ "mappings" : { "site" : {},  "proj":{ "_parent": {"type": "site"} } } }'
  curl -XPOST "http://#{new_resource.elastic_ip}:9200/dataset" -d '{ "mappings" : { "ds" : {}, "inode":{ "_parent": {"type": "ds"} } } }'
+
+# curl -XPOST "http://#{new_resource.elastic_ip}:9200/project" -d '{ "mappings" : { "proj" : {  "dynamic": "strict"},  "inode":{"dynamic": "true"}, "_parent": {"type": "site"} } } }'
+# curl -XPOST "http://#{new_resource.elastic_ip}:9200/dataset" -d '{ "mappings" : { "ds" : {"dynamic": "strict" }, "inode":{ "dynamic": "strict", "_parent": {"type": "ds"} } } }'
 
 
 # curl -XPOST "#{new_resource.elastic_ip}:9200/project/child/_mapping" -d '{ "child":{ "_parent": {"type": "parent"} } }'
