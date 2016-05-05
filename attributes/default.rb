@@ -2,10 +2,13 @@ include_attribute "kagent"
 #include_attribute "ndb"
 include_attribute "elasticsearch"
 
-default.elastic.version               = "1.7.0"
-default.elastic.jdbc_importer.version    = "1.7.3.0"
+#default.elastic.version               = "1.7.0"
+#default.elastic.jdbc_importer.version    = "1.7.3.0"
+default.elastic.version               = "2.1.2"
+default.elastic.jdbc_importer.version    = "2.1.1.2"
 default.elastic.install_type          = "tarball"
-default.elastic.checksum              = "6fabed2db09e1b88587df15269df328ecef33e155b3c675a2a6d2299bda09c95"
+default.elastic.checksum              = "069cf3ab88a36d01f86e54b46169891b0adef6eda126ea35e540249d904022e1"  # 2.1.2
+#default.elastic.checksum              = "6fabed2db09e1b88587df15269df328ecef33e155b3c675a2a6d2299bda09c95"  # 1.7.0
 # http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/2.1.1.2/elasticsearch-jdbc-2.1.1.2-dist.zip
 default.elastic.url                   = node.download_url + "/elasticsearch-#{node.elastic.version}.tar.gz"
 default.elastic.user                  = "elastic"
