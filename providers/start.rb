@@ -1,9 +1,14 @@
 action :run do
 
-package "curl" do
-  action :install
+bash "install_delete_plugin" do
+     user "root"
+     cwd node.elastic.home_dir
+       code <<-EOF
+      set -e
+      bin/plugin install delete-by-query
+   EOF
 end
-
+   
 if new_resource.systemd == true
   bash 'elastic-start-systemd' do
      user "root"
