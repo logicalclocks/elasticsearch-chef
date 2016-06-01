@@ -23,7 +23,7 @@ name = "elasticsearch-#{node.elastic.node_name}"
 
 case node.platform_family
 when 'rhel'
-  package 'unzip' 
+  package 'unzip'
 end
 
 
@@ -47,51 +47,8 @@ elasticsearch_install 'elastic_installation' do
   download_url node.elasticsearch.download_urls.tar
 #  download_checksum node.elasticsearch.checksums["#{node.elasticsearch.version}"]['tar']
   download_checksum node.elastic.checksum
-  action :install 
+  action :install
 end
-
-mysql_tgz = File.basename(node.elastic.mysql_connector_url)
-mysql_base = File.basename(node.elastic.mysql_connector_url, "-dist.zip") 
-
-path_mysql_tgz = "/tmp/#{mysql_tgz}"
-
-remote_file path_mysql_tgz do
-  user node.elastic.user
-  group node.elastic.group
-  source node.elastic.mysql_connector_url
-  mode 0755
-  action :create_if_missing
-end
-
-
-Chef::Log.info "Downloading #{mysql_base}"
-Chef::Log.info "Unzipgping #{mysql_tgz}"
-
-bash "unpack_mysql_river" do
-  user node.elastic.user
-  group node.elastic.group
-    code <<-EOF
-   set -e
-   cd /tmp
-   unzip  #{path_mysql_tgz} 
-   touch #{node.elastic.home_dir}/.#{mysql_base}_downloaded
-EOF
-  not_if { ::File.exists?( "#{node.elastic.home_dir}/.#{mysql_base}_downloaded")}
-end
-
-bash "locate_mysql_river" do
-  user "root"
-    code <<-EOF
-   set -e
-   mv -f /tmp/#{mysql_base} #{node.elastic.dir}
-   chown -R #{node.elastic.user} #{node.elastic.dir}/#{mysql_base}
-   touch #{node.elastic.home_dir}/.#{mysql_base}_moved
-   chown #{node.elastic.user} #{node.elastic.home_dir}/.#{mysql_base}_moved
-EOF
-  not_if { ::File.exists?( "#{node.elastic.home_dir}/.#{mysql_base}_moved")}
-end
-
-
 
 node.override.ulimit.conf_dir = "/etc/security"
 node.override.ulimit.conf_file = "limits.conf"
@@ -165,7 +122,7 @@ elasticsearch_service "#{name}" do
 #   service_actions [:enable, :start]
 end
 
-file "#{node.elastic.home_dir}/config/elasticsearch.yml" do 
+file "#{node.elastic.home_dir}/config/elasticsearch.yml" do
   user node.elastic.user
   action :delete
 end
@@ -190,14 +147,14 @@ template "#{node.elastic.home_dir}/config/elasticsearch.yml" do
             })
 end
 
-template "#{riverdir}/bin/elastic-start.sh" do
+template "#{node.elastic.home_dir}/bin/elastic-start.sh" do
   source "elastic-start.sh.erb"
   user node.elastic.user
   group node.elastic.group
   mode "751"
 end
 
-template "#{riverdir}/bin/elastic-stop.sh" do
+template "#{node.elastic.home_dir}/bin/elastic-stop.sh" do
   source "elastic-stop.sh.erb"
   user node.elastic.user
   group node.elastic.group
@@ -206,7 +163,7 @@ end
 
 
 
-template "#{riverdir}/bin/kill-process.sh" do
+template "#{node.elastic.home_dir}/bin/kill-process.sh" do
   source "kill-process.sh.erb"
   user node.elastic.user
   group node.elastic.group
@@ -217,24 +174,12 @@ if node.kagent.enabled == "true"
 
   kagent_config "elasticsearch-#{node.host}" do
     service "elasticsearch-#{node.host}"
-    start_script "#{riverdir}/bin/elastic-start.sh"
-    stop_script "#{riverdir}/bin/elastic-stop.sh"
+    start_script "#{node.elastic.home_dir}/bin/elastic-start.sh"
+    stop_script "#{node.elastic.home_dir}/bin/elastic-stop.sh"
     log_file "#{node.elastic.home}/logs/#{node.elastic.cluster_name}.log"
     pid_file "/tmp/elasticsearch.pid"
   end
 
-  if node.elastic.rivers_enabled == "true"
-
-    for river in node.elastic.rivers do
-      kagent_config "elasticsearch-#{river}" do
-        service "elasticsearch-#{river}"
-        start_script "#{riverdir}/bin/#{river}-start.sh" 
-        stop_script "#{riverdir}/bin/#{river}-stop.sh"
-        log_file "#{riverdir}/rivers/#{river}.log"
-        pid_file "#{riverdir}/rivers/#{river}.pid"
-      end
-    end
-  end
 end
 
 
@@ -253,7 +198,7 @@ template "#{node.elastic.home_dir}/bin/elasticsearch-start.sh" do
   mode "751"
 end
 
-if node.elastic.systemd == "true" 
+if node.elastic.systemd == "true"
   file "/etc/init.d/#{name}" do
      action :delete
   end
@@ -286,7 +231,7 @@ if node.elastic.systemd == "true"
                 :install_dir => "#{node.elastic.home_dir}",
                 :pid => "/tmp/elasticsearch.pid",
                 :nofile_limit => node.elastic.limits.nofile,
-                :memlock_limit => node.elastic.limits.memory_limit                
+                :memlock_limit => node.elastic.limits.memory_limit
               })
 #    notifies :enable, "service[#{name}]"
 #    notifies :restart, "service[#{name}]", :immediately
@@ -325,7 +270,7 @@ service "#{name}" do
 end
 
 systemd = false
-if node.elastic.systemd == "true" || node.elastic.systemd == true 
+if node.elastic.systemd == "true" || node.elastic.systemd == true
   systemd = true
 end
 

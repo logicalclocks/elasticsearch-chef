@@ -8,24 +8,6 @@ end
 
 if node.elastic.systemd == "false"
 
-
-node.elastic.rivers.each { |d| 
-
-  bash 'kill_running_service_#{d}' do
-    user "root"
-    ignore_failure true
-    code <<-EOF
-      service #{d} stop
-    EOF
-  end
-
-  file "/etc/init.d/#{d}" do
-    action :delete
-    ignore_failure true
-  end
-}
-
-
   bash 'kill_running_elastic_service' do
     user "root"
     ignore_failure true
@@ -38,28 +20,6 @@ node.elastic.rivers.each { |d|
 
 
 else # systemd
-
-
-node.elastic.rivers.each { |d| 
-
-  bash 'kill_running_service_#{d}' do
-    user "root"
-    ignore_failure true
-    code <<-EOF
-      systemctl stop #{d}
-    EOF
-  end
-
-  file "/usr/lib/systemd/system/#{d}.service" do
-    action :delete
-    ignore_failure true
-  end
-  file "/lib/systemd/system/#{d}.service" do
-    action :delete
-    ignore_failure true
-  end
-}
-
 
   bash 'kill_running_elastic_service' do
     user "root"
@@ -91,13 +51,6 @@ directory node.elastic.version_dir do
 end
 
 link node.elastic.home_dir do
-  action :delete
-  ignore_failure true
-end
-
-
-directory " #{node.elastic.dir}/elasticsearch-jdbc-#{node.elastic.jdbc_importer.version}" do
-  recursive true
   action :delete
   ignore_failure true
 end

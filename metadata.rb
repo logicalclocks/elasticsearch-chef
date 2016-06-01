@@ -23,10 +23,6 @@ attribute "java/jdk_version",
           :display_name =>  "Jdk version",
           :type => 'string'
 
-attribute "elastic/rivers_enabled",
-          :description =>  "Install the JDBC rivers for HopsWorks on this machine",
-          :type => 'string'
-
 attribute "elastic/port",
           :description =>  "Port for elasticsearch service (default: 9200)",
           :type => 'string'
@@ -49,10 +45,6 @@ attribute "elastic/memory",
 
 attribute "elastic/version",
           :description =>  "Elasticsearch version, .e.g, '2.1.2'",
-          :type => 'string'
-
-attribute "elastic/jdbc_importer/version",
-          :description =>  "Elasticsearch JDBC Importer version, .e.g, '2.1.1.2'",
           :type => 'string'
 
 attribute "elastic/checksum",
