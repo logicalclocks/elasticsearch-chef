@@ -112,7 +112,6 @@ node.override.elasticsearch.url = node.elastic.url
 node.override.elasticsearch.version = node.elastic.version
 
 my_ip = my_private_ip()
-riverdir="#{node.elastic.dir}/elasticsearch-jdbc-#{node.elastic.jdbc_importer.version}"
 mysql_ip = my_ip
 elastic_ip = private_recipe_ip("elastic","default")
 
@@ -166,27 +165,6 @@ elasticsearch_service "#{name}" do
 #   service_actions [:enable, :start]
 end
 
-#elasticsearch_plugin "#{node.elastic.dir}/elasticsearch-jdbc" do
-#   action :install
-#   url "http://xbib.org/repository/org/xbib/elasticsearch/importer/elasticsearch-jdbc/#{node.elastic.jdbc_importer.version}/elasticsearch-jdbc-#{node.elastic.jdbc_importer.version}-dist.zip"
-#   instance_name node.elastic.node_name
-# end
-
-
-bash "install_jdbc_river" do
-  user "root"
-    code <<-EOF
-   set -e
-   cd /tmp
-   rm -f elasticsearch-jdbc-#{node.elastic.jdbc_importer.version}-dist.zip
-   wget #{node.elastic.mysql_connector_url}
-   unzip -fo elasticsearch-jdbc-#{node.elastic.jdbc_importer.version}-dist.zip -d #{node.elastic.dir}
-   touch #{riverdir}/.jdbc_river_installed
-   chown -R #{node.elastic.user}:#{node.elastic.group} #{riverdir}
-EOF
-  not_if { ::File.exists?( "#{riverdir}/.jdbc_river_installed")}
-end
-
 file "#{node.elastic.home_dir}/config/elasticsearch.yml" do 
   user node.elastic.user
   action :delete
@@ -211,49 +189,6 @@ template "#{node.elastic.home_dir}/config/elasticsearch.yml" do
               :my_ip => my_ip
             })
 end
-
-directory "#{riverdir}/rivers" do
-  owner node.elastic.user
-  mode "755"
-  action :create
-end
-
-directory "#{riverdir}/logs" do
-  owner node.elastic.user
-  mode "755"
-  action :create
-end
-
-
-for river in node.elastic.rivers do
-  template "#{riverdir}/rivers/#{river}.json" do
-    source "#{river}.json.erb"
-    user node.elastic.user
-    group node.elastic.group
-    mode "755"
-  variables({
-              :install_path => "#{riverdir}",
-              :elastic_host => elastic_ip,
-              :mysql_endpoint => mysql_ip + ":3306",
-              :mysql_user => node.mysql.user,
-              :mysql_password => node.mysql.password
-            })
-  end
-end 
-
-
-for script in %w{ start-river.sh stop-river.sh } do
-  template "#{riverdir}/bin/#{script}" do
-    source "#{script}.erb"
-    user node.elastic.user
-    group node.elastic.group
-    mode "755"
-    variables({
-                :install_path => "#{riverdir}"
-              })
-  end
-end
-
 
 template "#{riverdir}/bin/elastic-start.sh" do
   source "elastic-start.sh.erb"
@@ -318,12 +253,6 @@ template "#{node.elastic.home_dir}/bin/elasticsearch-start.sh" do
   mode "751"
 end
 
-# service "#{name}" do
-#   provider Chef::Provider::Service::Systemd
-#   supports :restart => true, :stop => true, :start => true, :status => true
-#   action :disable
-# end
-
 if node.elastic.systemd == "true" 
   file "/etc/init.d/#{name}" do
      action :delete
@@ -343,24 +272,6 @@ if node.elastic.systemd == "true"
   when "rhel"
     elastic_service =  "/usr/lib/systemd/system/#{name}.service"
   end
-
-  # directory "/etc/systemd/system/#{name}.service.d" do
-  #   owner "root"
-  #   mode "755"
-  #   action :create
-  # end
-
-
-  # template "/etc/systemd/system/#{name}.service.d/limits.conf" do
-  #   source "limits.conf.erb"
-  #   user "root"
-  #   group "root"
-  #   mode "644"
-  #   variables({
-  #               :nofile_limit => node.elastic.ulimit_files,
-  #               :memlock_limit => node.elastic.ulimit_memlock,
-  #             })
-  # end
 
   execute "systemctl daemon-reload"
 
@@ -411,85 +322,6 @@ service "#{name}" do
   end
   supports :restart => true, :stop => true, :start => true, :status => true
   action :enable
-end
-
-
-
-for river in node.elastic.rivers do
-  template "#{riverdir}/bin/#{river}-start.sh" do
-    source "river-start.sh.erb"
-    user node.elastic.user
-    group node.elastic.group
-    mode "751"
-    variables({
-        :river => river
-    })
-  end
-  template "#{riverdir}/bin/#{river}-stop.sh" do
-    source "river-stop.sh.erb"
-    user node.elastic.user
-    group node.elastic.group
-    mode "751"
-    variables({
-        :river => river
-    })
-  end
-
-
-  service "#{river}" do
-    case node.elastic.systemd
-    when "true"
-      provider Chef::Provider::Service::Systemd
-    else
-      provider Chef::Provider::Service::Init::Debian
-    end
-    supports :restart => true, :stop => true, :start => true, :status => true
-    action :nothing
-  end
-
-  
-  service_name = "/lib/systemd/system/#{river}.service"
-  case node.platform_family
-    when "rhel"
-    service_name =  "/usr/lib/systemd/system/#{river}.service"
-  end
-
-  Chef::Log.info "Using systemd (3): #{node.elastic.systemd}"
-
-  if node.elastic.systemd == "true" 
-
-    template "#{service_name}" do
-      source "river.service.erb"
-      user "root"
-      group "root"
-      mode "754"
-      variables({
-                  :river => river,
-                  :start_script => "#{riverdir}/bin/#{river}-start.sh",
-                  :stop_script => "#{riverdir}/bin/#{river}-stop.sh",
-                  :pid => "#{riverdir}/rivers/#{river}.json.pid"
-                })
-      notifies :enable, "service[#{river}]"
-    end
-
-  else # sysv
-
-    template "/etc/init.d/#{river}" do
-      source "river.erb"
-      user node.elastic.user
-      group node.elastic.group
-      mode "751"
-      variables({
-                  :river => river,
-                  :start_script => "#{riverdir}/bin/#{river}-start.sh",
-                  :stop_script => "#{riverdir}/bin/#{river}-stop.sh",
-                  :pid_file => "#{riverdir}/rivers/#{river}.json.pid"
-                })
-      notifies :enable, "service[#{river}]"
-    end
-
-  end
-
 end
 
 systemd = false
