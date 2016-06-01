@@ -15,25 +15,6 @@ if new_resource.systemd == true
   end
 
 
-  # If starting a river fails, it means it is already running, which is ok.
-  bash 'elastic-river-start' do
-    #  user node.elastic.user
-    user "root"
-    ignore_failure true
-    code <<-EOF
-     systemctl stop parent.service
-     systemctl stop dataset.service
-     systemctl stop child_ds.service
-     systemctl stop child_pr.service
-
-     systemctl start parent.service
-     systemctl start dataset.service
-     systemctl start child_ds.service
-     systemctl start child_pr.service
-     sleep 2
-EOF
-  end
-
 else
   bash 'elastic-start-systemv' do
      user "root"
@@ -45,28 +26,7 @@ else
   EOF
   end
 
-  # If starting a river fails, it means it is already running, which is ok.
-  bash 'elastic-river-start' do
-    #  user node.elastic.user
-    user "root"
-    ignore_failure true
-    code <<-EOF
-     service parent stop
-     service dataset stop
-     service child_ds stop
-     service child_pr stop
-
-     service parent start
-     service dataset start
-     service child_ds start
-     service child_pr start
-
-    sleep 2
-EOF
-  end
-
 end
-
 
 numRetries=25
 retryDelay=2
