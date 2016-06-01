@@ -5,6 +5,6 @@ ulimit -n <%= @nofile_limit %>
 ulimit -l <%= @memlock_limit %>
 
 
-nohup <%= node.elastic.home_dir %>/bin/elasticsearch > <%= node.elastic.dir %>/elasticsearch-jdbc-<%= node.elastic.jdbc_importer.version %>/logs/elasticsearch.log 2>&1 & 
+nohup <%= node.elastic.home_dir %>/bin/elasticsearch > <%= node.elastic.home_dir %>/elasticsearch.log 2>&1 & 
 echo $! > /tmp/elasticsearch.pid
 exit 0

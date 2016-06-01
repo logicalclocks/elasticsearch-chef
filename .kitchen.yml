@@ -15,7 +15,7 @@ platforms:
 #  - name: centos-7.0
 #  - name: ubuntu-15.04
 
-suites: 
+suites:
   - name: default
     run_list:
       - recipe[kagent::install]
@@ -29,8 +29,6 @@ suites:
                 public_ips: ["10.0.2.15"]
             checksum: "069cf3ab88a36d01f86e54b46169891b0adef6eda126ea35e540249d904022e1"
             version: 2.1.2
-            jdbc_importer:
-                version: 2.1.1.2
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
          kagent:
@@ -39,4 +37,3 @@ suites:
          private_ips: ["10.0.2.15"]
          public_ips: ["10.0.2.15"]
          vagrant: true
-
