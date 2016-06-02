@@ -7,6 +7,7 @@ bash "install_delete_plugin" do
       set -e
       bin/plugin install delete-by-query
    EOF
+   not_if { File.directory?("#{node.elastic.home_dir}/plugins/delete-by-query") }       
 end
    
 if new_resource.systemd == true
