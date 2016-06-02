@@ -7,7 +7,7 @@ bash "install_delete_plugin" do
       set -e
       bin/plugin install delete-by-query
    EOF
-   not_if { File.exists?("#{node.elastic.home_dir}/plugins/delete-by-query/delete-by-query-#{node.elastic.version}.jar") }       
+   not_if { ::File.exists?("#{node.elastic.home_dir}/plugins/delete-by-query/delete-by-query-#{node.elastic.version}.jar") }       
 end
    
 if new_resource.systemd == true
