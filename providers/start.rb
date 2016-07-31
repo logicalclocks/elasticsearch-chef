@@ -39,6 +39,8 @@ retryDelay=20
 
 Chef::Log.info  "Elastic Ip is: http://#{new_resource.elastic_ip}:9200"
 
+indexes_installed = "#{node.elastic.home_dir}/.indexes_installed"
+
  http_request 'elastic-install-indexes' do
    url "http://#{new_resource.elastic_ip}:9200/projects"
    message '
@@ -60,7 +62,16 @@ Chef::Log.info  "Elastic Ip is: http://#{new_resource.elastic_ip}:9200"
    action :put
    retries numRetries
    retry_delay retryDelay
+   not_if { ::File.exists?( indexes_installed ) }       
  end
 
+  bash 'elastic-indexes-installed' do
+     user node.elastic.user
+    code <<-EOF
+        touch #{indexes_installed}
+  EOF
+  end
+
+ 
 #  new_resource.updated_by_last_action(false)
 end
