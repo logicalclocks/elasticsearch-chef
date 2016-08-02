@@ -1,6 +1,8 @@
 dependencies:
-  - recipe: elasticsearch-chef::install
-  - recipe: elasticsearch-chef::default
-    global:
+  - recipe: elastic::install
+    global:  
+      - kagent::install
+  - recipe: elastic::default
+
 
 
