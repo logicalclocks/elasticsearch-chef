@@ -1,3 +1,0 @@
-#!/bin/bash
-cd <%= node.elastic.dir %>/elasticsearch-jdbc-<%= node.elastic.jdbc_importer.version %>
-./bin/start-river.sh <%= node.elastic.dir %>/elasticsearch-jdbc-<%= node.elastic.jdbc_importer.version %>/rivers/<%= @river %>.json
