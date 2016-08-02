@@ -176,7 +176,7 @@ if node.kagent.enabled == "true"
     service "elasticsearch-#{my_ip}"
     start_script "#{node.elastic.home_dir}/bin/elastic-start.sh"
     stop_script "#{node.elastic.home_dir}/bin/elastic-stop.sh"
-    log_file "#{node.elastic.home}/logs/#{node.elastic.cluster_name}.log"
+    log_file "#{node.elastic.home_dir}/logs/#{node.elastic.cluster_name}.log"
     pid_file "/tmp/elasticsearch.pid"
   end
 end
