@@ -172,8 +172,8 @@ end
 
 if node.kagent.enabled == "true"
 
-  kagent_config "elasticsearch-#{node.host}" do
-    service "elasticsearch-#{node.host}"
+  kagent_config "elasticsearch-#{my_ip}" do
+    service "elasticsearch-#{my_ip}"
     start_script "#{node.elastic.home_dir}/bin/elastic-start.sh"
     stop_script "#{node.elastic.home_dir}/bin/elastic-stop.sh"
     log_file "#{node.elastic.home}/logs/#{node.elastic.cluster_name}.log"
