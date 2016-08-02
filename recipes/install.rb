@@ -287,19 +287,6 @@ if node.kagent.enabled == "true"
     log_file "#{node.elastic.home}/logs/#{node.elastic.cluster_name}.log"
     pid_file "/tmp/elasticsearch.pid"
   end
-
-  if node.elastic.rivers_enabled == "true"
-
-    for river in node.elastic.rivers do
-      kagent_config "elasticsearch-#{river}" do
-        service "elasticsearch-#{river}"
-        start_script "#{riverdir}/bin/#{river}-start.sh" 
-        stop_script "#{riverdir}/bin/#{river}-stop.sh"
-        log_file "#{riverdir}/rivers/#{river}.log"
-        pid_file "#{riverdir}/rivers/#{river}.pid"
-      end
-    end
-  end
 end
 
 
