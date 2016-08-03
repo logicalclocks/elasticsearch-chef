@@ -1,5 +1,7 @@
 dependencies:
   - recipe: elastic::install
+    local:
+      - kagent::install
     global:  
       - kagent::install
   - recipe: elastic::default
