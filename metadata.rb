@@ -12,7 +12,7 @@ recipe            "elastic::default",  "Configures and starts an elasticsearch s
 depends "kagent"
 depends "java"
 depends "elasticsearch"
-depends "ulimit"
+depends "ulimit2"
 depends "ndb"
 
 %w{ ubuntu debian rhel centos }.each do |os|
