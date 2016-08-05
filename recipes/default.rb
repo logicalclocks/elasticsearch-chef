@@ -170,16 +170,16 @@ template "#{node.elastic.home_dir}/bin/kill-process.sh" do
   mode "751"
 end
 
-if node.kagent.enabled == "true"
+#if node.kagent.enabled == "true"
 
-  kagent_config "elasticsearch-#{my_ip}" do
-    service "elasticsearch-#{my_ip}"
+  kagent_config "elasticsearch" do
+    service "elasticsearch"
     start_script "#{node.elastic.home_dir}/bin/elastic-start.sh"
     stop_script "#{node.elastic.home_dir}/bin/elastic-stop.sh"
     log_file "#{node.elastic.home_dir}/logs/#{node.elastic.cluster_name}.log"
     pid_file "/tmp/elasticsearch.pid"
   end
-end
+#end
 
 
 
