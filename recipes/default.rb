@@ -19,7 +19,7 @@ end
 
 Chef::Log.info "Using systemd (1): #{node.elastic.systemd}"
 
-name = "elasticsearch-#{node.elastic.node_name}"
+service_name = "elasticsearch_#{node.elastic.node_name}"
 
 case node.platform_family
 when 'rhel'
@@ -109,7 +109,7 @@ elasticsearch_configure 'my_elasticsearch' do
   action :manage
 end
 
-elasticsearch_service "#{name}" do
+elasticsearch_service "#{service_name}" do
    instance_name node.elastic.node_name
 #  user node.elastic.user
 #  group node.elastic.group
@@ -170,16 +170,16 @@ template "#{node.elastic.home_dir}/bin/kill-process.sh" do
   mode "751"
 end
 
-#if node.kagent.enabled == "true"
+if node.kagent.enabled == "true"
 
-  kagent_config "elasticsearch" do
-    service "elasticsearch"
+  kagent_config service_name do
+    service service_name
     start_script "#{node.elastic.home_dir}/bin/elastic-start.sh"
     stop_script "#{node.elastic.home_dir}/bin/elastic-stop.sh"
     log_file "#{node.elastic.home_dir}/logs/#{node.elastic.cluster_name}.log"
     pid_file "/tmp/elasticsearch.pid"
   end
-#end
+end
 
 
 
@@ -198,23 +198,23 @@ template "#{node.elastic.home_dir}/bin/elasticsearch-start.sh" do
 end
 
 if node.elastic.systemd == "true"
-  file "/etc/init.d/#{name}" do
+  file "/etc/init.d/#{service_name}" do
      action :delete
   end
 
-  file "/etc/defaults/#{name}" do
+  file "/etc/defaults/#{service_name}" do
      action :delete
   end
 
-  file "/etc/rc.d/init.d/#{name}" do
+  file "/etc/rc.d/init.d/#{service_name}" do
     action :delete
   end
 
-  elastic_service = "/lib/systemd/system/#{name}.service"
+  elastic_service = "/lib/systemd/system/#{service_name}.service"
 
   case node.platform_family
   when "rhel"
-    elastic_service =  "/usr/lib/systemd/system/#{name}.service"
+    elastic_service =  "/usr/lib/systemd/system/#{service_name}.service"
   end
 
   execute "systemctl daemon-reload"
@@ -232,13 +232,13 @@ if node.elastic.systemd == "true"
                 :nofile_limit => node.elastic.limits.nofile,
                 :memlock_limit => node.elastic.limits.memory_limit
               })
-#    notifies :enable, "service[#{name}]"
-#    notifies :restart, "service[#{name}]", :immediately
+#    notifies :enable, "service[#{service_name}]"
+#    notifies :restart, "service[#{service_name}]", :immediately
   end
 
 else  # systemd is false
 
-  # template "/etc/init.d/#{name}" do
+  # template "/etc/init.d/#{service_name}" do
   #   source "elasticsearch.erb"
   #   user "root"
   #   mode "755"
@@ -249,15 +249,15 @@ else  # systemd is false
   #               :memlock_limit => node.elastic.ulimit_memlock,
   #               :args => ""
   #             })
-  #   notifies :enable, "service[#{name}]"
-  #   notifies :restart, "service[#{name}]", :immediately
+  #   notifies :enable, "service[#{service_name}]"
+  #   notifies :restart, "service[#{service_name}]", :immediately
   # end
 
 end
 
 Chef::Log.info "Using systemd (2): #{node.elastic.systemd}"
 
-service "#{name}" do
+service "#{service_name}" do
   case node.elastic.systemd
     when "true"
     provider Chef::Provider::Service::Systemd
