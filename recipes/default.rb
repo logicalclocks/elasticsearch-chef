@@ -137,16 +137,6 @@ template "#{node.elastic.home_dir}/config/elasticsearch.yml" do
             })
 end
 
-template "#{node.elastic.home_dir}/config/elasticsearch.yml" do
-  source "elasticsearch.yml.erb"
-  user node.elastic.user
-  group node.elastic.group
-  mode "755"
-  variables({
-              :my_ip => my_ip
-            })
-end
-
 template "#{node.elastic.home_dir}/bin/elastic-start.sh" do
   source "elastic-start.sh.erb"
   user node.elastic.user
