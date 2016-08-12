@@ -20,6 +20,7 @@ end
 Chef::Log.info "Using systemd (1): #{node.elastic.systemd}"
 
 service_name = "elasticsearch-#{node.elastic.node_name}"
+pid_file = "/tmp/elasticsearch.pid"
 
 case node.platform_family
 when 'rhel'
@@ -149,6 +150,9 @@ template "#{node.elastic.home_dir}/bin/elastic-stop.sh" do
   user node.elastic.user
   group node.elastic.group
   mode "751"
+    variables({
+                :pid_file => pid_file,
+              })
 end
 
 
@@ -168,7 +172,7 @@ if node.kagent.enabled == "true"
     start_script "#{node.elastic.home_dir}/bin/elastic-start.sh"
     stop_script "#{node.elastic.home_dir}/bin/elastic-stop.sh"
     log_file "#{node.elastic.home_dir}/logs/#{node.elastic.cluster_name}.log"
-    pid_file "/tmp/elasticsearch.pid"
+    pid_file pid_file
   end
 end
 
@@ -219,7 +223,7 @@ if node.elastic.systemd == "true"
                 :start_script => "#{node.elastic.home_dir}/bin/elasticsearch-start.sh",
                 :stop_script => "#{node.elastic.home_dir}/bin/elasticsearch-stop.sh",
                 :install_dir => "#{node.elastic.home_dir}",
-                :pid => "/tmp/elasticsearch.pid",
+                :pid => pid_file,
                 :nofile_limit => node.elastic.limits.nofile,
                 :memlock_limit => node.elastic.limits.memory_limit
               })

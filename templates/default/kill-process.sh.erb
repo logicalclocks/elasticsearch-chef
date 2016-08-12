@@ -6,7 +6,7 @@ if [ $# -ne 2 ] ; then
 fi
 
 COMMAND=$1
-PID_DIR=$2
+PID_FILE=$2
 res=1
 
 NOT_FOUND=99
@@ -23,7 +23,6 @@ function kill_named {
 }
 
 echo "Stopping the $COMMAND"
-PID_FILE=$PID_DIR/$COMMAND.pid
 
 res=1
 if [ -f $PID_FILE ] ; then
