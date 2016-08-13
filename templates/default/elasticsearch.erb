@@ -90,10 +90,10 @@ status() {
       '
     fi
     # INCORRECT PID?
-    if [ $pid != $CHECK_PID_RUNNING ]; then
-      echo -e "[!] Incorrect PID found in $PIDFILE: $pid"
-      return 1
-    fi
+#    if [ $pid != $CHECK_PID_RUNNING ]; then
+#      echo -e "[!] Incorrect PID found in $PIDFILE: $pid"
+#      return 1
+#    fi
     return 0
   fi
 
