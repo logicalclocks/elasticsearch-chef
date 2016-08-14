@@ -25,14 +25,14 @@ if [ -f /etc/sysconfig/network ]; then source /etc/sysconfig/network; fi
 
 # Set limits for environments ignoring `/etc/security/limits.d`
 #
-ulimit -n <%= @nofile_limit %>
-ulimit -l <%= @memlock_limit %>
-
 
 PIDFILE="/tmp/elasticsearch.pid"
 
 
 start() {
+    ulimit -n <%= @nofile_limit %> 2>&1 > /dev/null
+    ulimit -l <%= @memlock_limit %> 2>&1 > /dev/null
+
     if [ -f $PIDFILE ]; then
       # PIDFILE EXISTS -- ES RUNNING?
       echo -e "PID file found in $PIDFILE"
@@ -67,8 +67,9 @@ status() {
 
   # RUNNING
   if [[ $pid && -d "/proc/$pid" ]]; then
-    version=$(curl -s 'http://<%= @elastic_ip %>:<%= @http_port %>' | ruby -rubygems -e 'require "json"; print JSON.parse(STDIN.read)["version"]["number"]')
-    echo -e "elasticsearch $version running with PID $pid"
+#    version=$(curl -s 'http://<%= @elastic_ip %>:<%= @http_port %>' | ruby -rubygems -e 'require "json"; print JSON.parse(STDIN.read)["version"]["number"]')
+#    echo -e "elasticsearch $version running with PID $pid"
+   echo -e "elasticsearch running with PID $pid"
     # VERBOSE
     if [[ $pid && $1 == '-v' || $1 == '--verbose' ]]; then
       curl -s 'http://<%= @elastic_ip %>:<%= node.elastic.port %>/_cluster/<%= node.elastic.cluster_name %>/<%= node.elastic.node_name %>?os&process&jvm&network&transport&settings&pretty' | \
