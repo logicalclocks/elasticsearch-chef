@@ -52,7 +52,7 @@ start() {
 }
 
 stop() {
-    su <%= node.elastic.user %> -c "<%= node.elastic.home_dir %>/bin/elasticsearch-stop.sh"
+    <%= node.elastic.home_dir %>/bin/elasticsearch-stop.sh
 }
 
 restart() {
