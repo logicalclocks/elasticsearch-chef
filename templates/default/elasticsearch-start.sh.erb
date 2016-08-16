@@ -1,10 +1,6 @@
 #!/bin/bash
 set -e
 
-ulimit -n <%= @nofile_limit %>
-ulimit -l <%= @memlock_limit %>
-
-
 nohup <%= node.elastic.home_dir %>/bin/elasticsearch > <%= node.elastic.home_dir %>/elasticsearch.log 2>&1 & 
-echo $! > /tmp/elasticsearch.pid
+echo $! > <%= node.elastic.pid_file %>
 exit 0

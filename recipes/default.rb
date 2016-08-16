@@ -138,24 +138,19 @@ template "#{node.elastic.home_dir}/config/elasticsearch.yml" do
             })
 end
 
-template "#{node.elastic.home_dir}/bin/elastic-start.sh" do
-  source "elastic-start.sh.erb"
+template "#{node.elastic.home_dir}/bin/elasticsearch-start.sh" do
+  source "elasticsearch-start.sh.erb"
   user node.elastic.user
   group node.elastic.group
   mode "751"
 end
 
-template "#{node.elastic.home_dir}/bin/elastic-stop.sh" do
-  source "elastic-stop.sh.erb"
+template "#{node.elastic.home_dir}/bin/elasticsearch-stop.sh" do
+  source "elasticsearch-stop.sh.erb"
   user node.elastic.user
   group node.elastic.group
   mode "751"
-    variables({
-                :pid_file => pid_file,
-              })
 end
-
-
 
 template "#{node.elastic.home_dir}/bin/kill-process.sh" do
   source "kill-process.sh.erb"
@@ -169,10 +164,8 @@ if node.kagent.enabled == "true"
 # "elasticsearch". The service_name will be the name of the init.d/systemd script.
   kagent_config service_name do
     service "elasticsearch"
-    start_script "#{node.elastic.home_dir}/bin/elastic-start.sh"
-    stop_script "#{node.elastic.home_dir}/bin/elastic-stop.sh"
     log_file "#{node.elastic.home_dir}/logs/#{node.elastic.cluster_name}.log"
-    pid_file pid_file
+    pid_file node.elastic.pid_file
   end
 end
 
