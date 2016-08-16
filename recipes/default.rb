@@ -178,20 +178,6 @@ end
 
 
 
-template "#{node.elastic.home_dir}/bin/elasticsearch-stop.sh" do
-  source "elasticsearch-stop.sh.erb"
-  user node.elastic.user
-  group node.elastic.group
-  mode "751"
-end
-
-template "#{node.elastic.home_dir}/bin/elasticsearch-start.sh" do
-  source "elasticsearch-start.sh.erb"
-  user node.elastic.user
-  group node.elastic.group
-  mode "751"
-end
-
 if node.elastic.systemd == "true"
   file "/etc/init.d/#{service_name}" do
      action :delete
