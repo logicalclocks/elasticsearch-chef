@@ -7,7 +7,7 @@ version          "0.1.1"
 
 recipe            "elastic::install", "Experiment setup for elasticsearch"
 recipe            "elastic::default",  "Configures and starts an elasticsearch server"
-
+recipe            "elastic::purge",  "Deletes an elasticsearch server"
 
 depends "kagent"
 depends "java"
