@@ -20,7 +20,11 @@ depends "ndb"
 end
 
 attribute "java/jdk_version",
-          :display_name =>  "Jdk version",
+          :description =>  "Jdk version",
+          :type => 'string'
+
+attribute "java/install_flavor",
+          :description =>  "Oracle (default) or openjdk",
           :type => 'string'
 
 attribute "elastic/port",

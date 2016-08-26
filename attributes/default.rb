@@ -31,4 +31,4 @@ default.elastic.thread_stack_size     = "512k"
 
 default.elastic.pid_file              = "/tmp/elasticsearch.pid"
 
-node.default.java.jdk_version         = 7
+
