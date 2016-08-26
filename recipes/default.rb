@@ -165,7 +165,6 @@ if node.kagent.enabled == "true"
   kagent_config service_name do
     service "elasticsearch"
     log_file "#{node.elastic.home_dir}/logs/#{node.elastic.cluster_name}.log"
-    pid_file node.elastic.pid_file
   end
 end
 
