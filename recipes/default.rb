@@ -76,7 +76,7 @@ elastic_ip = private_recipe_ip("elastic","default")
 elasticsearch_configure 'my_elasticsearch' do
 #  user node.elastic.user
 #  group node.elastic.group
-#  path_home node.elastic.home_dir
+   path_home node.elastic.home_dir
 #  path_conf node.elastic.home_dir + "/etc/elasticsearch"
 #  path_data node.elastic.home_dir + "/var/data/elasticsearch"
 #  path_logs node.elastic.home_dir + "/var/log/elasticsearch"
