@@ -76,12 +76,16 @@ elastic_ip = private_recipe_ip("elastic","default")
 elasticsearch_configure 'my_elasticsearch' do
 #  user node.elastic.user
 #  group node.elastic.group
-   path_home node.elastic.home_dir
-#  path_conf node.elastic.home_dir + "/etc/elasticsearch"
-#  path_data node.elastic.home_dir + "/var/data/elasticsearch"
-#  path_logs node.elastic.home_dir + "/var/log/elasticsearch"
+   path_home tarball: node.elastic.home_dir
+   path_conf tarball: "#{node.elastic.home_dir}/etc/elasticsearch"
+   path_data tarball: "#{node.elastic.home_dir}/var/data/elasticsearch"
+   path_logs tarball: "#{node.elastic.home_dir}/var/log/elasticsearch"
+   path_logs     tarball: "/var/log/elasticsearch"
+   path_pid      tarball: "/var/run/elasticsearch"
+   path_plugins  tarball: "#{node.elastic.home_dir}/plugins"
+   path_bin      tarball: "#{node.elastic.home_dir}/bin
   # path_pid ({
-  #    'tarball' => node.elastic.home_dir + "/var"
+  #    'tarball' => "#{node.elastic.home_dir}//var"
   # })
   # path_bin ({
   #    'tarball' => node.elastic.home_dir + "/bin"
