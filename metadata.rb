@@ -48,7 +48,7 @@ attribute "elastic/memory",
           :type => 'string'
 
 attribute "elastic/version",
-          :description =>  "Elasticsearch version, .e.g, '2.1.2'",
+          :description =>  "Elasticsearch version, .e.g, '2.4.1'",
           :type => 'string'
 
 attribute "elastic/checksum",
