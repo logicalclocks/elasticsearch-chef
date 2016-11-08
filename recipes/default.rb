@@ -1,6 +1,8 @@
 include_recipe "java"
 
 node.override.elasticsearch.version = node.elastic.version
+node.override.elasticsearch.download_urls.tarball = node.elastic.url
+
 
 if  node.elastic.systemd == false
   node.override.elastic.systemd == "false"
@@ -44,9 +46,7 @@ elasticsearch_install 'elastic_installation' do
   type :tarball
   version node.elastic.version
   instance_name node.elastic.node_name
-#  download_url node['elasticsearch']['download_urls_v2']['tar']
-  download_url node.elasticsearch.download_urls.tar
-#  download_checksum node.elasticsearch.checksums["#{node.elasticsearch.version}"]['tar']
+  download_url node.elasticsearch.download_urls.tarball # 
   download_checksum node.elastic.checksum
   action :install
 end
