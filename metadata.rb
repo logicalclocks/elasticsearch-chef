@@ -54,3 +54,7 @@ attribute "elastic/version",
 attribute "elastic/checksum",
           :description =>  "Sha-1 checksum for the elasticsearch .tar.gz file",
           :type => 'string'
+
+attribute "elastic/default/private_ips",
+          :description => "Set ip addresses",
+          :type => "array"
