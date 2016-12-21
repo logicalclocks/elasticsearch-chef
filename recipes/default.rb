@@ -83,19 +83,12 @@ elasticsearch_configure 'my_elasticsearch' do
    path_logs     tarball: "/var/log/elasticsearch"
    path_pid      tarball: "/var/run/elasticsearch"
    path_plugins  tarball: "#{node.elastic.home_dir}/plugins"
-   path_bin      tarball: "#{node.elastic.home_dir}/bin
-  # path_pid ({
-  #    'tarball' => "#{node.elastic.home_dir}//var"
-  # })
-  # path_bin ({
-  #    'tarball' => node.elastic.home_dir + "/bin"
-  # })
-  logging({:"action" => 'INFO'})
-  allocated_memory node.elastic.memory
-  thread_stack_size node.elastic.thread_stack_size
-  env_options '-DFOO=BAR'
-  gc_settings <<-CONFIG
-#                 -XX:+UseParNewGC
+   path_bin      tarball: "#{node.elastic.home_dir}/bin"
+   logging({:"action" => 'INFO'})
+   allocated_memory node.elastic.memory
+   thread_stack_size node.elastic.thread_stack_size
+   env_options '-DFOO=BAR'
+   gc_settings <<-CONFIG
                 -XX:+UseConcMarkSweepGC
                 -XX:CMSInitiatingOccupancyFraction=75
                 -XX:+UseCMSInitiatingOccupancyOnly
@@ -103,15 +96,15 @@ elasticsearch_configure 'my_elasticsearch' do
                 -XX:+PrintGCDetails
               CONFIG
 #  nofile_limit 64000
-  configuration ({
-    'cluster.name' => node.elastic.cluster_name,
-    'node.name' => node.elastic.node_name,
-    'network.host' =>  my_ip,
-    'http.cors.enabled' => true,
-    'http.cors.allow-origin' => "*"
-  })
-  instance_name node.elastic.node_name
-  action :manage
+   configuration ({
+     'cluster.name' => node.elastic.cluster_name,
+     'node.name' => node.elastic.node_name,
+     'network.host' =>  my_ip,
+     'http.cors.enabled' => true,
+     'http.cors.allow-origin' => "*"
+   })
+   instance_name node.elastic.node_name
+   action :manage
 end
 
 elasticsearch_service "#{service_name}" do
