@@ -41,13 +41,20 @@ end
 
 install_dir = Hash.new
 install_dir['package'] = node.elastic.dir
+install_dir['tarball'] = node.elastic.dir
+
+
+node.override['ark']['prefix_root'] = node.elastic.dir
+node.override['ark']['prefix_bin'] = node.elastic.dir
+node.override['ark']['prefix_home'] = node.elastic.dir
 
 elasticsearch_install 'elastic_installation' do
   type :tarball
   version node.elastic.version
   instance_name node.elastic.node_name
-  download_url node.elasticsearch.download_urls.tarball # 
+  download_url node.elasticsearch.download_urls.tarball 
   download_checksum node.elastic.checksum
+  dir install_dir
   action :install
 end
 
@@ -113,7 +120,7 @@ elasticsearch_service "#{service_name}" do
 #  group node.elastic.group
 #  node_name node.elastic.node_name
 #  pid_path node.elastic.home_dir + "/var/run"
-#  path_conf node.elastic.home_dir + "/etc/elasticsearch"
+#   path_conf node.elastic.home_dir + "/etc/elasticsearch"
    init_source 'elasticsearch.erb'
    init_cookbook 'elastic'
    service_actions [:nothing]
