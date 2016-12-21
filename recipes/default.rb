@@ -242,7 +242,10 @@ service "#{service_name}" do
     provider Chef::Provider::Service::Init::Debian
   end
   supports :restart => true, :stop => true, :start => true, :status => true
+if node.services.enabled == "true"
   action :enable
+end
+
 end
 
 systemd = false
