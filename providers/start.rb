@@ -44,19 +44,97 @@ indexes_installed = "#{node.elastic.home_dir}/.indexes_installed"
  http_request 'elastic-install-indexes' do
    url "http://#{new_resource.elastic_ip}:9200/projects"
    message '
-   {
-      "mappings": {
-         "proj": {},
-         "ds": {
-            "_parent": {
-               "type": "proj"
+   {  
+    "mappings":{  
+        "proj":{  
+            "dynamic":"strict",
+            "properties":{  
+                "description":{  
+                    "type":"string"
+                },
+                "name":{  
+                    "type":"string"
+                },
+                "parent_id":{  
+                    "type":"long"
+                },
+                "user":{  
+                    "type":"string"
+                }
             }
-         },
-         "inode": {
-            "_parent": {
-               "type": "ds"
+        },
+        "ds":{  
+            "dynamic":"strict",
+            "_parent":{  
+                "type":"proj"
+            },
+            "_routing":{  
+                "required":true
+            },
+            "properties":{  
+                "description":{  
+                    "type":"string"
+                },
+                "name":{  
+                    "type":"string"
+                },
+                "parent_id":{  
+                    "type":"long"
+                },
+                "project_id":{  
+                    "type":"long"
+                },
+                "public_ds":{  
+                    "type":"boolean"
+                },
+                "xattr":{  
+                    "type":"nested",
+                    "dynamic":true
+                }
             }
-         }
+        },
+        "inode":{  
+            "dynamic":"strict",
+            "_parent":{  
+                "type":"ds"
+            },
+            "_routing":{  
+                "required":true
+            },
+            "properties":{  
+                "dataset_id":{  
+                    "type":"long"
+                },
+                "group":{  
+                    "type":"string"
+                },
+                "name":{  
+                    "type":"string"
+                },
+                "operation":{  
+                    "type":"long"
+                },
+                "parent_id":{  
+                    "type":"long"
+                },
+                "project_id":{  
+                    "type":"long"
+                },
+                "size":{  
+                    "type":"long"
+                },
+                "timestamp":{  
+                    "type":"long"
+                },
+                "user":{  
+                    "type":"string"
+                },
+                "xattr":{  
+                    "type":"nested",
+                    "dynamic":true
+                }
+            }
+        }
       }
    }'
    action :put
