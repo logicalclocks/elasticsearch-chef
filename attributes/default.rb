@@ -1,8 +1,8 @@
 include_attribute "elasticsearch"
 
-default.elastic.version               = "2.4.1"
+default.elastic.version               = "5.2.1"
 default.elastic.install_type          = "tarball"
-default.elastic.checksum              = "23a369ef42955c19aaaf9e34891eea3a055ed217d7fbe76da0998a7a54bbe167"
+default.elastic.checksum              = "f28bfecbb8896bbcf8c6063a474a2ddee29a262c216f56ff6d524fc898094475"
 default.elastic.url                   = node.download_url + "/elasticsearch-#{node.elastic.version}.tar.gz"
 default.elastic.user                  = "elastic"
 default.elastic.group                 = "elastic"
