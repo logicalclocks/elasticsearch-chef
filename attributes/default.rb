@@ -13,7 +13,7 @@ default.elastic.port                  = "9200"
 default.elastic.cluster_name          = "hops"
 default.elastic.node_name             = "hopsworks"
 
-default.elastic.dir                   = node.install.dir.empty? ? node.install.dir : "/usr/local"
+default.elastic.dir                   = node.install.dir.empty? ? "/usr/local" : node.install.dir
 default.elastic.version_dir           = "#{node.elastic.dir}/elasticsearch-#{node.elastic.version}"
 default.elastic.home_dir              = "#{node.elastic.dir}/elasticsearch"
 default.elastic.plugins_dir           = node.elastic.home_dir + "/plugins"
