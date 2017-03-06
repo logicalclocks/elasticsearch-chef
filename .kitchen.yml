@@ -3,6 +3,7 @@ driver:
   name: vagrant
   customize:
     memory: 4500
+    ioapic: 'on'
     natdnshostresolver1: "on"
     natdnsproxy1: "on"
     nictype1: "virtio"
@@ -21,18 +22,17 @@ suites:
       - recipe[kagent::install]
       - recipe[elastic::install]
       - recipe[elastic::default]
-
     attributes:
          elastic:
 	    dir: "/srv/hops"
+            user: 'glassfish'
             default:
                 private_ips: ["10.0.2.15"]
                 public_ips: ["10.0.2.15"]
-            checksum: "069cf3ab88a36d01f86e54b46169891b0adef6eda126ea35e540249d904022e1"
-            version: 2.1.2
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
          kagent:
+            user: 'glassfish'
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
          private_ips: ["10.0.2.15"]

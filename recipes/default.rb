@@ -41,13 +41,20 @@ end
 
 install_dir = Hash.new
 install_dir['package'] = node.elastic.dir
+install_dir['tarball'] = node.elastic.dir
+
+
+node.override['ark']['prefix_root'] = node.elastic.dir
+node.override['ark']['prefix_bin'] = node.elastic.dir
+node.override['ark']['prefix_home'] = node.elastic.dir
 
 elasticsearch_install 'elastic_installation' do
   type :tarball
   version node.elastic.version
   instance_name node.elastic.node_name
-  download_url node.elasticsearch.download_urls.tarball # 
+  download_url node.elasticsearch.download_urls.tarball 
   download_checksum node.elastic.checksum
+  dir install_dir
   action :install
 end
 
@@ -82,19 +89,12 @@ elasticsearch_configure 'my_elasticsearch' do
    path_logs     tarball: "/var/log/elasticsearch"
    path_pid      tarball: "/var/run/elasticsearch"
    path_plugins  tarball: "#{node.elastic.home_dir}/plugins"
-   path_bin      tarball: "#{node.elastic.home_dir}/bin
-  # path_pid ({
-  #    'tarball' => "#{node.elastic.home_dir}//var"
-  # })
-  # path_bin ({
-  #    'tarball' => node.elastic.home_dir + "/bin"
-  # })
-  logging({:"action" => 'INFO'})
-  allocated_memory node.elastic.memory
-  thread_stack_size node.elastic.thread_stack_size
-  env_options '-DFOO=BAR'
-  gc_settings <<-CONFIG
-#                 -XX:+UseParNewGC
+   path_bin      tarball: "#{node.elastic.home_dir}/bin"
+   logging({:"action" => 'INFO'})
+   allocated_memory node.elastic.memory
+   thread_stack_size node.elastic.thread_stack_size
+   env_options '-DFOO=BAR'
+   gc_settings <<-CONFIG
                 -XX:+UseConcMarkSweepGC
                 -XX:CMSInitiatingOccupancyFraction=75
                 -XX:+UseCMSInitiatingOccupancyOnly
@@ -102,15 +102,15 @@ elasticsearch_configure 'my_elasticsearch' do
                 -XX:+PrintGCDetails
               CONFIG
 #  nofile_limit 64000
-  configuration ({
-    'cluster.name' => node.elastic.cluster_name,
-    'node.name' => node.elastic.node_name,
-    'network.host' =>  my_ip,
-    'http.cors.enabled' => true,
-    'http.cors.allow-origin' => "*"
-  })
-  instance_name node.elastic.node_name
-  action :manage
+   configuration ({
+     'cluster.name' => node.elastic.cluster_name,
+     'node.name' => node.elastic.node_name,
+     'network.host' =>  my_ip,
+     'http.cors.enabled' => true,
+     'http.cors.allow-origin' => "*"
+   })
+   instance_name node.elastic.node_name
+   action :manage
 end
 
 elasticsearch_service "#{service_name}" do
@@ -119,7 +119,7 @@ elasticsearch_service "#{service_name}" do
 #  group node.elastic.group
 #  node_name node.elastic.node_name
 #  pid_path node.elastic.home_dir + "/var/run"
-#  path_conf node.elastic.home_dir + "/etc/elasticsearch"
+#   path_conf node.elastic.home_dir + "/etc/elasticsearch"
    init_source 'elasticsearch.erb'
    init_cookbook 'elastic'
    service_actions [:nothing]
@@ -241,7 +241,10 @@ service "#{service_name}" do
     provider Chef::Provider::Service::Init::Debian
   end
   supports :restart => true, :stop => true, :start => true, :status => true
+if node.services.enabled == "true"
   action :enable
+end
+
 end
 
 systemd = false
