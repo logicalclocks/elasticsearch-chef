@@ -39,7 +39,6 @@ attribute "elastic/ulimit_memlock",
           :description =>  "Memlock size for ulimit",
           :type => 'string'
 
-
 attribute "elastic/user",
           :description =>  "User to install elastic as.",
           :type => 'string'
