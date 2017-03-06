@@ -65,7 +65,6 @@ node.override.ulimit[:params][:default][:nproc] = 8000
 
 include_recipe "ulimit2"
 
-
 node.override.elasticsearch.url = node.elastic.url
 node.override.elasticsearch.version = node.elastic.version
 

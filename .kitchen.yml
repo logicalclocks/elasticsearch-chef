@@ -24,6 +24,7 @@ suites:
 
     attributes:
          elastic:
+	    dir: "/srv/hops"
             default:
                 private_ips: ["10.0.2.15"]
                 public_ips: ["10.0.2.15"]
