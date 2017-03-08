@@ -5,8 +5,8 @@ default.elastic.version               = "2.4.1"
 default.elastic.install_type          = "tarball"
 default.elastic.checksum              = "23a369ef42955c19aaaf9e34891eea3a055ed217d7fbe76da0998a7a54bbe167"
 default.elastic.url                   = node.download_url + "/elasticsearch-#{node.elastic.version}.tar.gz"
-default.elastic.user                  = "elastic"
-default.elastic.group                 = "elastic"
+default.elastic.user                  = node.install.user.empty? ? "elastic" : node.install.user
+default.elastic.group                 = node.install.user.empty? ? "elastic" : node.install.user
 
 default.elastic.port                  = "9200"
 
