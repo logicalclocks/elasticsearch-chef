@@ -3,6 +3,8 @@ dependencies:
     global:  
       - kagent::install
   - recipe: elastic::default
+    global:  
+      - kagent::default
 
 
 
