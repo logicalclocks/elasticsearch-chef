@@ -15,8 +15,8 @@ if new_resource.systemd == true
      user "root"
     code <<-EOF
     systemctl daemon-reload
-    systemctl stop elasticsearch-#{node.elastic.node_name}
-    systemctl start elasticsearch-#{node.elastic.node_name}
+    systemctl stop elasticsearch
+    systemctl start elasticsearch
   EOF
   end
 
@@ -24,10 +24,10 @@ else
   bash 'elastic-start-systemv' do
      user "root"
     code <<-EOF
-    service elasticsearch-#{node.elastic.node_name} stop
+    service elasticsearch stop
     rm /tmp/elasticsearch.pid
     sleep 2
-    service elasticsearch-#{node.elastic.node_name} start
+    service elasticsearch start
   EOF
   end
 
