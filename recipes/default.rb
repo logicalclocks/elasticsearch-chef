@@ -21,7 +21,8 @@ end
 
 Chef::Log.info "Using systemd (1): #{node.elastic.systemd}"
 
-service_name = "elasticsearch-#{node.elastic.node_name}"
+#service_name = "elasticsearch-#{node.elastic.node_name}"
+service_name = "elasticsearch"
 pid_file = "/tmp/elasticsearch.pid"
 
 case node.platform_family
