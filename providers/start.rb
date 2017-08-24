@@ -144,8 +144,9 @@ indexes_installed = "#{node.elastic.home_dir}/.indexes_installed"
  end
 
   bash 'elastic-indexes-installed' do
-     user node.elastic.user
+     user node['elastic']['user']
     code <<-EOF
+        chmod 750 #{node['elastic']['version_dir']}
         touch #{indexes_installed}
   EOF
   end
