@@ -29,7 +29,7 @@
 # Cluster name identifies your cluster for auto-discovery. If you're running
 # multiple clusters on the same network, make sure you're using unique names.
 #
-cluster.name: <%= node.elastic.cluster_name %>
+cluster.name: <%= node['elastic']['cluster_name'] %>
 
 
 #################################### Node #####################################
@@ -37,7 +37,7 @@ cluster.name: <%= node.elastic.cluster_name %>
 # Node names are generated dynamically on startup, so you're relieved
 # from configuring them manually. You can tie this node to a specific name:
 #
-node.name: "<%= node.elastic.node_name %>"
+node.name: "<%= node['elastic']['node_name'] %>"
 
 # Every node can be configured to allow or deny being eligible as the master,
 # and to allow or deny to store the data.
@@ -80,7 +80,7 @@ node.data: true
 
 # A node can have generic attributes associated with it, which can later be used
 # for customized shard allocation filtering, or allocation awareness. An attribute
-# is a simple key value pair, similar to node.key: value, here is an example:
+# is a simple key value pair, similar to node['key']: value, here is an example:
 #
 #node.rack: rack314
 
@@ -142,11 +142,11 @@ node.data: true
 
 # Path to directory containing configuration (this file and logging.yml):
 #
-path.conf: <%= node.elastic.home_dir %>/config
+path.conf: <%= node['elastic']['home_dir'] %>/config
 
 # Path to directory where to store index data allocated for this node.
 #
-path.data: <%= node.elastic.home_dir %>/data
+path.data: <%= node['elastic']['home_dir'] %>/data
 #
 # Can optionally include more than one location, causing data to be striped across
 # the locations (a la RAID 0) on a file level, favouring locations with most free
@@ -160,7 +160,7 @@ path.data: <%= node.elastic.home_dir %>/data
 
 # Path to log files:
 #
-path.logs: <%= node.elastic.home_dir %>/logs
+path.logs: <%= node['elastic']['home_dir'] %>/logs
 
 # Path to where plugins are installed:
 #
@@ -303,7 +303,7 @@ http.cors.allow-origin : "*"
 # and master node is elected. Multicast discovery is the default.
 
 # Set to ensure a node sees N other master eligible nodes to be considered
-# operational within the cluster. This should be set to a quorum/majority of 
+# operational within the cluster. This should be set to a quorum/majority of
 # the master-eligible nodes in the cluster.
 #
 #discovery.zen.minimum_master_nodes: 1

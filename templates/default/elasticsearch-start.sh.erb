@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
 
-nohup <%= node.elastic.home_dir %>/bin/elasticsearch > <%= node.elastic.home_dir %>/elasticsearch.log 2>&1 & 
-echo $! > <%= node.elastic.pid_file %>
+nohup <%= node['elastic']['home_dir'] %>/bin/elasticsearch > <%= node['elastic']['home_dir'] %>/elasticsearch.log 2>&1 & 
+echo $! > <%= node['elastic']['pid_file'] %>
 exit 0

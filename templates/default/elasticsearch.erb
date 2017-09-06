@@ -16,7 +16,7 @@
 # chkconfig:   - 57 47
 # description: elasticsearch
 # processname: elasticsearch
-# config:      <%= node.elastic.home_dir %>/etc/elasticsearch/elasticsearch.yml
+# config:      <%= node['elastic']['home_dir'] %>/etc/elasticsearch/elasticsearch.yml
 <% end %>
 
 # Source networking configuration
@@ -47,12 +47,12 @@ start() {
     fi
 
 
-    touch $PIDFILE && chown <%= node.elastic.user %> $PIDFILE
-    su <%= node.elastic.user %> -c "<%= node.elastic.home_dir %>/bin/elasticsearch-start.sh"
+    touch $PIDFILE && chown <%= node['elastic']['user'] %> $PIDFILE
+    su <%= node['elastic']['user'] %> -c "<%= node['elastic']['home_dir'] %>/bin/elasticsearch-start.sh"
 }
 
 stop() {
-    <%= node.elastic.home_dir %>/bin/elasticsearch-stop.sh E
+    <%= node['elastic']['home_dir'] %>/bin/elasticsearch-stop.sh E
 }
 
 restart() {
@@ -67,24 +67,24 @@ status() {
 
   # RUNNING
   if [[ $pid && -d "/proc/$pid" ]]; then
-#    version=$(curl -s 'http://<%= @elastic_ip %>:<%= @http_port %>' | ruby -rubygems -e 'require "json"; print JSON.parse(STDIN.read)["version"]["number"]')
+#    version=$(curl -s 'http://<%= @elastic_ip %>:<%= @http_port %>' | ruby -rubygems -e 'require "json"; print JSON.parse(STDIN.read)['version']['number']')
 #    echo -e "elasticsearch $version running with PID $pid"
    echo -e "elasticsearch running with PID $pid"
     # VERBOSE
     if [[ $pid && $1 == '-v' || $1 == '--verbose' ]]; then
-      curl -s 'http://<%= @elastic_ip %>:<%= node.elastic.port %>/_cluster/<%= node.elastic.cluster_name %>/<%= node.elastic.node_name %>?os&process&jvm&network&transport&settings&pretty' | \
+      curl -s 'http://<%= @elastic_ip %>:<%= node['elastic']['port'] %>/_cluster/<%= node['elastic']['cluster_name'] %>/<%= node['elastic']['node_name'] %>?os&process&jvm&network&transport&settings&pretty' | \
       ruby -rubygems -e '
         begin
-          require "json"; h = JSON.parse(STDIN.read); id, node = h["nodes"].first;
+          require "json"; h = JSON.parse(STDIN.read); id, node = h['nodes'].first;
           def e(name, value); puts %Q|\e[1;36m#{(name.to_s+":").ljust(20)}\e[0m #{value || "N/A" rescue "N/A"}|; end
-          e "HTTP Address",  node["http_address"]
-          e "Node Name",     node["name"]
-          e "Cluster Name",  h["cluster_name"]
-          e "Started",       Time.at(node["jvm"]["start_time"].to_i/1000)
-          e "JVM",           "#{node["jvm"]["vm_name"]} (#{node["jvm"]["version"]})"
-          e "Memory Total",  node["os"]["mem"]["total"]
-          e "Open Files",    node["process"]["max_file_descriptors"]
-          e "Configuration", node["settings"]["config"]
+          e "HTTP Address",  node['http_address']
+          e "Node Name",     node['name']
+          e "Cluster Name",  h['cluster_name']
+          e "Started",       Time.at(node['jvm']['start_time'].to_i/1000)
+          e "JVM",           "#{node['jvm']['vm_name']} (#{node['jvm']['version']})"
+          e "Memory Total",  node['os']['mem']['total']
+          e "Open Files",    node['process']['max_file_descriptors']
+          e "Configuration", node['settings']['config']
         rescue
           puts "Metadata cannot be retrieved."
         end
