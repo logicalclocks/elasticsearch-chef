@@ -2,12 +2,12 @@ action :run do
 
 bash "install_delete_plugin" do
      user "root"
-     cwd node.elastic.home_dir
+     cwd node['elastic']['home_dir']
        code <<-EOF
       set -e
       bin/plugin install delete-by-query
    EOF
-   not_if { ::File.exists?("#{node.elastic.home_dir}/plugins/delete-by-query/delete-by-query-#{node.elastic.version}.jar") }       
+   not_if { ::File.exists?("#{node['elastic']['home_dir']}/plugins/delete-by-query/delete-by-query-#{node['elastic']['version']}.jar") }       
 end
    
 if new_resource.systemd == true
@@ -39,7 +39,7 @@ retryDelay=20
 
 Chef::Log.info  "Elastic Ip is: http://#{new_resource.elastic_ip}:9200"
 
-indexes_installed = "#{node.elastic.home_dir}/.indexes_installed"
+indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
 
  http_request 'elastic-install-indexes' do
    url "http://#{new_resource.elastic_ip}:9200/projects"

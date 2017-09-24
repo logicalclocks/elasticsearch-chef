@@ -2,7 +2,7 @@
 Description = Elasticsearch daemon.
 
 [Service]
-User = <%= node.elastic.user %>
+User = <%= node['elastic']['user'] %>
 PIDFile = /tmp/elasticsearch.pid
 ExecStart = <%= @start_script %>
 ExecStop = <%= @stop_script %>
