@@ -128,7 +128,6 @@ end
 #  action :delete
 #end
 
-
 template "#{node['elastic']['home_dir']}/config/jvm.options" do
   source "jvm.options.erb"
   user node['elastic']['user']
