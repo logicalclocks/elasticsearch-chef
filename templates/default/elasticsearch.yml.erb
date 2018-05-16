@@ -140,10 +140,6 @@ node.data: true
 
 #################################### Paths ####################################
 
-# Path to directory containing configuration (this file and logging.yml):
-#
-path.conf: <%= node['elastic']['home_dir'] %>/config
-
 # Path to directory where to store index data allocated for this node.
 #
 path.data: <%= node['elastic']['home_dir'] %>/data
@@ -384,6 +380,3 @@ http.cors.allow-origin : "*"
 ################################## Security ################################
 #
 #http.jsonp.enable: true
-
-################################## Scripting ################################
-script.engine.groovy.inline.update: true

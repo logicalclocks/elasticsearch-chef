@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+export ES_PATH_CONF=<%= node['elastic']['home_dir'] %>/config
+export ES_HOME=<%= node['elastic']['home_dir'] %>
+
 nohup <%= node['elastic']['home_dir'] %>/bin/elasticsearch > <%= node['elastic']['home_dir'] %>/elasticsearch.log 2>&1 & 
 echo $! > <%= node['elastic']['pid_file'] %>
 exit 0

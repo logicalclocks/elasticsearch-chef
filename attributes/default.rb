@@ -1,9 +1,9 @@
 include_attribute "kagent"
 include_attribute "elasticsearch"
 
-default['elastic']['version']               = "2.4.1"
+default['elastic']['version']               = "6.2.3"
 default['elastic']['install_type']          = "tarball"
-default['elastic']['checksum']              = "23a369ef42955c19aaaf9e34891eea3a055ed217d7fbe76da0998a7a54bbe167"
+default['elastic']['checksum']              = "01dd8dec5f0acf04336721e404bf4d075675a3acae9f2a9fdcdbb5ca11baca76"
 default['elastic']['url']                   = node['download_url'] + "/elasticsearch-#{node['elastic']['version']}.tar.gz"
 default['elastic']['user']                  = node['install']['user'].empty? ? "elastic" : node['install']['user']
 default['elastic']['group']                 = node['install']['user'].empty? ? "elastic" : node['install']['user']
@@ -18,7 +18,7 @@ default['elastic']['version_dir']           = "#{node['elastic']['dir']}/elastic
 default['elastic']['home_dir']              = "#{node['elastic']['dir']}/elasticsearch"
 default['elastic']['plugins_dir']           = node['elastic']['home_dir'] + "/plugins"
 
-default['elastic']['limits']['nofile']         = "65535"
+default['elastic']['limits']['nofile']         = "65536"
 default['elastic']['limits']['memory_limit']   = "100000"
 default['elastic']['limits_nproc']          = '65536'
 
@@ -29,5 +29,8 @@ default['elastic']['thread_stack_size']     = "512k"
 
 
 default['elastic']['pid_file']              = "/tmp/elasticsearch.pid"
+
+# Kernel tuning
+default['elastic']['kernel']['vm.max_map_count']      = "262144"
 
 

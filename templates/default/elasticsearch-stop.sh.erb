@@ -1,3 +1,6 @@
 #!/bin/bash
 
+export ES_PATH_CONF=<%= node['elastic']['home_dir'] %>/config
+export ES_HOME=<%= node['elastic']['home_dir'] %>
+
 <%= node['elastic']['home_dir'] %>/bin/kill-process.sh Elasticsearch <%= node['elastic']['pid_file'] %>
