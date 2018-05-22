@@ -249,3 +249,9 @@ Chef::Log.info "Using systemd (4): #{systemd}"
    systemd systemd
    action :run
  end
+
+if node['install']['upgrade'] == "true"
+  kagent_config "#{service_name}" do
+    action :systemd_reload
+  end
+end  
