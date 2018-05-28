@@ -108,6 +108,14 @@ elasticsearch_service "#{service_name}" do
 #   service_actions [:enable, :start]
 end
 
+directory "#{node['elastic']['home_dir']}/config" do
+  owner node['elastic']['user']
+  group node['elastic']['group']
+  mode "755"
+  action :create
+  not_if "test -d #{node['elastic']['home_dir']}/config"
+end
+
 file "#{node['elastic']['home_dir']}/config/elasticsearch.yml" do
   user node['elastic']['user']
   action :delete
