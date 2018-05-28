@@ -55,7 +55,7 @@ elasticsearch_install 'elasticsearch' do
   instance_name node['elastic']['node_name']
   download_url node['elasticsearch']['download_urls']['tarball']
   download_checksum node['elastic']['checksum']
-  dir install_dir
+  dir node['elastic']['dir']
   action :install
 end
 
