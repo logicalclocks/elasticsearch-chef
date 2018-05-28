@@ -84,15 +84,6 @@ elasticsearch_configure 'elasticsearch' do
    path_home node['elastic']['home_dir']
    logging({:"action" => 'INFO'})
    allocated_memory node['elastic']['memory']
-   thread_stack_size node['elastic']['thread_stack_size']
-   gc_settings <<-CONFIG
-                -XX:+UseConcMarkSweepGC
-                -XX:CMSInitiatingOccupancyFraction=75
-                -XX:+UseCMSInitiatingOccupancyOnly
-                -XX:+HeapDumpOnOutOfMemoryError
-                -XX:+PrintGCDetails
-              CONFIG
-#  nofile_limit 64000
    configuration ({
      'cluster.name' => node['elastic']['cluster_name'],
      'node.name' => node['elastic']['node_name'],
