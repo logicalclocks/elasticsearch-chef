@@ -81,7 +81,7 @@ mysql_ip = my_ip
 elastic_ip = private_recipe_ip("elastic","default")
 
 elasticsearch_configure 'elasticsearch' do
-   path_home tarball: node['elastic']['home_dir']
+   path_home node['elastic']['home_dir']
    logging({:"action" => 'INFO'})
    allocated_memory node['elastic']['memory']
    thread_stack_size node['elastic']['thread_stack_size']
