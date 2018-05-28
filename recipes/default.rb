@@ -50,7 +50,7 @@ node.override['ark']['prefix_bin'] = node['elastic']['dir']
 node.override['ark']['prefix_home'] = node['elastic']['dir']
 
 elasticsearch_install 'elasticsearch' do
-  type :tarball
+  type "tarball"
   version node['elastic']['version']
   instance_name node['elastic']['node_name']
   download_url node['elasticsearch']['download_urls']['tarball']
