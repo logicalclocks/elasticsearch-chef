@@ -82,6 +82,7 @@ elastic_ip = private_recipe_ip("elastic","default")
 
 elasticsearch_configure 'elasticsearch' do
    path_home node['elastic']['home_dir']
+   path_conf "#{node['elastic']['home_dir']}/config"
    logging({:"action" => 'INFO'})
    allocated_memory node['elastic']['memory']
    configuration ({
@@ -106,14 +107,6 @@ elasticsearch_service "#{service_name}" do
    init_cookbook 'elastic'
    service_actions ['nothing']
 #   service_actions [:enable, :start]
-end
-
-directory "#{node['elastic']['home_dir']}/config" do
-  owner node['elastic']['user']
-  group node['elastic']['group']
-  mode "755"
-  action :create
-  not_if "test -d #{node['elastic']['home_dir']}/config"
 end
 
 file "#{node['elastic']['home_dir']}/config/elasticsearch.yml" do
