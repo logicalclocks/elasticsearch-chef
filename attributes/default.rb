@@ -1,5 +1,6 @@
 include_attribute "kagent"
 include_attribute "elasticsearch"
+include_attribute "hopslog"
 
 default['elastic']['version']               = "6.2.3"
 default['elastic']['install_type']          = "tarball"

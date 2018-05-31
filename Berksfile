@@ -5,8 +5,14 @@ metadata
 
 cookbook 'java'
 
+<<<<<<< cdcf5c23d74edb76fa934e038005520eaa7138ba
 cookbook 'kagent', github: "logicalclocks/kagent-chef", branch: "master"
 cookbook 'ndb', github: "logicalclocks/ndb-chef", branch: "master"
+=======
+cookbook 'kagent', github: "hopshadoop/kagent-chef", branch: "master"
+cookbook 'kagent', github: "robzor92/hopslog-chef", branch: "HOPSWORKS-558"
+
+>>>>>>> fix
 cookbook 'ulimit2', '~> 0.2.0'
 cookbook 'elasticsearch', '~> 4.0.0'
 

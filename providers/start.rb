@@ -167,6 +167,13 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
    not_if { ::File.exists?( indexes_installed ) }
  end
 
+ http_request 'add_elastic_index_for_kibana' do
+   action :put
+   url "http://#{new_resource.elastic_ip}:9200/#{node['kibana']['default_index']}?pretty"
+   retries numRetries
+   retry_delay retryDelay
+ end
+
   bash 'elastic-indexes-installed' do
      user node['elastic']['user']
     code <<-EOF
