@@ -27,12 +27,12 @@ numRetries=10
 retryDelay=20
 
 
-Chef::Log.info  "Elastic Ip is: http://#{new_resource.elastic_ip}:9200"
+Chef::Log.info  "Elastic Ip is: http://#{new_resource.elastic_ip}:#{node['elastic']['port']}"
 
 indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
 
  http_request 'elastic-install-projects-index' do
-   url "http://#{new_resource.elastic_ip}:9200/projects"
+   url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/projects"
    headers 'Content-Type' => 'application/json'
    message '
    {
@@ -94,7 +94,7 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
  end
 
  http_request 'elastic-create-logs-template' do
-   url "http://#{new_resource.elastic_ip}:9200/_template/logs"
+   url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/_template/logs"
    headers 'Content-Type' => 'application/json'
    message '
    {
@@ -131,7 +131,7 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
  end
 
  http_request 'elastic-create-experiments-template' do
-   url "http://#{new_resource.elastic_ip}:9200/_template/experiments"
+   url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/_template/experiments"
    headers 'Content-Type' => 'application/json'
    message '
    {
@@ -169,7 +169,7 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
 
  http_request 'add_elastic_index_for_kibana' do
    action :put
-   url "http://#{new_resource.elastic_ip}:9200/#{node['kibana']['default_index']}?pretty"
+   url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/#{node['elastic']['default_kibana_index']}?pretty"
    retries numRetries
    retry_delay retryDelay
  end

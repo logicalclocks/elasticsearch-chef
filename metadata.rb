@@ -14,7 +14,6 @@ depends "java"
 depends "elasticsearch"
 depends "ulimit2"
 depends "sysctl"
-depends "hopslog"
 
 %w{ ubuntu debian rhel centos }.each do |os|
   supports os

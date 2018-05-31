@@ -10,7 +10,6 @@ cookbook 'kagent', github: "logicalclocks/kagent-chef", branch: "master"
 cookbook 'ndb', github: "logicalclocks/ndb-chef", branch: "master"
 =======
 cookbook 'kagent', github: "hopshadoop/kagent-chef", branch: "master"
-cookbook 'kagent', github: "robzor92/hopslog-chef", branch: "HOPSWORKS-558"
 
 >>>>>>> fix
 cookbook 'ulimit2', '~> 0.2.0'
