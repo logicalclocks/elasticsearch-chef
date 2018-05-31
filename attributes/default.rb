@@ -22,7 +22,7 @@ default['elastic']['limits']['nofile']         = "65536"
 default['elastic']['limits']['memory_limit']   = "100000"
 default['elastic']['limits_nproc']          = '65536'
 
-default['elastic']['default_kibana_index']  = 'hopsdefault'
+default['elastic']['default_kibana_index']  = "hopsdefault"
 
 default['elastic']['systemd']               = "true"
 
