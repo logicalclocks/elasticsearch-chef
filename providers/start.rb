@@ -139,22 +139,25 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
      "mappings":{
        "experiments":{
          "properties":{
-           "hops-py-library":{
+           "project":{
              "type":"keyword"
            },
-           "tensorflow":{
+           "user":{
              "type":"keyword"
            },
-           "spark":{
+           "name":{
              "type":"keyword"
            },
-           "hopsworks":{
+           "module":{
              "type":"keyword"
            },
-           "hops":{
+           "function":{
              "type":"keyword"
            },
-           "kafka":{
+           "metric":{
+             "type":"keyword"
+           },
+           "hyperparameter":{
              "type":"keyword"
            }
          }
