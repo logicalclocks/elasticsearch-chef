@@ -169,6 +169,15 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
            "finished":{
            "type":"date"
            },
+           "executors":{
+             "type":"keyword"
+           },
+           "memory_per_executor":{
+             "type":"keyword"
+           },
+           "gpus_per_executor":{
+             "type":"keyword"
+           },
            "spark":{
              "type":"keyword"
            },
