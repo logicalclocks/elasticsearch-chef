@@ -160,6 +160,15 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
            "hyperparameter":{
              "type":"keyword"
            },
+           "state":{
+           "type":"keyword"
+           },
+           "start":{
+           "type":"date"
+           },
+           "finished":{
+           "type":"date"
+           },
            "spark":{
              "type":"keyword"
            },
