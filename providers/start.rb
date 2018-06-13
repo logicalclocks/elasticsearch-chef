@@ -160,7 +160,7 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
            "hyperparameter":{
              "type":"keyword"
            },
-           "state":{
+           "status":{
            "type":"keyword"
            },
            "start":{
@@ -182,6 +182,12 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
              "type":"keyword"
            },
            "tensorflow":{
+             "type":"keyword"
+           },
+           "kafka":{
+             "type":"keyword"
+           },
+           "cuda":{
              "type":"keyword"
            },
            "hops_py":{
