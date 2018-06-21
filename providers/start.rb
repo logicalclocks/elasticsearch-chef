@@ -198,6 +198,9 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
            },
            "hopsworks":{
              "type":"keyword"
+           },
+           "logdir":{
+             "type":"keyword"
            }
          }
        }
