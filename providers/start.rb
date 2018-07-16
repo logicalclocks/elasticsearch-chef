@@ -2,7 +2,7 @@ action :run do
 
 if new_resource.systemd == true
   bash 'elastic-start-systemd' do
-     user "root"
+    user "root"
     code <<-EOF
     systemctl daemon-reload
     systemctl stop elasticsearch
@@ -12,7 +12,7 @@ if new_resource.systemd == true
 
 else
   bash 'elastic-start-systemv' do
-     user "root"
+    user "root"
     code <<-EOF
     service elasticsearch stop
     rm /tmp/elasticsearch.pid
@@ -242,18 +242,18 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
           }
        }
      }
-   },
+   }',
    retries numRetries
    retry_delay retryDelay
+   not_if { ::File.exists?( indexes_installed ) }
  end
 
-  bash 'elastic-indexes-installed' do
-     user node['elastic']['user']
+ bash 'elastic-indexes-installed' do
+    user node['elastic']['user']
     code <<-EOF
         chmod 750 #{node['elastic']['version_dir']}
         touch #{indexes_installed}
-  EOF
-  end
+    EOF
+    end
  
-#  new_resource.updated_by_last_action(false)
 end
