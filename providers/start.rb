@@ -100,7 +100,7 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
    {
      "index_patterns": ["*_logs"],
      "mappings":{
-       "logs":{
+       "doc":{
          "properties":{
             "application" : {
             "type" : "keyword"
