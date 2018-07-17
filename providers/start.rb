@@ -242,7 +242,7 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
           }
        }
      }
-   }',
+   }'
    retries numRetries
    retry_delay retryDelay
    not_if { ::File.exists?( indexes_installed ) }
