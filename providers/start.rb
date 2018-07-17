@@ -98,7 +98,7 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
    headers 'Content-Type' => 'application/json'
    message '
    {
-     "index_patterns": ["*_logs"],
+     "index_patterns": ["*_logs-*"],
      "mappings":{
        "doc":{
          "properties":{
