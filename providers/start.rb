@@ -102,39 +102,40 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
      "mappings":{
        "doc":{
          "properties":{
-            "application" : {
-            "type" : "keyword"
-          },
-          "host" : {
-            "type" : "keyword"
-          },
-          "jobname" : {
-            "type" : "keyword"
-          },
-          "class" : {
-            "type" : "keyword"
-          },
-          "file" : {
-            "type" : "keyword"
-          },
-          "jobid" : {
-            "type" : "keyword"
-          },
-          "logger_name" : {
-            "type" : "keyword"
-          },
-          "project" : {
-            "type" : "keyword"
-          },
-          "log_message" : {
-            "type" : "text"
-          },
-          "priority" : {
-            "type" : "text"
-          },
-          "logdate" : {
-            "type" : "date"
-          } 
+           "application" : {
+             "type" : "keyword"
+           },
+           "host" : {
+             "type" : "keyword"
+           },
+           "jobname" : {
+             "type" : "keyword"
+           },
+           "class" : {
+             "type" : "keyword"
+           },
+           "file" : {
+             "type" : "keyword"
+           },
+           "jobid" : {
+             "type" : "keyword"
+           },
+           "logger_name" : {
+             "type" : "keyword"
+           },
+           "project" : {
+             "type" : "keyword"
+           },
+           "log_message" : {
+             "type" : "text"
+           },
+           "priority" : {
+             "type" : "text"
+           },
+           "logdate" : {
+             "type" : "date"
+           } 
+         } 
        }
      }
    }'
@@ -232,17 +233,7 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
  http_request 'add_elastic_index_for_kibana' do
    action :put
    headers 'Content-Type' => 'application/json'
-   message '{}'
-   url "http://#{new_resource.elastic_ip}:9200/#{node['elastic']['default_kibana_index']}?pretty"
-   message '{
-     "config": {
-       "properties": {
-         "defaultIndex": {
-           "type": "string"
-          }
-       }
-     }
-   }'
+   url "http://#{new_resource.elastic_ip}:9200/#{node['elastic']['default_kibana_index']}"
    retries numRetries
    retry_delay retryDelay
    not_if { ::File.exists?( indexes_installed ) }
