@@ -233,6 +233,7 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
  http_request 'add_elastic_index_for_kibana' do
    action :put
    headers 'Content-Type' => 'application/json'
+   message '{}'
    url "http://#{new_resource.elastic_ip}:9200/#{node['elastic']['default_kibana_index']}"
    retries numRetries
    retry_delay retryDelay
