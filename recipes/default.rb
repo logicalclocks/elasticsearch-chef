@@ -84,7 +84,6 @@ elasticsearch_configure 'elasticsearch' do
    path_home node['elastic']['home_dir']
    path_conf "#{node['elastic']['home_dir']}/config"
    logging({:"action" => 'INFO'})
-   allocated_memory node['elastic']['memory']
    configuration ({
      'cluster.name' => node['elastic']['cluster_name'],
      'node.name' => node['elastic']['node_name'],
@@ -123,6 +122,20 @@ template "#{node['elastic']['home_dir']}/config/elasticsearch.yml" do
               :my_ip => my_ip
             })
 end
+
+file "#{node['elastic']['home_dir']}/config/jvm.options" do
+  user node['elastic']['user']
+  action :delete
+end
+
+
+template "#{node['elastic']['home_dir']}/config/jvm.options" do
+  source "jvm.options.erb"
+  user node['elastic']['user']
+  group node['elastic']['group']
+  mode "755"
+end
+
 
 template "#{node['elastic']['home_dir']}/bin/elasticsearch-start.sh" do
   source "elasticsearch-start.sh.erb"

@@ -18,15 +18,16 @@ default['elastic']['version_dir']           = "#{node['elastic']['dir']}/elastic
 default['elastic']['home_dir']              = "#{node['elastic']['dir']}/elasticsearch"
 default['elastic']['plugins_dir']           = node['elastic']['home_dir'] + "/plugins"
 
-default['elastic']['limits']['nofile']         = "65536"
-default['elastic']['limits']['memory_limit']   = "100000"
+default['elastic']['limits']['nofile']      = "65536"
 default['elastic']['limits_nproc']          = '65536'
 
 default['elastic']['default_kibana_index']  = "hopsdefault"
 
 default['elastic']['systemd']               = "true"
 
-default['elastic']['memory']                = "50m"
+default['elastic']['memory']['Xms']         = "512m"
+default['elastic']['memory']['Xmx']         = "512m"
+
 default['elastic']['thread_stack_size']     = "512k"
 
 
