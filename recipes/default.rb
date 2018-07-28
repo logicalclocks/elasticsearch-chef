@@ -84,6 +84,7 @@ elasticsearch_configure 'elasticsearch' do
    path_home node['elastic']['home_dir']
    path_conf "#{node['elastic']['home_dir']}/config"
    logging({:"action" => 'INFO'})
+   allocated_memory '512m' 
    configuration ({
      'cluster.name' => node['elastic']['cluster_name'],
      'node.name' => node['elastic']['node_name'],
