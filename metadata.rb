@@ -55,6 +55,14 @@ attribute "elastic/memory",
           :description =>  "Amount of memory for Elasticsearch.",
           :type => 'string'
 
+attribute "elastic/memory/Xms",
+          :description =>  "Amount of minimum heap memory for Elasticsearch.",
+          :type => 'string'
+
+attribute "elastic/memory/Xmx",
+          :description =>  "Amount of maximum heap memory for Elasticsearch.",
+          :type => 'string'
+
 attribute "elastic/version",
           :description =>  "Elasticsearch version, .e.g, '6.2.4'",
           :type => 'string'
