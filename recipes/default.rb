@@ -82,9 +82,8 @@ elastic_ip = private_recipe_ip("elastic","default")
 
 elasticsearch_configure 'elasticsearch' do
    path_home node['elastic']['home_dir']
-   path_conf "#{node['elastic']['home_dir']}/config"
+   path_conf "#{node['elastic']['home_dir']}/config" 
    logging({:"action" => 'INFO'})
-   allocated_memory '512m' 
    configuration ({
      'cluster.name' => node['elastic']['cluster_name'],
      'node.name' => node['elastic']['node_name'],
@@ -124,10 +123,10 @@ template "#{node['elastic']['home_dir']}/config/elasticsearch.yml" do
             })
 end
 
-file "#{node['elastic']['home_dir']}/config/jvm.options" do
-  user node['elastic']['user']
-  action :delete
-end
+#file "#{node['elastic']['home_dir']}/config/jvm.options" do
+#  user node['elastic']['user']
+#  action :delete
+#end
 
 
 template "#{node['elastic']['home_dir']}/config/jvm.options" do
