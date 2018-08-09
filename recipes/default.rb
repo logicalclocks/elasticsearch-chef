@@ -50,12 +50,12 @@ node.override['ark']['prefix_bin'] = node['elastic']['dir']
 node.override['ark']['prefix_home'] = node['elastic']['dir']
 
 elasticsearch_install 'elasticsearch' do
-  type :tarball
+  type "tarball"
   version node['elastic']['version']
   instance_name node['elastic']['node_name']
   download_url node['elasticsearch']['download_urls']['tarball']
   download_checksum node['elastic']['checksum']
-  dir install_dir
+  dir node['elastic']['dir']
   action :install
 end
 
@@ -81,18 +81,9 @@ mysql_ip = my_ip
 elastic_ip = private_recipe_ip("elastic","default")
 
 elasticsearch_configure 'elasticsearch' do
-   path_home tarball: node['elastic']['home_dir']
+   path_home node['elastic']['home_dir']
+   path_conf "#{node['elastic']['home_dir']}/config" 
    logging({:"action" => 'INFO'})
-   allocated_memory node['elastic']['memory']
-   thread_stack_size node['elastic']['thread_stack_size']
-   gc_settings <<-CONFIG
-                -XX:+UseConcMarkSweepGC
-                -XX:CMSInitiatingOccupancyFraction=75
-                -XX:+UseCMSInitiatingOccupancyOnly
-                -XX:+HeapDumpOnOutOfMemoryError
-                -XX:+PrintGCDetails
-              CONFIG
-#  nofile_limit 64000
    configuration ({
      'cluster.name' => node['elastic']['cluster_name'],
      'node.name' => node['elastic']['node_name'],
@@ -131,6 +122,20 @@ template "#{node['elastic']['home_dir']}/config/elasticsearch.yml" do
               :my_ip => my_ip
             })
 end
+
+#file "#{node['elastic']['home_dir']}/config/jvm.options" do
+#  user node['elastic']['user']
+#  action :delete
+#end
+
+
+template "#{node['elastic']['home_dir']}/config/jvm.options" do
+  source "jvm.options.erb"
+  user node['elastic']['user']
+  group node['elastic']['group']
+  mode "755"
+end
+
 
 template "#{node['elastic']['home_dir']}/bin/elasticsearch-start.sh" do
   source "elasticsearch-start.sh.erb"

@@ -1,18 +1,8 @@
 action :run do
 
-bash "install_delete_plugin" do
-     user "root"
-     cwd node['elastic']['home_dir']
-       code <<-EOF
-      set -e
-      bin/plugin install delete-by-query
-   EOF
-   not_if { ::File.exists?("#{node['elastic']['home_dir']}/plugins/delete-by-query/delete-by-query-#{node['elastic']['version']}.jar") }       
-end
-   
 if new_resource.systemd == true
   bash 'elastic-start-systemd' do
-     user "root"
+    user "root"
     code <<-EOF
     systemctl daemon-reload
     systemctl stop elasticsearch
@@ -22,7 +12,7 @@ if new_resource.systemd == true
 
 else
   bash 'elastic-start-systemv' do
-     user "root"
+    user "root"
     code <<-EOF
     service elasticsearch stop
     rm /tmp/elasticsearch.pid
@@ -37,99 +27,59 @@ numRetries=10
 retryDelay=20
 
 
-Chef::Log.info  "Elastic Ip is: http://#{new_resource.elastic_ip}:9200"
+Chef::Log.info  "Elastic Ip is: http://#{new_resource.elastic_ip}:#{node['elastic']['port']}"
 
 indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
 
- http_request 'elastic-install-indexes' do
+ http_request 'elastic-install-projects-index' do
    url "http://#{new_resource.elastic_ip}:9200/projects"
+   headers 'Content-Type' => 'application/json'
    message '
-   {  
-    "mappings":{  
-        "proj":{  
+   {
+    "mappings":{
+        "_doc":{
             "dynamic":"strict",
-            "properties":{  
-                "description":{  
-                    "type":"string"
+            "properties":{
+               "doc_type":{
+                 "type" : "keyword"
+               },
+               "project_id":{
+                  "type":"integer"
                 },
-                "name":{  
-                    "type":"string"
+                "dataset_id":{
+                    "type":"integer"
                 },
-                "parent_id":{  
-                    "type":"long"
-                },
-                "user":{  
-                    "type":"string"
-                }
-            }
-        },
-        "ds":{  
-            "dynamic":"strict",
-            "_parent":{  
-                "type":"proj"
-            },
-            "_routing":{  
-                "required":true
-            },
-            "properties":{  
-                "description":{  
-                    "type":"string"
-                },
-                "name":{  
-                    "type":"string"
-                },
-                "parent_id":{  
-                    "type":"long"
-                },
-                "project_id":{  
-                    "type":"long"
-                },
-                "public_ds":{  
+                "public_ds":{
                     "type":"boolean"
                 },
-                "xattr":{  
-                    "type":"nested",
-                    "dynamic":true
-                }
-            }
-        },
-        "inode":{  
-            "dynamic":"strict",
-            "_parent":{  
-                "type":"ds"
-            },
-            "_routing":{  
-                "required":true
-            },
-            "properties":{  
-                "dataset_id":{  
+                "description":{
+                    "type":"text"
+                },
+                "name":{
+                    "type":"text"
+                },
+                "parent_id":{
+                    "type":"integer"
+                },
+                "partition_id":{
+                  "type" : "integer"
+                },
+                "user":{
+                    "type":"keyword"
+                },
+                "group":{
+                    "type":"keyword"
+                },
+                "operation":{
+                    "type":"short"
+                },
+                "size":{
                     "type":"long"
                 },
-                "group":{  
-                    "type":"string"
-                },
-                "name":{  
-                    "type":"string"
-                },
-                "operation":{  
+                "timestamp":{
                     "type":"long"
                 },
-                "parent_id":{  
-                    "type":"long"
-                },
-                "project_id":{  
-                    "type":"long"
-                },
-                "size":{  
-                    "type":"long"
-                },
-                "timestamp":{  
-                    "type":"long"
-                },
-                "user":{  
-                    "type":"string"
-                },
-                "xattr":{  
+                "xattr":{
                     "type":"nested",
                     "dynamic":true
                 }
@@ -143,14 +93,159 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
    not_if { ::File.exists?( indexes_installed ) }       
  end
 
-  bash 'elastic-indexes-installed' do
-     user node['elastic']['user']
+ http_request 'elastic-create-logs-template' do
+   url "http://#{new_resource.elastic_ip}:9200/_template/logs"
+   headers 'Content-Type' => 'application/json'
+   message '
+   {
+     "index_patterns": ["*_logs-*"],
+     "mappings":{
+       "doc":{
+         "properties":{
+           "application" : {
+             "type" : "keyword"
+           },
+           "host" : {
+             "type" : "keyword"
+           },
+           "jobname" : {
+             "type" : "keyword"
+           },
+           "class" : {
+             "type" : "keyword"
+           },
+           "file" : {
+             "type" : "keyword"
+           },
+           "jobid" : {
+             "type" : "keyword"
+           },
+           "logger_name" : {
+             "type" : "keyword"
+           },
+           "project" : {
+             "type" : "keyword"
+           },
+           "log_message" : {
+             "type" : "text"
+           },
+           "priority" : {
+             "type" : "text"
+           },
+           "logdate" : {
+             "type" : "date"
+           } 
+         } 
+       }
+     }
+   }'
+   action :put
+   retries numRetries
+   retry_delay retryDelay
+   not_if { ::File.exists?( indexes_installed ) }
+ end
+
+ http_request 'elastic-create-experiments-template' do
+   url "http://#{new_resource.elastic_ip}:9200/_template/experiments"
+   headers 'Content-Type' => 'application/json'
+   message '
+   {
+     "template":"*_experiments",
+     "mappings":{
+       "experiments":{
+         "properties":{
+           "project":{
+             "type":"keyword"
+           },
+           "user":{
+             "type":"keyword"
+           },
+           "name":{
+             "type":"keyword"
+           },
+           "module":{
+             "type":"keyword"
+           },
+           "function":{
+             "type":"keyword"
+           },
+           "metric":{
+             "type":"keyword"
+           },
+           "hyperparameter":{
+             "type":"keyword"
+           },
+           "status":{
+           "type":"keyword"
+           },
+           "start":{
+           "type":"date"
+           },
+           "finished":{
+           "type":"date"
+           },
+           "executors":{
+             "type":"keyword"
+           },
+           "memory_per_executor":{
+             "type":"keyword"
+           },
+           "gpus_per_executor":{
+             "type":"keyword"
+           },
+           "spark":{
+             "type":"keyword"
+           },
+           "tensorflow":{
+             "type":"keyword"
+           },
+           "kafka":{
+             "type":"keyword"
+           },
+           "cuda":{
+             "type":"keyword"
+           },
+           "hops_py":{
+             "type":"keyword"
+           },
+           "hops":{
+             "type":"keyword"
+           },
+           "hopsworks":{
+             "type":"keyword"
+           },
+           "program":{
+             "type":"keyword"
+           },
+           "logdir":{
+             "type":"keyword"
+           }
+         }
+       }
+     }
+   }'
+   action :put
+   retries numRetries
+   retry_delay retryDelay
+   not_if { ::File.exists?( indexes_installed ) }
+ end
+
+ http_request 'add_elastic_index_for_kibana' do
+   action :put
+   headers 'Content-Type' => 'application/json'
+   message '{}'
+   url "http://#{new_resource.elastic_ip}:9200/#{node['elastic']['default_kibana_index']}"
+   retries numRetries
+   retry_delay retryDelay
+   not_if { ::File.exists?( indexes_installed ) }
+ end
+
+ bash 'elastic-indexes-installed' do
+    user node['elastic']['user']
     code <<-EOF
         chmod 750 #{node['elastic']['version_dir']}
         touch #{indexes_installed}
-  EOF
-  end
-
+    EOF
+    end
  
-#  new_resource.updated_by_last_action(false)
 end

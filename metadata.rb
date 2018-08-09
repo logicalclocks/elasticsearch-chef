@@ -13,7 +13,7 @@ depends "kagent"
 depends "java"
 depends "elasticsearch"
 depends "ulimit2"
-depends "ndb"
+depends "sysctl"
 
 %w{ ubuntu debian rhel centos }.each do |os|
   supports os
@@ -55,12 +55,20 @@ attribute "elastic/memory",
           :description =>  "Amount of memory for Elasticsearch.",
           :type => 'string'
 
+attribute "elastic/memory/Xms",
+          :description =>  "Amount of minimum heap memory for Elasticsearch.",
+          :type => 'string'
+
+attribute "elastic/memory/Xmx",
+          :description =>  "Amount of maximum heap memory for Elasticsearch.",
+          :type => 'string'
+
 attribute "elastic/version",
-          :description =>  "Elasticsearch version, .e.g, '2.4.1'",
+          :description =>  "Elasticsearch version, .e.g, '6.2.4'",
           :type => 'string'
 
 attribute "elastic/checksum",
-          :description =>  "Sha-1 checksum for the elasticsearch .tar.gz file",
+          :description =>  "Sha-512 checksum for the elasticsearch .tar.gz file",
           :type => 'string'
 
 attribute "elastic/default/private_ips",
