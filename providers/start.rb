@@ -32,7 +32,7 @@ Chef::Log.info  "Elastic Ip is: http://#{new_resource.elastic_ip}:#{node['elasti
 indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
 
  http_request 'elastic-install-projects-index' do
-   url "http://#{new_resource.elastic_ip}:9200/projects"
+   url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/projects"
    headers 'Content-Type' => 'application/json'
    message '
    {
@@ -94,7 +94,7 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
  end
 
  http_request 'elastic-create-logs-template' do
-   url "http://#{new_resource.elastic_ip}:9200/_template/logs"
+   url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/_template/logs"
    headers 'Content-Type' => 'application/json'
    message '
    {
@@ -134,8 +134,8 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
            },
            "logdate" : {
              "type" : "date"
-           } 
-         } 
+           }
+         }
        }
      }
    }'
@@ -146,7 +146,7 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
  end
 
  http_request 'elastic-create-experiments-template' do
-   url "http://#{new_resource.elastic_ip}:9200/_template/experiments"
+   url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/_template/experiments"
    headers 'Content-Type' => 'application/json'
    message '
    {
@@ -214,10 +214,19 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
            "hopsworks":{
              "type":"keyword"
            },
-           "program":{
+           "logdir":{
              "type":"keyword"
            },
-           "logdir":{
+           "hyperparameter_space":{
+             "type":"keyword"
+           },
+           "versioned_resources":{
+             "type":"keyword"
+           },
+           "description":{
+             "type":"keyword"
+           },
+           "app_id":{
              "type":"keyword"
            }
          }
@@ -240,12 +249,11 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
    not_if { ::File.exists?( indexes_installed ) }
  end
 
- bash 'elastic-indexes-installed' do
+  bash 'elastic-indexes-installed' do
     user node['elastic']['user']
     code <<-EOF
         chmod 750 #{node['elastic']['version_dir']}
         touch #{indexes_installed}
     EOF
     end
- 
 end
