@@ -9,6 +9,7 @@ default['elastic']['user']                  = node['install']['user'].empty? ? "
 default['elastic']['group']                 = node['install']['user'].empty? ? "elastic" : node['install']['user']
 
 default['elastic']['port']                  = "9200"
+default['elastic']['ntn_port']              = "9300" #elastic node to node communication port
 
 default['elastic']['cluster_name']          = "hops"
 default['elastic']['node_name']             = "hopsworks"
