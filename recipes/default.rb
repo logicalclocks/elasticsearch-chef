@@ -30,14 +30,18 @@ when 'rhel'
   package 'unzip'
 end
 
-
-elasticsearch_user 'elasticsearch' do
-  username node['elastic']['user']
-  groupname node['elastic']['group']
-  shell '/bin/bash'
-  comment 'Elasticsearch User'
-  instance_name node['elastic']['node_name']
+group node['elastic']['group'] do
   action :create
+  not_if "getent group #{node['elastic']['group']}"
+end
+
+user node['elastic']['user'] do
+  gid node['elastic']['group']
+  shell "/bin/bash"
+  manage_home false
+  system true
+  action :create
+  not_if "getent passwd #{node['elastic']['user']}"
 end
 
 install_dir = Hash.new
@@ -82,7 +86,7 @@ elastic_ip = private_recipe_ip("elastic","default")
 
 elasticsearch_configure 'elasticsearch' do
    path_home node['elastic']['home_dir']
-   path_conf "#{node['elastic']['home_dir']}/config" 
+   path_conf "#{node['elastic']['home_dir']}/config"
    path_data "#{node['elastic']['data_dir']}"
    logging({:"action" => 'INFO'})
    configuration ({
@@ -259,4 +263,4 @@ if node['install']['upgrade'] == "true"
   kagent_config "#{service_name}" do
     action :systemd_reload
   end
-end  
+end
