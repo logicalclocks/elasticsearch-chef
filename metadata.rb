@@ -51,6 +51,10 @@ attribute "elastic/dir",
           :description =>  "Base directory to install elastic search into.",
           :type => 'string'
 
+attribute "elastic/data_dir",
+          :description =>  "Directory to store elastic data.",
+          :type => 'string'
+
 attribute "elastic/memory",
           :description =>  "Amount of memory for Elasticsearch.",
           :type => 'string'
@@ -85,4 +89,8 @@ attribute "install/dir",
 
 attribute "install/user",
           :description => "User to install the services as",
+          :type => "string"
+
+attribute "elastic/projects/reindex",
+          :description => "Delete and reindex the projects index",
           :type => "string"
