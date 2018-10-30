@@ -44,6 +44,15 @@ user node['elastic']['user'] do
   not_if "getent passwd #{node['elastic']['user']}"
 end
 
+elasticsearch_user 'elasticsearch' do
+  username node['elastic']['user']
+  groupname node['elastic']['group']
+  shell '/bin/bash'
+  comment 'Elasticsearch User'
+  instance_name node['elastic']['node_name']
+  action :nothing
+end
+
 install_dir = Hash.new
 install_dir['package'] = node['elastic']['dir']
 install_dir['tarball'] = node['elastic']['dir']
