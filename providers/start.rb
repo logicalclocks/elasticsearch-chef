@@ -35,7 +35,7 @@ http_request 'delete projects index' do
   url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/projects"
   retries numRetries
   retry_delay retryDelay
-  only_if { node['elastic']['projects']['reindex'] }
+  only_if { node['elastic']['projects']['reindex'] == "true" }
   not_if "test \"$(curl -s -o /dev/null -w '%{http_code}\n' http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/projects)\" = \"404\""
 end
 
