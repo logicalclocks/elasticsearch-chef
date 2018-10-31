@@ -17,6 +17,8 @@ default['elastic']['node_name']             = "hopsworks"
 default['elastic']['dir']                   = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
 default['elastic']['version_dir']           = "#{node['elastic']['dir']}/elasticsearch-#{node['elastic']['version']}"
 default['elastic']['home_dir']              = "#{node['elastic']['dir']}/elasticsearch"
+default['elastic']['data_dir']              = "#{node['elastic']['dir']}/elasticsearch-data"
+
 default['elastic']['plugins_dir']           = node['elastic']['home_dir'] + "/plugins"
 
 default['elastic']['limits']['nofile']      = "65536"
@@ -38,3 +40,7 @@ default['elastic']['pid_file']              = "/tmp/elasticsearch.pid"
 default['elastic']['kernel']['vm.max_map_count']      = "262144"
 
 
+# Index management
+# Whether to reindex the projects index. In case of changes in the index,
+# set this attr to true. It will then be deleted and re-created so epipe can reindex it.
+default['elastic']['projects']['reindex']   = "false"
