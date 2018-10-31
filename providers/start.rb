@@ -29,9 +29,18 @@ retryDelay=20
 
 Chef::Log.info  "Elastic Ip is: http://#{new_resource.elastic_ip}:#{node['elastic']['port']}"
 
-indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
+# Delete projects index if reindex is set to true
+http_request 'delete projects index' do
+  action :delete
+  url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/projects"
+  retries numRetries
+  retry_delay retryDelay
+  only_if { node['elastic']['projects']['reindex'] == "true" }
+  not_if "test \"$(curl -s -o /dev/null -w '%{http_code}\n' http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/projects)\" = \"404\""
+end
 
- http_request 'elastic-install-projects-index' do
+
+http_request 'elastic-install-projects-index' do
    url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/projects"
    headers 'Content-Type' => 'application/json'
    message '
@@ -90,7 +99,6 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
    action :put
    retries numRetries
    retry_delay retryDelay
-   not_if { ::File.exists?( indexes_installed ) }       
  end
 
  http_request 'elastic-create-logs-template' do
@@ -142,7 +150,6 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
    action :put
    retries numRetries
    retry_delay retryDelay
-   not_if { ::File.exists?( indexes_installed ) }
  end
 
  http_request 'elastic-create-experiments-template' do
@@ -236,7 +243,6 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
    action :put
    retries numRetries
    retry_delay retryDelay
-   not_if { ::File.exists?( indexes_installed ) }
  end
 
  http_request 'add_elastic_index_for_kibana' do
@@ -246,14 +252,6 @@ indexes_installed = "#{node['elastic']['home_dir']}/.indexes_installed"
    url "http://#{new_resource.elastic_ip}:9200/#{node['elastic']['default_kibana_index']}"
    retries numRetries
    retry_delay retryDelay
-   not_if { ::File.exists?( indexes_installed ) }
  end
 
-  bash 'elastic-indexes-installed' do
-    user node['elastic']['user']
-    code <<-EOF
-        chmod 750 #{node['elastic']['version_dir']}
-        touch #{indexes_installed}
-    EOF
-    end
 end
