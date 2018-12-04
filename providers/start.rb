@@ -29,6 +29,14 @@ retryDelay=20
 
 Chef::Log.info  "Elastic Ip is: http://#{new_resource.elastic_ip}:#{node['elastic']['port']}"
 
+# Poll elasticsearch to make sure it's alive before progressing
+http_request 'delete projects index' do
+  action :get
+  url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/"
+  retries numRetries
+  retry_delay retryDelay
+end
+
 # Delete projects index if reindex is set to true
 http_request 'delete projects index' do
   action :delete
