@@ -29,6 +29,14 @@ retryDelay=20
 
 Chef::Log.info  "Elastic Ip is: http://#{new_resource.elastic_ip}:#{node['elastic']['port']}"
 
+# Poll elasticsearch to make sure it's alive before progressing
+http_request 'delete projects index' do
+  action :get
+  url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/"
+  retries numRetries
+  retry_delay retryDelay
+end
+
 # Delete projects index if reindex is set to true
 http_request 'delete projects index' do
   action :delete
@@ -56,7 +64,7 @@ http_request 'elastic-install-projects-index' do
                   "type":"integer"
                 },
                 "dataset_id":{
-                    "type":"integer"
+                    "type":"long"
                 },
                 "public_ds":{
                     "type":"boolean"
@@ -68,10 +76,10 @@ http_request 'elastic-install-projects-index' do
                     "type":"text"
                 },
                 "parent_id":{
-                    "type":"integer"
+                    "type":"long"
                 },
                 "partition_id":{
-                  "type" : "integer"
+                    "type":"long"
                 },
                 "user":{
                     "type":"keyword"
@@ -99,6 +107,7 @@ http_request 'elastic-install-projects-index' do
    action :put
    retries numRetries
    retry_delay retryDelay
+   only_if "test \"$(curl -s -o /dev/null -w '%{http_code}\n' http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/projects)\" = \"404\""
  end
 
  http_request 'elastic-create-logs-template' do
@@ -249,9 +258,9 @@ http_request 'elastic-install-projects-index' do
    action :put
    headers 'Content-Type' => 'application/json'
    message '{}'
-   url "http://#{new_resource.elastic_ip}:9200/#{node['elastic']['default_kibana_index']}"
+   url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/#{node['elastic']['default_kibana_index']}"
    retries numRetries
    retry_delay retryDelay
+   only_if "test \"$(curl -s -o /dev/null -w '%{http_code}\n' http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/#{node['elastic']['default_kibana_index']})\" = \"404\""
  end
-
 end
