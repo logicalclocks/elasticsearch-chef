@@ -19,14 +19,6 @@ depends "sysctl"
   supports os
 end
 
-attribute "java/jdk_version",
-          :description =>  "Jdk version",
-          :type => 'string'
-
-attribute "java/install_flavor",
-          :description =>  "Oracle (default) or openjdk",
-          :type => 'string'
-
 attribute "elastic/port",
           :description =>  "Port for elasticsearch service (default: 9200)",
           :type => 'string'
