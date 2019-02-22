@@ -254,6 +254,42 @@ http_request 'elastic-install-projects-index' do
    retry_delay retryDelay
  end
 
+  http_request 'elastic-create-kagent-template' do
+   url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/_template/kagent"
+   headers 'Content-Type' => 'application/json'
+   message '
+   {
+     "index_patterns": ["*_kagent-*"],
+     "mappings":{
+       "doc":{
+         "properties":{
+           "project_name" : {
+             "type" : "keyword"
+           },
+           "operation" : {
+             "type" : "keyword"
+           },
+           "artifact" : {
+             "type" : "keyword"
+           },
+           "artifact_version" : {
+             "type" : "keyword"
+           },
+           "return_code" : {
+             "type" : "integer"
+           },
+           "return_message" : {
+             "type" : "text"
+           }
+         }
+       }
+     }
+   }'
+   action :put
+   retries numRetries
+   retry_delay retryDelay
+  end
+  
  http_request 'add_elastic_index_for_kibana' do
    action :put
    headers 'Content-Type' => 'application/json'
