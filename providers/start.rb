@@ -346,4 +346,103 @@ action :run do
     message '{}'
     only_if_exists false
   end
+
+  elastic_http 'elastic-install-file-prov-template' do
+    action :put
+    url "#{new_resource.elastic_url}/_template/file_prov"
+    user new_resource.user
+    password new_resource.password
+    message '
+    {
+      "index_patterns": ["*__file_prov"],
+      "mappings":{
+        "properties":{
+          "inode_id":{
+            "type":"long"
+          },
+          "inode_operation":{
+            "type":"keyword"
+          },
+          "inode_name":{
+            "type":"text"
+          },
+          "user_id":{
+            "type":"integer"
+          },
+          "app_id":{
+            "type":"keyword"
+          },
+          "logical_time":{
+            "type":"integer"
+          },
+          "create_timestamp":{
+            "type":"long"
+          },
+          "timestamp":{
+            "type":"long"
+          },
+          "project_i_id":{
+            "type":"long"
+          },
+          "dataset_i_id":{
+            "type":"long"
+          },
+          "parent_i_id":{
+            "type":"long"
+          },
+          "partition_id":{
+            "type":"long"
+          },
+          "entry_type":{
+            "type":"keyword"
+          },
+          "ml_type":{
+            "type":"keyword"
+          },
+          "ml_id":{
+            "type":"keyword"
+          },
+          "r_create_timestamp":{
+            "type":"text"
+          },
+          "r_timestamp":{
+            "type":"text"
+          },
+          "project_name":{
+            "type":"text"
+          }
+        }
+      }
+    }'
+  end
+
+  elastic_http 'elastic-install-app-provenance-index' do
+    action :put
+    url "#{new_resource.elastic_url}/#{node['elastic']['epipe']['app_provenance_index']}"
+    user new_resource.user
+    password new_resource.password
+    message '
+    {
+      "mappings":{
+        "properties":{
+          "app_id":{
+            "type":"keyword"
+          },
+          "app_state":{
+            "type":"keyword"
+          },
+          "timestamp":{
+            "type":"text"
+          },
+          "app_name":{
+            "type":"text"
+          },
+          "app_user":{
+            "type":"text"
+          }
+        }
+      }
+    }'
+    only_if_exists false
+  end
 end

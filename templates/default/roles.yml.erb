@@ -92,6 +92,12 @@ elastic_exporter_hopsworks:
         - manage
         - manage_aliases
         - get
+    - index_patterns:
+      - "${attr.jwt.piid}__file_prov"
+      allowed_actions:
+        - read
+        - search
+        - get
   cluster_permissions:
     - cluster_composite_ops
     - cluster:monitor/main
@@ -116,6 +122,12 @@ elastic_exporter_hopsworks:
         - read
         - search
         - indices_monitor
+        - get
+    - index_patterns:
+      - "${attr.jwt.piid}__file_prov"
+      allowed_actions:
+        - read
+        - search
         - get
   cluster_permissions:
     - cluster_composite_ops_ro

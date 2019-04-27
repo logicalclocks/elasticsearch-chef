@@ -116,5 +116,5 @@ default['elastic']['opendistro_security']['audit']['threadpool']['max_queue_len'
 
 
 default['elastic']['epipe']['search_index']                                         = "projects"
-default['elastic']['epipe']['app_provenance_index']                                 = "appprovenance"
+default['elastic']['epipe']['app_provenance_index']                                 = "app_prov"
 default['elastic']['epipe']['file_provenance_index_pattern']                        = "*__file_prov"
