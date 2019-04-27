@@ -299,4 +299,98 @@ http_request 'elastic-install-projects-index' do
    retry_delay retryDelay
    only_if "test \"$(curl -s -o /dev/null -w '%{http_code}\n' http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/#{node['elastic']['default_kibana_index']})\" = \"404\""
  end
+
+  http_request 'elastic-install-file-provenance-index' do
+    url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/fileprovenance"
+    headers 'Content-Type' => 'application/json'
+    message '
+    {
+      "mappings":{
+        "_doc":{
+          "properties":{
+            "inode_id":{
+              "type":"long"
+            },
+            "inode_operation":{
+              "type":"keyword"
+            },
+            "io_logical_time":{
+              "type":"integer"
+            },
+            "io_timestamp":{
+              "type":"long"
+            },
+            "io_app_id":{
+              "type":"keyword"
+            },
+            "io_user_id":{
+              "type":"integer"
+            },
+            "project_i_id":{
+              "type":"long"
+            },
+            "dataset_i_id":{
+              "type":"long"
+            },
+            "i_name":{
+              "type":"text"
+            },
+            "i_readable_t":{
+              "type":"text"
+            },
+            "ml_type":{
+              "type":"keyword"
+            },
+            "ml_id":{
+              "type":"keyword"
+            },
+            "alive":{
+              "type":"boolean"
+            },
+            "entry":{
+              "type":"keyword"
+            }
+          }
+        }
+      }
+    }'
+    action :put
+    retries numRetries
+    retry_delay retryDelay
+    only_if "test \"$(curl -s -o /dev/null -w '%{http_code}\n' http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/fileprovenance)\" = \"404\""
+  end
+
+  http_request 'elastic-install-app-provenance-index' do
+    url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/appprovenance"
+    headers 'Content-Type' => 'application/json'
+    message '
+    {
+      "mappings":{
+        "_doc":{
+          "properties":{
+            "app_id":{
+              "type":"keyword"
+            },
+            "app_state":{
+              "type":"keyword"
+            },
+            "timestamp":{
+              "type":"text"
+            },
+            "app_name":{
+              "type":"text"
+            },
+            "app_user":{
+              "type":"text"
+            }
+          }
+        }
+      }
+    }'
+    action :put
+    retries numRetries
+    retry_delay retryDelay
+    only_if "test \"$(curl -s -o /dev/null -w '%{http_code}\n' http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/appprovenance)\" = \"404\""
+  end
+   
 end
