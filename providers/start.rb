@@ -289,6 +289,92 @@ http_request 'elastic-install-projects-index' do
    retries numRetries
    retry_delay retryDelay
   end
+
+#Beam job server and sdk harness templates
+http_request 'elastic-create-beamjobserver-template' do
+   url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/_template/beamjobserver"
+   headers 'Content-Type' => 'application/json'
+   message '
+   {
+   "index_patterns":[
+      "*_beamjobserver-*"
+   ],
+   "mappings":{
+      "doc":{
+         "properties":{
+            "host":{
+               "type":"keyword"
+            },
+            "jobname":{
+               "type":"keyword"
+            },
+            "thread":{
+               "type":"keyword"
+            },
+            "file":{
+               "type":"keyword"
+            },
+            "logger_name":{
+               "type":"keyword"
+            },
+            "project":{
+               "type":"keyword"
+            },
+            "log_message":{
+               "type":"text"
+            },
+            "priority":{
+               "type":"text"
+            },
+            "jobport":{
+               "type":"text"
+            }
+         }
+      }
+   }
+}'
+   action :put
+   retries numRetries
+   retry_delay retryDelay
+  end
+
+http_request 'elastic-create-beamsdkharness-template' do
+   url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/_template/beamsdkharness"
+   headers 'Content-Type' => 'application/json'
+   message '
+   {
+     "index_patterns": ["*_beamsdkharness-*"],
+     "mappings":{
+       "doc":{
+         "properties":{
+           "host":{
+               "type":"keyword"
+            },
+            "file":{
+               "type":"keyword"
+            },
+            "project":{
+               "type":"keyword"
+            },
+	    "timestamp":{
+               "type":"date"
+            },
+	    "appid":{
+               "type":"keyword"
+            },
+            "log_message":{
+               "type":"text"
+            }
+         }
+       }
+     }
+   }'
+   action :put
+   retries numRetries
+   retry_delay retryDelay
+  end
+
+
   
  http_request 'add_elastic_index_for_kibana' do
    action :put
