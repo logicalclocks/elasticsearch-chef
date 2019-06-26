@@ -290,7 +290,7 @@ http_request 'elastic-install-projects-index' do
    retry_delay retryDelay
   end
 
-#Beam job server and sdk harness templates
+#Beam job server and sdkworker templates
 http_request 'elastic-create-beamjobserver-template' do
    url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/_template/beamjobserver"
    headers 'Content-Type' => 'application/json'
@@ -338,12 +338,12 @@ http_request 'elastic-create-beamjobserver-template' do
    retry_delay retryDelay
   end
 
-http_request 'elastic-create-beamsdkharness-template' do
-   url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/_template/beamsdkharness"
+http_request 'elastic-create-beamsdkworker-template' do
+   url "http://#{new_resource.elastic_ip}:#{node['elastic']['port']}/_template/beamsdkworker"
    headers 'Content-Type' => 'application/json'
    message '
    {
-     "index_patterns": ["*_beamsdkharness-*"],
+     "index_patterns": ["*_beamsdkworker-*"],
      "mappings":{
        "doc":{
          "properties":{
