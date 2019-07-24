@@ -171,6 +171,45 @@ template "#{node['elastic']['home_dir']}/bin/kill-process.sh" do
   mode "751"
 end
 
+# Template and configure elasticsearch exporter 
+template 'destination_path' do
+  source 'elastic_exporter.service.erb'
+  owner 'root'
+  group 'root'
+  mode '0755'
+  action :create
+
+case node['platform_family']
+when "rhel"
+  systemd_script = "/usr/lib/systemd/system/elastic_exporter.service" 
+else
+  systemd_script = "/lib/systemd/system/elastic_exporter.service"
+end
+
+service "elastic_exporter" do
+  provider Chef::Provider::Service::Systemd
+  supports :restart => true, :stop => true, :start => true, :status => true
+  action :nothing
+end
+
+template systemd_script do
+  source "elastic_exporter.service.erb"
+  owner "root"
+  group "root"
+  mode 0664
+  if node['services']['enabled'] == "true"
+    notifies :enable, "service[elastic_exporter]", :immediately
+  end
+  notifies :restart, "service[node_exporter]", :immediately
+  variables({
+    'es_master_uri' => "http://#{elastic_ip}:#{node['elastic']['port']}"
+  })
+end
+
+kagent_config "elastic_exporter" do
+  action :systemd_reload
+end
+
 if node['kagent']['enabled'] == "true"
 # Note, the service below cannot have a '-' in its name, so we call it just
 # "elasticsearch". The service_name will be the name of the init.d/systemd script.
@@ -179,8 +218,6 @@ if node['kagent']['enabled'] == "true"
     log_file "#{node['elastic']['home_dir']}/logs/#{node['elastic']['cluster_name']}.log"
   end
 end
-
-
 
 if node['elastic']['systemd'] == "true"
   file "/etc/init.d/#{service_name}" do
