@@ -44,3 +44,16 @@ default['elastic']['kernel']['vm.max_map_count']      = "262144"
 # Whether to reindex the projects index. In case of changes in the index,
 # set this attr to true. It will then be deleted and re-created so epipe can reindex it.
 default['elastic']['projects']['reindex']   = "false"
+
+# Metrics
+default['elastic']['exporter']['version']       = "1.1.0rc1"
+default['elastic']['exporter']['url']           = "#{node['download_url']}/prometheus/elasticsearch_exporter-#{node['elastic']['exporter']['version']}.linux-amd64.tar.gz"
+default['elastic']['exporter']['home']          = "#{node['elastic']['dir']}/elasticsearch_exporter-#{node['elastic']['exporter']['version']}.linux-amd64"
+default['elastic']['exporter']['base_dir']      = "#{node['elastic']['dir']}/elasticsearch_exporter"
+
+default['elastic']['exporter']['port']          = "9114"
+
+default['elastic']['exporter']['flags']         = %w[--es.all
+    --es.indices
+    --es.shards
+]

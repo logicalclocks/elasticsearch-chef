@@ -1,0 +1,16 @@
+[Unit]
+Description = Node exporter 
+After = syslog.target network.target remote-fs.target
+
+[Service]
+User = <%= node['elastic']['user'] %>
+Group = <%= node['elastic']['group'] %>
+
+ExecStart = <%= node['elastic']['exporter']['base_dir'] %>/elasticsearch_exporter  --web.listen-address=:<%= node['elastic']['exporter']['port'] %> --es.uri=<%= @es_master_uri %> <%= node['elastic']['exporter']['flags'].join(" ") %>
+
+LimitNOFILE = 20000
+
+Type = simple
+
+[Install]
+WantedBy = multi-user.target
