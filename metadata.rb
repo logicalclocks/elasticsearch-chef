@@ -86,3 +86,11 @@ attribute "install/user",
 attribute "elastic/projects/reindex",
           :description => "Delete and reindex the projects index",
           :type => "string"
+
+attribute "elastic/master",
+          :description =>  "Master eligible node. Default is true.",
+          :type => 'string'
+
+attribute "elastic/data",
+          :description =>  "Data node. Default is true.",
+          :type => 'string'
