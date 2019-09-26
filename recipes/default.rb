@@ -17,6 +17,7 @@ end
 group node['elastic']['group'] do
   action :create
   not_if "getent group #{node['elastic']['group']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 user node['elastic']['user'] do
@@ -26,6 +27,7 @@ user node['elastic']['user'] do
   system true
   action :create
   not_if "getent passwd #{node['elastic']['user']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 elasticsearch_user 'elasticsearch' do
