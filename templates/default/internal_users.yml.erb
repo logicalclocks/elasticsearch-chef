@@ -1,0 +1,37 @@
+---
+# This is the internal user database
+# The hash value is a bcrypt hash and can be generated with plugin/tools/hash.sh
+
+_meta:
+  type: "internalusers"
+  config_version: 2
+
+
+<%=node['elastic']['opendistro_security']['admin']['username']%>:
+  hash: "<%=`#{node['elastic']['opendistro_security']['tools']['hash']} -p #{node['elastic']['opendistro_security']['admin']['password']}`.strip %>"
+  reserved: true
+  backend_roles:
+  - "admin"
+  description: "Admin user"
+
+<%=node['elastic']['opendistro_security']['kibana']['username']%>:
+  hash: "<%=`#{node['elastic']['opendistro_security']['tools']['hash']} -p #{node['elastic']['opendistro_security']['kibana']['password']}`.strip %>"
+  reserved: true
+  description: "Kibanaserver user"
+
+<%=node['elastic']['opendistro_security']['logstash']['username']%>:
+  hash: "<%=`#{node['elastic']['opendistro_security']['tools']['hash']} -p #{node['elastic']['opendistro_security']['logstash']['password']}`.strip %>"
+  reserved: true
+  backend_roles:
+  - "logstash"
+  description: "Logstash user"
+
+<%=node['elastic']['opendistro_security']['elastic_exporter']['username']%>:
+  hash: "<%=`#{node['elastic']['opendistro_security']['tools']['hash']} -p #{node['elastic']['opendistro_security']['elastic_exporter']['password']}`.strip %>"
+  reserved: true
+  description: "Elastic exporter user"
+
+<%=node['elastic']['opendistro_security']['epipe']['username']%>:
+  hash: "<%=`#{node['elastic']['opendistro_security']['tools']['hash']} -p #{node['elastic']['opendistro_security']['epipe']['password']}`.strip %>"
+  reserved: true
+  description: "ePipe user"

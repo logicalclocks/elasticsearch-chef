@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+<%=node['elastic']['opendistro_security']['tools']['securityadmin']%> -cd <%=node['elastic']['opendistro_security']['config_dir'] %> -icl -nhnv -h <%=node['fqdn']%>  -cacert <%=node['elastic']['opendistro_security']['ca']%> -cert <%=node["kagent"]["certs"]["elastic_admin_certificate"]%> -key <%=node["kagent"]["certs"]["elastic_admin_key"]%>
