@@ -272,7 +272,7 @@ kagent_config "elastic_exporter" do
   action :systemd_reload
 end
 
-if node['install']['upgrade'] == "true"
+if conda_helpers.is_upgrade
   kagent_config "#{service_name}" do
     action :systemd_reload
   end
