@@ -77,20 +77,29 @@ node.override['elasticsearch']['version'] = node['elastic']['version']
 my_ip = my_private_ip()
 mysql_ip = my_ip
 elastic_ip = private_recipe_ip("elastic","default")
-
+all_elastic_nodes = node['elastic']['default']['private_ips']
+node_name = "node#{elastic_ip.gsub(/\./, '')}"
+min_master_nodes = all_elastic_nodes.length() > 1 ? 2 : 1
 elasticsearch_configure 'elasticsearch' do
    path_home node['elastic']['home_dir']
    path_conf "#{node['elastic']['home_dir']}/config"
    path_data "#{node['elastic']['data_dir']}"
+   path_logs "#{node['elastic']['home_dir']}/logs"
    logging({:"action" => 'INFO'})
    configuration ({
      'cluster.name' => node['elastic']['cluster_name'],
-     'node.name' => node['elastic']['node_name'],
+     'node.name' => node_name,
+     'node.master' => node['elastic']['master'] == "true" ,
+     'node.data' => node['elastic']['data'] == "true",
      'network.host' =>  my_ip,
+     'transport.tcp.port' => node['elastic']['ntn_port'],
+     'http.port' => node['elastic']['port'],
      'http.cors.enabled' => true,
-     'http.cors.allow-origin' => "*"
+     'http.cors.allow-origin' => "*",
+     'discovery.zen.minimum_master_nodes' => min_master_nodes,
+     'discovery.zen.ping.unicast.hosts' => all_elastic_nodes
    })
-   instance_name node['elastic']['node_name']
+   instance_name node_name
    action :manage
 end
 
@@ -99,16 +108,6 @@ elasticsearch_service "#{service_name}" do
    init_source 'elasticsearch.erb'
    init_cookbook 'elastic'
    service_actions ['nothing']
-end
-
-template "#{node['elastic']['home_dir']}/config/elasticsearch.yml" do
-  source "elasticsearch.yml.erb"
-  user node['elastic']['user']
-  group node['elastic']['group']
-  mode "755"
-  variables({
-              :my_ip => my_ip
-            })
 end
 
 template "#{node['elastic']['home_dir']}/config/jvm.options" do
