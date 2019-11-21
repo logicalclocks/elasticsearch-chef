@@ -74,9 +74,7 @@ include_recipe "ulimit2"
 node.override['elasticsearch']['url'] = node['elastic']['url']
 node.override['elasticsearch']['version'] = node['elastic']['version']
 
-my_ip = my_private_ip()
-mysql_ip = my_ip
-elastic_ip = private_recipe_ip("elastic","default")
+elastic_ip = my_private_ip()
 all_elastic_nodes = node['elastic']['default']['private_ips']
 node_name = "node#{elastic_ip.gsub(/\./, '')}"
 min_master_nodes = all_elastic_nodes.length() > 1 ? 2 : 1
@@ -91,7 +89,7 @@ elasticsearch_configure 'elasticsearch' do
      'node.name' => node_name,
      'node.master' => node['elastic']['master'] == "true" ,
      'node.data' => node['elastic']['data'] == "true",
-     'network.host' =>  my_ip,
+     'network.host' =>  elastic_ip,
      'transport.tcp.port' => node['elastic']['ntn_port'],
      'http.port' => node['elastic']['port'],
      'http.cors.enabled' => true,
