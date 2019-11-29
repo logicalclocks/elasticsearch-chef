@@ -251,11 +251,16 @@ service "elastic_exporter" do
   action :nothing
 end
 
+deps = "elasticsearch.service"
+
 template systemd_script do
   source "elastic_exporter.service.erb"
   owner "root"
   group "root"
   mode 0664
+  variables({
+              :deps => deps
+            })
   if node['services']['enabled'] == "true"
     notifies :enable, "service[elastic_exporter]", :immediately
   end
@@ -267,6 +272,13 @@ end
 
 kagent_config "elastic_exporter" do
   action :systemd_reload
+end
+
+if node['kagent']['enabled'] == "true"
+   kagent_config "elastic_exporter" do
+     service "Monitoring"
+     restart_agent false
+   end
 end
 
 if conda_helpers.is_upgrade
