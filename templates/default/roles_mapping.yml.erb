@@ -1,0 +1,36 @@
+---
+# In this file users, backendroles and hosts can be mapped to Open Distro Security roles.
+# Permissions for Opendistro roles are configured in roles.yml
+
+_meta:
+  type: "rolesmapping"
+  config_version: 2
+
+
+all_access:
+  reserved: false
+  backend_roles:
+  - "admin"
+  description: "Maps admin to all_access"
+
+kibana_server:
+  reserved: true
+  users:
+  - "<%=node['elastic']['opendistro_security']['kibana']['username']%>"
+
+logstash_hopsworks:
+  reserved: true
+  backend_roles:
+  - "logstash"
+  users:
+  - "<%=node['elastic']['opendistro_security']['logstash']['username']%>"
+
+elastic_exporter_hopsworks:
+  reserved: true
+  users:
+    - "<%=node['elastic']['opendistro_security']['elastic_exporter']['username']%>"
+
+epipe_hopsworks:
+  reserved: true
+  users:
+    - "<%=node['elastic']['opendistro_security']['epipe']['username']%>"

@@ -1,6 +1,7 @@
 actions :run
 
-attribute :elastic_ip, :kind_of => String, :required => true
-attribute :systemd, :kind_of => [TrueClass, FalseClass], :required => true
+attribute :elastic_url, :kind_of => String, :required => true
+attribute :user, :kind_of => String, :required => false, :default => nil
+attribute :password, :kind_of => String, :required => false, :default => nil
 
 default_action :run

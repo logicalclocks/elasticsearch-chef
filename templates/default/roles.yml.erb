@@ -1,0 +1,136 @@
+_meta:
+  type: "roles"
+  config_version: 2
+
+# Restrict users so they can only view visualization and dashboard on kibana
+kibana_read_only:
+  reserved: true
+
+# The security REST API access role is used to assign specific users access to change the security settings through the REST API.
+security_rest_api_access:
+  reserved: true
+
+# Allows users to view alerts
+alerting_view_alerts:
+  reserved: true
+  index_permissions:
+    - index_patterns:
+      - ".opendistro-alerting-alert*"
+      allowed_actions:
+        - read
+
+# Allows users to view and acknowledge alerts
+alerting_crud_alerts:
+  reserved: true
+  index_permissions:
+    - index_patterns:
+      - ".opendistro-alerting-alert*"
+      allowed_actions:
+       - crud
+
+# Allows users to use all alerting functionality
+alerting_full_access:
+  reserved: true
+  index_permissions:
+    - index_patterns:
+      - ".opendistro-alerting-config"
+      - ".opendistro-alerting-alert*"
+      allowed_actions:
+        - crud
+
+logstash_hopsworks:
+  description: "Provide the minimum permissions for logstash and beats in hopsworks"
+  reserved: true
+  index_permissions:
+    - index_patterns:
+      - "*_logs-*"
+      - "*_serving-*"
+      - "*_kagent-*"
+      - "*_beamjobserver-*"
+      - "*_beamsdkworker-*"
+      allowed_actions:
+        - crud
+        - create_index
+  cluster_permissions:
+    - cluster_monitor
+    - cluster_composite_ops
+    - indices:admin/template/get
+    - cluster:admin/ingest/pipeline/put
+    - cluster:admin/ingest/pipeline/get
+
+elastic_exporter_hopsworks:
+  description: "Provide the minimum permissions required for elastic_exporter"
+  reserved: true
+  index_permissions:
+    - index_patterns:
+      - "*"
+      allowed_actions:
+        - indices:monitor/stats
+  cluster_permissions:
+    - cluster_monitor
+    - indices_monitor
+
+<%=node['elastic']['opendistro_security']['roles']['data_owner']['role_name']%>:
+  description: "Provide the minimum permissions required to grant read/write access to project users in Hopsworks."
+  reserved: true
+  index_permissions:
+    - index_patterns:
+      - ".kibana_*_${attr.jwt.pn}"
+      allowed_actions:
+        - read
+        - write
+        - index
+        - get
+    - index_patterns:
+      - "${user_name}_*"
+      allowed_actions:
+        - read
+        - write
+        - delete
+        - search
+        - create_index
+        - manage
+        - get
+  cluster_permissions:
+    - cluster_composite_ops
+    - cluster:monitor/state
+    - cluster:monitor/health
+
+<%=node['elastic']['opendistro_security']['roles']['data_scientist']['role_name']%>:
+  description: "Provide the minimum permissions required to grant readonly access to project users in Hopsworks."
+  reserved: true
+  index_permissions:
+    - index_patterns:
+      - ".kibana_*_${attr.jwt.pn}"
+      allowed_actions:
+        - read
+        - index
+        - get
+    - index_patterns:
+      - "${user_name}_*"
+      allowed_actions:
+        - read
+        - search
+        - indices_monitor
+        - get
+  cluster_permissions:
+    - cluster_composite_ops_ro
+    - cluster:monitor/state
+    - cluster:monitor/health
+
+epipe_hopsworks:
+  description: "Provide the minimum permissions for ePipe"
+  reserved: true
+  index_permissions:
+    - index_patterns:
+      - "<%=node['elastic']['epipe']['search_index']%>"
+      - "<%=node['elastic']['epipe']['app_provenance_index'] %>"
+      allowed_actions:
+        - crud
+    - index_patterns:
+      - "<%=node['elastic']['epipe']['file_provenance_index_pattern']%>"
+      allowed_actions:
+        - crud
+        - create_index
+  cluster_permissions:
+    - cluster_composite_ops

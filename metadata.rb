@@ -94,3 +94,55 @@ attribute "elastic/master",
 attribute "elastic/data",
           :description =>  "Data node. Default is true.",
           :type => 'string'
+
+attribute "elastic/opendistro_security/admin/username",
+          :description =>  "Admin username for OpenDistro security.",
+          :type => 'string'
+
+attribute "elastic/opendistro_security/admin/password",
+          :description =>  "Admin password for OpenDistro security.",
+          :type => 'string'
+
+attribute "elastic/opendistro_security/kibana/username",
+          :description =>  "Username used by kibana to interact with elasticsearch while using OpenDistro security.",
+          :type => 'string'
+
+attribute "elastic/opendistro_security/kibana/password",
+          :description =>  "Password used by kibana to interact with elasticsearch while using OpenDistro security.",
+          :type => 'string'
+
+attribute "elastic/opendistro_security/logstash/username",
+          :description =>  "Username used by logstash to interact with elasticsearch while using OpenDistro security.",
+          :type => 'string'
+
+attribute "elastic/opendistro_security/logstash/password",
+          :description =>  "Password used by logstash to interact with elasticsearch while using OpenDistro security.",
+          :type => 'string'
+
+attribute "elastic/opendistro_security/epipe/username",
+          :description =>  "Username used by epipe to interact with elasticsearch while using OpenDistro security.",
+          :type => 'string'
+
+attribute "elastic/opendistro_security/epipe/password",
+          :description =>  "Password used by epipe to interact with elasticsearch while using OpenDistro security.",
+          :type => 'string'
+
+attribute "elastic/opendistro_security/elastic_exporter/username",
+          :description =>  "Username used by elastic_exporter to interact with elasticsearch while using OpenDistro security.",
+          :type => 'string'
+
+attribute "elastic/opendistro_security/elastic_exporter/password",
+          :description =>  "Password used by elastic_exporter to interact with elasticsearch while using OpenDistro security.",
+          :type => 'string'
+
+attribute "elastic/opendistro_security/jwt/exp_ms",
+          :description =>  "The expiration time in milliseconds for a jwt token generated for OpenDistro security.",
+          :type => 'string'
+
+attribute "elastic/opendistro_security/audit/enable_rest",
+          :description =>  "Enable or disable audit on the REST API. Default is true.",
+          :type => 'string'
+
+attribute "elastic/opendistro_security/audit/enable_transport",
+          :description =>  "Enable or disable audit on the transport layer. Default is false.",
+          :type => 'string'
