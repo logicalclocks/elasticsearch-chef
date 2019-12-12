@@ -90,11 +90,15 @@ elastic_exporter_hopsworks:
         - search
         - create_index
         - manage
+        - manage_aliases
         - get
   cluster_permissions:
     - cluster_composite_ops
+    - cluster:monitor/main
     - cluster:monitor/state
     - cluster:monitor/health
+    - cluster:monitor/nodes/info
+    - indices:data/read/scroll/clear
 
 <%=node['elastic']['opendistro_security']['roles']['data_scientist']['role_name']%>:
   description: "Provide the minimum permissions required to grant readonly access to project users in Hopsworks."
@@ -115,8 +119,11 @@ elastic_exporter_hopsworks:
         - get
   cluster_permissions:
     - cluster_composite_ops_ro
+    - cluster:monitor/main
     - cluster:monitor/state
     - cluster:monitor/health
+    - cluster:monitor/nodes/info
+    - indices:data/read/scroll/clear
 
 epipe_hopsworks:
   description: "Provide the minimum permissions for ePipe"
