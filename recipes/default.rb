@@ -103,6 +103,7 @@ elasticsearch_configure 'elasticsearch' do
      'http.cors.allow-origin' => "*",
      'discovery.seed_hosts' => all_elastic_hosts,
      'cluster.initial_master_nodes' => all_elastic_hosts,
+     'cluster.max_shards_per_node' => node['elastic']['cluster']['max_shards_per_node'],
      'opendistro_security.allow_unsafe_democertificates' => false,
      'opendistro_security.disabled' => node['elastic']['opendistro_security']['enabled'].casecmp?("false"),
      'opendistro_security.ssl.transport.enabled' => true,

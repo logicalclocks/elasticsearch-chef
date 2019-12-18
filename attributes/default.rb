@@ -33,6 +33,7 @@ default['elastic']['systemd']               = "true"
 
 default['elastic']['memory']['Xms']         = "1024m"
 default['elastic']['memory']['Xmx']         = "1024m"
+default['elastic']['cluster']['max_shards_per_node'] = "3000"
 
 default['elastic']['thread_stack_size']     = "512k"
 
