@@ -55,6 +55,10 @@ attribute "elastic/memory/Xms",
           :description =>  "Amount of minimum heap memory for Elasticsearch.",
           :type => 'string'
 
+attribute "elastic/cluster/max_shards_per_node",
+          :description =>  "Amount of maximum shards per node.",
+          :type => 'string'
+
 attribute "elastic/memory/Xmx",
           :description =>  "Amount of maximum heap memory for Elasticsearch.",
           :type => 'string'
