@@ -31,8 +31,8 @@ default['elastic']['default_kibana_index']  = "hopsdefault"
 
 default['elastic']['systemd']               = "true"
 
-default['elastic']['memory']['Xms']         = "256m"
-default['elastic']['memory']['Xmx']         = "256m"
+default['elastic']['memory']['Xms']         = "1024m"
+default['elastic']['memory']['Xmx']         = "1024m"
 
 default['elastic']['thread_stack_size']     = "512k"
 
