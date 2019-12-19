@@ -440,7 +440,7 @@ action :run do
           "app_user":{
             "type":"text"
           }
-        }
+          }
       }
     }'
     only_if_exists false
