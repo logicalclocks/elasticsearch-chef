@@ -71,7 +71,7 @@ module Elastic
         if ip.eql?(my_private_ip()) && node["install"]["localhost"].casecmp?("true")
           hosts[ip] = "localhost"
         else
-          hosts[ip] = resolve_hostname(ip)
+          hosts[ip] = resolve_hostname(ip).to_s()
         end
       end
       return hosts
