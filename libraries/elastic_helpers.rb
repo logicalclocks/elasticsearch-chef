@@ -11,7 +11,7 @@ module Elastic
 
     def all_elastic_nodes_dns()
       hosts = lookup_ips(all_elastic_ips())
-      return hosts.map{|k, v| "CN=#{v},OU=0,O=Hopsworks,L=Stockholm,ST=Sweden,C=SE"}
+      return hosts.map{|k, v| "CN=#{v},OU=*,O=Hopsworks,L=Stockholm,ST=Sweden,C=SE"}
     end
 
     def get_elastic_admin_dn()
