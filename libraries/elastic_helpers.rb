@@ -43,6 +43,10 @@ module Elastic
       return all_elastic_ips().join(",")
     end
 
+    def all_elastic_ips_ports_str()
+      return all_elastic_ips().map { |e| "#{e}:#{node['elastic']['port']}"}.join(",")
+    end
+
     def all_elastic_urls()
       return private_recipe_ips("elastic", "default").map{|e| get_elastic_url(e)}
     end
