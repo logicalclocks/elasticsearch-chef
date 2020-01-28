@@ -135,6 +135,12 @@ elasticsearch_configure 'elasticsearch' do
    action :manage
 end
 
+directory node['elastic']['data_dir'] do
+  owner node['elastic']['user']
+  group node['elastic']['group']
+  mode '0700'
+  recursive true
+end
 
 elastic_opendistro 'opendistro_security' do
   action :install_security
