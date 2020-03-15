@@ -445,4 +445,42 @@ action :run do
     }'
     only_if_exists false
   end
+  
+  elastic_http 'elastic-install-featurestore-index' do
+    action :put
+    url "#{new_resource.elastic_url}/#{node['elastic']['epipe']['featurestore_index']}"
+    user new_resource.user
+    password new_resource.password
+    only_if_exists false
+    message '
+    {
+      "mappings":{
+        "dynamic":"strict",
+        "properties":{
+          "doc_type":{
+            "type":"keyword"
+          },
+          "name":{
+            "type":"text"
+          },
+          "version":{
+            "type":"integer"
+          },
+          "project_id":{
+            "type":"integer"
+          },
+          "project_name":{
+            "type":"text"
+          },
+          "dataset_iid":{
+            "type":"long"
+          },
+          "xattr":{
+            "type":"nested",
+            "dynamic":true
+          }
+        }
+      }
+    }'
+  end
 end
