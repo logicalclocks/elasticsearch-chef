@@ -39,6 +39,14 @@ attribute "elastic/user",
           :description =>  "User to install elastic as.",
           :type => 'string'
 
+attribute "elastic/user-home",
+          :description =>  "Home directory of elastic user",
+          :type => 'string'
+
+attribute "elastic/elk-home",
+          :description =>  "Home directory of elastic admin user",
+          :type => 'string'
+
 attribute "elastic/group",
           :description =>  "Group to install elastic as.",
           :type => 'string'

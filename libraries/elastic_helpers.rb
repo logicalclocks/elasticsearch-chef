@@ -11,11 +11,11 @@ module Elastic
 
     def all_elastic_nodes_dns()
       hosts = lookup_ips(all_elastic_ips())
-      return hosts.map{|k, v| "CN=#{v},OU=*,O=Hopsworks,L=Stockholm,ST=Sweden,C=SE"}
+      return hosts.map{|k, v| "CN=#{v},OU=*,L=#{node['elastic']['user']},ST=Sweden,C=SE"}
     end
 
     def get_elastic_admin_dn()
-      return ["CN=#{node["kagent"]["certs"]["elastic_admin_cn"]},OU=0,O=Hopsworks,L=Stockholm,ST=Sweden,C=SE"]
+      return ["CN=#{node['fqdn']},OU=0,L=#{node['elastic']['elk-user']},ST=Sweden,C=SE"]
     end
 
     def all_elastic_host_names()

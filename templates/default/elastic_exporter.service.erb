@@ -6,7 +6,7 @@ After = syslog.target network.target remote-fs.target <%= @deps %>
 User = <%= node['elastic']['user'] %>
 Group = <%= node['elastic']['group'] %>
 
-ExecStart = <%= node['elastic']['exporter']['base_dir'] %>/elasticsearch_exporter  --web.listen-address=:<%= node['elastic']['exporter']['port'] %> --es.uri=<%= @es_master_uri %> --es.ca=<%= node['elastic']['opendistro_security']['ca'] %> <%= node['elastic']['exporter']['flags'].join(" ") %>
+ExecStart = <%= node['elastic']['exporter']['base_dir'] %>/elasticsearch_exporter  --web.listen-address=:<%= node['elastic']['exporter']['port'] %> --es.uri=<%= @es_master_uri %> --es.ca=<%= @hopsCAFile %> <%= node['elastic']['exporter']['flags'].join(" ") %>
 
 LimitNOFILE = 20000
 
