@@ -20,6 +20,7 @@ action :install_security do
   end
 
   kagent_keys "generate elastic admin certificate" do
+    hopsworks_alt_url new_resource.hopsworks_alt_url
     action :generate_elastic_admin_certificate
   end
 end
