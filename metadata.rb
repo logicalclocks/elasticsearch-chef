@@ -9,11 +9,12 @@ recipe            "elastic::install", "Experiment setup for elasticsearch"
 recipe            "elastic::default",  "Configures and starts an elasticsearch server"
 recipe            "elastic::purge",  "Deletes an elasticsearch server"
 
-depends "kagent"
-depends "java"
-depends "elasticsearch"
-depends "ulimit2"
-depends "sysctl"
+
+depends "java", '~> 7.0.0'
+depends "ulimit2", '~> 0.2.0'
+depends "sysctl", '~> 1.0.3'
+depends "elasticsearch", '~> 4.0.0'
+
 
 %w{ ubuntu debian rhel centos }.each do |os|
   supports os
