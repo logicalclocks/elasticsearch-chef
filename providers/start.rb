@@ -446,6 +446,15 @@ action :run do
     only_if_exists false
   end
   
+  elastic_http 'delete featurestore index' do
+    action :delete 
+    url "#{new_resource.elastic_url}/#{node['elastic']['epipe']['featurestore_index']}"
+    user new_resource.user
+    password new_resource.password
+    only_if_cond node['elastic']['featurestore']['reindex'] == "true"
+    only_if_exists true
+  end
+
   elastic_http 'elastic-install-featurestore-index' do
     action :put
     url "#{new_resource.elastic_url}/#{node['elastic']['epipe']['featurestore_index']}"

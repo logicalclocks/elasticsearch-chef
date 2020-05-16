@@ -95,6 +95,10 @@ attribute "elastic/projects/reindex",
           :description => "Delete and reindex the projects index",
           :type => "string"
 
+attribute "elastic/featurestore/reindex",
+          :description => "Delete and reindex the featurestore index",
+          :type => "string"
+
 attribute "elastic/master",
           :description =>  "Master eligible node. Default is true.",
           :type => 'string'
