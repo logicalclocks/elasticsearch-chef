@@ -1,0 +1,16 @@
+service {
+    id = "elastic/monitoring"
+    name = "elastic"
+    tags = [
+        "monitoring"
+    ]
+    port = <%= node['elastic']['exporter']['port'] %> 
+    check = {
+        id = "elastic-exporter-check"
+        name = "Health check for elastic exporter"
+        http = "http://localhost:<%= node['elastic']['exporter']['port'] %>/metrics"
+        interval = "20s"
+        timeout = "20s"
+        status = "passing"
+    }
+} 
