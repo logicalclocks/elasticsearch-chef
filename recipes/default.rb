@@ -395,6 +395,14 @@ if node['kagent']['enabled'] == "true"
    end
 end
 
+if service_discovery_enabled()
+  # Register elastic with Consul
+  consul_service "Registering Elastic with Consul" do
+    service_definition "elastic-consul.hcl.erb"
+    action :register
+  end
+end 
+
 if conda_helpers.is_upgrade
   kagent_config "#{service_name}" do
     action :systemd_reload
