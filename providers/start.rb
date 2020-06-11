@@ -223,41 +223,6 @@ action :run do
     }'
   end
 
-  elastic_http 'elastic-create-kagent-template' do
-    action :put 
-    url "#{new_resource.elastic_url}/_template/kagent"
-    user new_resource.user
-    password new_resource.password
-    message '
-    {
-    "index_patterns":[
-       "*_kagent-*"
-    ],
-    "mappings":{
-       "properties":{
-          "project_name":{
-             "type":"keyword"
-          },
-          "operation":{
-             "type":"keyword"
-          },
-          "artifact":{
-             "type":"keyword"
-          },
-          "artifact_version":{
-             "type":"keyword"
-          },
-          "return_code":{
-             "type":"integer"
-          },
-          "return_message":{
-             "type":"text"
-          }
-       }
-     }
-    }'
-  end
-
   #Beam job server and sdkworker templates
   elastic_http 'elastic-create-beamjobserver-template' do
     action :put 
