@@ -1,7 +1,5 @@
 include_recipe "java"
 
-Chef::Recipe.send(:include, Hops::Helpers)
-
 node.override['elasticsearch']['version'] = node['elastic']['version']
 node.override['elasticsearch']['download_urls']['tarball'] = node['elastic']['url']
 
