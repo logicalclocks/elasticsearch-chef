@@ -14,10 +14,11 @@ module Elastic
       return hosts.map{|k, v| "CN=#{v},OU=*,O=Hopsworks,L=Stockholm,ST=Sweden,C=SE"}
     end
 
-    def get_elastic_admin_dn()
-      return ["CN=#{node["kagent"]["certs"]["elastic_admin_cn"]},OU=0,O=Hopsworks,L=Stockholm,ST=Sweden,C=SE"]
+    def get_all_elastic_admin_dns()
+      hosts = lookup_ips(all_elastic_ips())
+      return hosts.map{|k, v| "CN=#{node["kagent"]["certs"]["elastic_admin_prefix"]}-#{v},OU=0,O=Hopsworks,L=Stockholm,ST=Sweden,C=SE"}
     end
-
+    
     def all_elastic_host_names()
       hosts = lookup_ips(all_elastic_ips())
       return hosts.map{|k, v| v}
