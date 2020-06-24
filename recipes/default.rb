@@ -124,7 +124,7 @@ elasticsearch_configure 'elasticsearch' do
      'opendistro_security.restapi.roles_enabled' => ["all_access", "security_rest_api_access"],
      'opendistro_security.roles_mapping_resolution' => 'BOTH',
      'opendistro_security.nodes_dn' => all_elastic_nodes_dns(),
-     'opendistro_security.authcz.admin_dn' => get_elastic_admin_dn(),
+     'opendistro_security.authcz.admin_dn' => get_all_elastic_admin_dns(),
      'opendistro_security.audit.enable_rest' => node['elastic']['opendistro_security']['audit']['enable_rest'].casecmp?("true"),
      'opendistro_security.audit.enable_transport' => node['elastic']['opendistro_security']['audit']['enable_transport'].casecmp?("true"),
      'opendistro_security.audit.type' => node['elastic']['opendistro_security']['audit']['type'],
