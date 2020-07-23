@@ -32,3 +32,11 @@ group node['elastic']['group'] do
   append true
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
+
+group node["kagent"]["certs_group"] do
+  action :manage
+  append true
+  excluded_members node['elastic']['user']
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+  only_if { conda_helpers.is_upgrade }
+end
