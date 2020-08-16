@@ -21,7 +21,7 @@ action :install_security do
     crypto_directory elastic_crypto_dir
     hopsworks_alt_url hopsworks_alt_url
     action :generate_x509
-    not_if { conda_helpers.is_upgrade || node["kagent"]["enabled"].eql? "false" }
+    not_if { conda_helpers.is_upgrade || node["kagent"]["enabled"] == "false" }
   end
 
 
