@@ -21,7 +21,7 @@ action :install_security do
     crypto_directory elastic_crypto_dir
     hopsworks_alt_url hopsworks_alt_url
     action :generate_x509
-    not_if { conda_helpers.is_upgrade || node["kagent"]["test"] == true }
+    not_if { conda_helpers.is_upgrade || node["kagent"]["enabled"] == "false" }
   end
 
 
@@ -31,7 +31,7 @@ action :install_security do
     crypto_directory elk_crypto_dir
     hopsworks_alt_url hopsworks_alt_url
     action :generate_x509
-    not_if { conda_helpers.is_upgrade || node["kagent"]["test"] == true }
+    not_if { conda_helpers.is_upgrade || node["kagent"]["enabled"] == "false" }
   end
 
   kstore_file, tstore_file = x509_helper.get_user_keystores_name(node['elastic']['user'])
