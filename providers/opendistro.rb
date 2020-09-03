@@ -9,7 +9,7 @@ action :install_security do
     EOF
   end
 
-  hopsworks_alt_url = "https://#{private_recipe_ip("hopsworks","default")}:8181" 
+  hopsworks_alt_url = "https://#{private_recipe_ip("hopsworks","default")}:8181"
   if node.attribute? "hopsworks"
     if node["hopsworks"].attribute? "https" and node["hopsworks"]['https'].attribute? ('port')
       hopsworks_alt_url = "https://#{private_recipe_ip("hopsworks","default")}:#{node['hopsworks']['https']['port']}"
@@ -21,7 +21,7 @@ action :install_security do
     crypto_directory elastic_crypto_dir
     hopsworks_alt_url hopsworks_alt_url
     action :generate_x509
-    not_if { conda_helpers.is_upgrade || node["kagent"]["enabled"] == "false" }
+    not_if { node["kagent"]["enabled"] == "false" }
   end
 
 
@@ -31,7 +31,7 @@ action :install_security do
     crypto_directory elk_crypto_dir
     hopsworks_alt_url hopsworks_alt_url
     action :generate_x509
-    not_if { conda_helpers.is_upgrade || node["kagent"]["enabled"] == "false" }
+    not_if { node["kagent"]["enabled"] == "false" }
   end
 
   kstore_file, tstore_file = x509_helper.get_user_keystores_name(node['elastic']['user'])
