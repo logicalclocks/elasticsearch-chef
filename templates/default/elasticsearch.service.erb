@@ -1,7 +1,7 @@
 [Unit]
 Description = Elasticsearch daemon.
-StartLimitIntervalSec=30
-StartLimitBurst=20
+StartLimitIntervalSec=80
+StartLimitBurst=15
 
 [Service]
 User = <%= node['elastic']['user'] %>
