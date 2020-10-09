@@ -1,5 +1,7 @@
 [Unit]
 Description = Elasticsearch daemon.
+StartLimitIntervalSec=80
+StartLimitBurst=15
 
 [Service]
 User = <%= node['elastic']['user'] %>
@@ -9,6 +11,8 @@ ExecStop = <%= @stop_script %>
 WorkingDirectory=<%= @install_dir %>
 LimitNOFILE=<%= @nofile_limit %>
 LimitMEMLOCK=<%= @memlock_limit %>
+Restart=on-failure
+RestartSec=2
 
 Type = forking
 
