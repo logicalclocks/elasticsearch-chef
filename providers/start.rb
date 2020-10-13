@@ -397,7 +397,7 @@ action :run do
             "type":"keyword"
           },
           "timestamp":{
-            "type":"text"
+            "type":"long"
           },
           "app_name":{
             "type":"text"
@@ -405,7 +405,7 @@ action :run do
           "app_user":{
             "type":"text"
           }
-          }
+        }
       }
     }'
     only_if_exists false
