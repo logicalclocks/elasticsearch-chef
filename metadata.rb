@@ -17,7 +17,6 @@ depends "elasticsearch", '~> 4.0.0'
 depends 'conda'
 depends 'kagent'
 depends 'ndb'
-depends 'hops'
 
 
 %w{ ubuntu debian rhel centos }.each do |os|
