@@ -3,7 +3,7 @@ maintainer       "Jim Dowling"
 maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      'Installs/Configures/Runs elasticsearch'
-version          "2.0.0"
+version          "2.1.0"
 
 recipe            "elastic::install", "Experiment setup for elasticsearch"
 recipe            "elastic::default",  "Configures and starts an elasticsearch server"
