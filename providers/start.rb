@@ -129,7 +129,99 @@ action :run do
           }
        }
     }'
-  end 
+  end
+
+  elastic_http 'elastic-create-experiments-template' do
+    action :put
+    url "#{new_resource.elastic_url}/_template/experiments"
+    user new_resource.user
+    password new_resource.password
+    message '
+    {
+       "index_patterns":[
+          "*_experiments"
+       ],
+       "mappings":{
+          "properties":{
+             "project":{
+                "type":"keyword"
+             },
+             "user":{
+                "type":"keyword"
+             },
+             "name":{
+                "type":"keyword"
+             },
+             "module":{
+                "type":"keyword"
+             },
+             "function":{
+                "type":"keyword"
+             },
+             "metric":{
+                "type":"keyword"
+             },
+             "hyperparameter":{
+                "type":"keyword"
+             },
+             "status":{
+                "type":"keyword"
+             },
+             "start":{
+                "type":"date"
+             },
+             "finished":{
+                "type":"date"
+             },
+             "executors":{
+                "type":"keyword"
+             },
+             "memory_per_executor":{
+                "type":"keyword"
+             },
+             "gpus_per_executor":{
+                "type":"keyword"
+             },
+             "spark":{
+                "type":"keyword"
+             },
+             "tensorflow":{
+                "type":"keyword"
+             },
+             "kafka":{
+                "type":"keyword"
+             },
+             "cuda":{
+                "type":"keyword"
+             },
+             "hops_py":{
+                "type":"keyword"
+             },
+             "hops":{
+                "type":"keyword"
+             },
+             "hopsworks":{
+                "type":"keyword"
+             },
+             "logdir":{
+                "type":"keyword"
+             },
+             "hyperparameter_space":{
+                "type":"keyword"
+             },
+             "versioned_resources":{
+                "type":"keyword"
+             },
+             "description":{
+                "type":"keyword"
+             },
+             "app_id":{
+                "type":"keyword"
+             }
+          }
+       }
+    }'
+  end
 
   #Beam job server and sdkworker templates
   elastic_http 'elastic-create-beamjobserver-template' do
