@@ -471,7 +471,7 @@ action :run do
       "mappings":{
         "properties":{
           "library":{
-            "type":"keyword"
+            "type":"text"
           }
         }
       }
