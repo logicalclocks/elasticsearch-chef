@@ -129,10 +129,10 @@ action :run do
           }
        }
     }'
-  end 
+  end
 
   elastic_http 'elastic-create-experiments-template' do
-    action :put 
+    action :put
     url "#{new_resource.elastic_url}/_template/experiments"
     user new_resource.user
     password new_resource.password
@@ -452,6 +452,26 @@ action :run do
           "xattr":{
             "type":"nested",
             "dynamic":true
+          }
+        }
+      }
+    }'
+  end
+
+  elastic_http 'elastic-create-pypi-template' do
+    action :put
+    url "#{new_resource.elastic_url}/_template/pypi_libraries"
+    user new_resource.user
+    password new_resource.password
+    message '
+    {
+       "index_patterns":[
+          "pypi_libraries_*"
+       ],
+      "mappings":{
+        "properties":{
+          "library":{
+            "type":"text"
           }
         }
       }
