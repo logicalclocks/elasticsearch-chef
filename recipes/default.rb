@@ -51,6 +51,40 @@ directory node['elastic']['user-home'] do
   action :create
 end
 
+directory node['data']['dir'] do
+  owner 'root'
+  group 'root'
+  mode '0775'
+  action :create
+  not_if { ::File.directory?(node['data']['dir']) }
+end
+
+directory node['elastic']['data_volume']['data_dir'] do
+  owner node['elastic']['user']
+  group node['elastic']['group']
+  mode '0700'
+  recursive true
+end
+
+bash 'Move elasticsearch data to data volume' do
+  user 'root'
+  code <<-EOH
+    set -e
+    mv -f #{node['elastic']['data_dir']}/* #{node['elastic']['data_volume']['data_dir']}
+    mv -f #{node['elastic']['data_dir']} #{node['elastic']['data_dir']}_deprecated
+  EOH
+  only_if { conda_helpers.is_upgrade }
+  only_if { File.directory?(node['elastic']['data_dir'])}
+  not_if { File.symlink?(node['elastic']['data_dir'])}
+end
+
+link node['elastic']['data_dir'] do
+  owner node['elastic']['user']
+  group node['elastic']['group']
+  mode '0700'
+  to node['elastic']['data_volume']['data_dir']
+end
+
 install_dir = Hash.new
 install_dir['package'] = node['elastic']['dir']
 install_dir['tarball'] = node['elastic']['dir']
@@ -67,6 +101,39 @@ elasticsearch_install 'elasticsearch' do
   download_checksum node['elastic']['checksum']
   dir node['elastic']['dir']
   action :install
+end
+
+directory node['elastic']['data_volume']['log_dir'] do
+  owner node['elastic']['user']
+  group node['elastic']['group']
+  mode '0750'
+end
+
+bash 'Move elasticsearch logs to data volume' do
+  user 'root'
+  code <<-EOH
+    set -e
+    mv -f #{node['elastic']['log_dir']}/* #{node['elastic']['data_volume']['log_dir']}
+    mv -f #{node['elastic']['log_dir']} #{node['elastic']['log_dir']}_deprecated
+  EOH
+  only_if { conda_helpers.is_upgrade }
+  only_if { File.directory?(node['elastic']['log_dir'])}
+  not_if { File.symlink?(node['elastic']['log_dir'])}
+end
+
+# Logs directory is created by elasticsearch provider
+# Small hack to create the symlink below
+directory node['elastic']['log_dir'] do
+  recursive true
+  action :delete
+  not_if { conda_helpers.is_upgrade }
+end
+
+link node['elastic']['log_dir'] do
+  owner node['elastic']['user']
+  group node['elastic']['group']
+  mode '0750'
+  to node['elastic']['data_volume']['log_dir']
 end
 
 node.override['ulimit']['conf_dir'] = "/etc/security"
@@ -140,11 +207,17 @@ elasticsearch_configure 'elasticsearch' do
    action :manage
 end
 
-directory node['elastic']['data_dir'] do
+# We must change directory permissions again after elasticsearch_configure
+directory node['elastic']['data_volume']['data_dir'] do
   owner node['elastic']['user']
   group node['elastic']['group']
   mode '0700'
-  recursive true
+end
+
+directory node['elastic']['data_volume']['log_dir'] do
+  owner node['elastic']['user']
+  group node['elastic']['group']
+  mode '0700'
 end
 
 hopsworks_alt_url = "https://#{private_recipe_ip("hopsworks","default")}:8181"
