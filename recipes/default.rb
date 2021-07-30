@@ -59,11 +59,16 @@ directory node['data']['dir'] do
   not_if { ::File.directory?(node['data']['dir']) }
 end
 
+directory node['elastic']['data_volume']['root_dir'] do
+  owner node['elastic']['user']
+  group node['elastic']['group']
+  mode '0700'
+end
+
 directory node['elastic']['data_volume']['data_dir'] do
   owner node['elastic']['user']
   group node['elastic']['group']
   mode '0700'
-  recursive true
 end
 
 bash 'Move elasticsearch data to data volume' do
