@@ -19,6 +19,11 @@ default['elastic']['cluster_name']          = "hops"
 default['elastic']['master']                = "true"
 default['elastic']['data']                  = "true"
 
+# Data volume directories
+default['elastic']['data_volume']['root_dir'] = "#{node['data']['dir']}/elasticsearch"
+default['elastic']['data_volume']['data_dir'] = "#{node['elastic']['data_volume']['root_dir']}/elasticsearch-data"
+default['elastic']['data_volume']['log_dir']  = "#{node['elastic']['data_volume']['root_dir']}/logs"
+
 default['elastic']['dir']                   = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
 default['elastic']['version_dir']           = "#{node['elastic']['dir']}/elasticsearch-#{node['elastic']['version']}"
 default['elastic']['home_dir']              = "#{node['elastic']['dir']}/elasticsearch"
