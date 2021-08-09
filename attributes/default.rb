@@ -113,6 +113,7 @@ default['elastic']['opendistro_security']['jwt']['exp_ms']                      
 
 default['elastic']['opendistro_security']['roles']['data_owner']['role_name']       = 'data_owner'
 default['elastic']['opendistro_security']['roles']['data_scientist']['role_name']   = 'data_scientist'
+default['elastic']['opendistro_security']['roles']['service_viewer']['role_name']   = 'service_viewer'
 
 default['elastic']['opendistro_security']['audit']['enable_rest']                   = "true"
 default['elastic']['opendistro_security']['audit']['enable_transport']              = "false"
