@@ -35,3 +35,8 @@ _meta:
   hash: "<%=`#{node['elastic']['opendistro_security']['tools']['hash']} -p #{node['elastic']['opendistro_security']['epipe']['password']}`.strip %>"
   reserved: true
   description: "ePipe user"
+
+<%=node['elastic']['opendistro_security']['service_log_viewer']['username']%>:
+  hash: "<%=`#{node['elastic']['opendistro_security']['tools']['hash']} -p #{node['elastic']['opendistro_security']['service_log_viewer']['password']}`.strip %>"
+  reserved: true
+  description: "User allow to only see the service logs"

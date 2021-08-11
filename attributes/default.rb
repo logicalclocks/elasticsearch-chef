@@ -90,6 +90,8 @@ default['elastic']['opendistro_security']['elastic_exporter']['username']       
 default['elastic']['opendistro_security']['elastic_exporter']['password']           = "elastic_exporter"
 default['elastic']['opendistro_security']['epipe']['username']                      = "epipeuser"
 default['elastic']['opendistro_security']['epipe']['password']                      = "epipepassword"
+default['elastic']['opendistro_security']['service_log_viewer']['username']         = "service_log_viewer"
+default['elastic']['opendistro_security']['service_log_viewer']['password']         = "service_log_viewer"
 
 default['elastic']['opendistro_security']['keystore']['type']                       = "JKS"
 default['elastic']['opendistro_security']['keystore']['file']                       = "kstore.jks"
@@ -113,7 +115,6 @@ default['elastic']['opendistro_security']['jwt']['exp_ms']                      
 
 default['elastic']['opendistro_security']['roles']['data_owner']['role_name']       = 'data_owner'
 default['elastic']['opendistro_security']['roles']['data_scientist']['role_name']   = 'data_scientist'
-default['elastic']['opendistro_security']['roles']['service_viewer']['role_name']   = 'service_viewer'
 
 default['elastic']['opendistro_security']['audit']['enable_rest']                   = "true"
 default['elastic']['opendistro_security']['audit']['enable_transport']              = "false"

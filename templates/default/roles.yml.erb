@@ -136,7 +136,7 @@ elastic_exporter_hopsworks:
     - cluster:monitor/nodes/info
     - indices:data/read/scroll/clear
 
-<%=node['elastic']['opendistro_security']['roles']['service_viewer']['role_name']%>:
+service_log_viewer:
   description: "Provide the minimum permissions required to grant readonly access for Hopsworks admins to service logs"
   reserved: true
   index_permissions:

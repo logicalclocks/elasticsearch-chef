@@ -34,3 +34,8 @@ epipe_hopsworks:
   reserved: true
   users:
     - "<%=node['elastic']['opendistro_security']['epipe']['username']%>"
+
+service_log_viewer:
+  reserved: true
+  users:
+    - "<%=node['elastic']['opendistro_security']['service_log_viewer']['username']%>"
