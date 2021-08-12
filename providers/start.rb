@@ -223,7 +223,6 @@ action :run do
     }'
   end
 
-  #Beam job server and sdkworker templates
   elastic_http 'elastic-create-services-template' do
     action :put 
     url "#{new_resource.elastic_url}/_template/services"
@@ -250,6 +249,9 @@ action :run do
              },
              "log_message":{
                 "type":"text"
+             },
+             "logdate":{
+                "type":"date"
              }
           }
        }
