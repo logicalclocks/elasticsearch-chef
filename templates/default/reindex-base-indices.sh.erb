@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -e 
+
+systemctl stop epipe 
+
+curl -k -XDELETE  --cert <%= @elkUserCert %> --key <%= @elkUserKey %> https://$HOSTNAME:<%=node['elastic']['port']%>/<%=node['elastic']['epipe']['search_index']%>
+
+curl -k -XPUT  --cert <%= @elkUserCert %> --key <%= @elkUserKey %> https://$HOSTNAME:<%=node['elastic']['port']%>/<%=node['elastic']['epipe']['search_index']%> -H "Content-Type: application/json" -d '<%= @projectsMappings %>'
+
+curl -k -XDELETE  --cert <%= @elkUserCert %> --key <%= @elkUserKey %> https://$HOSTNAME:<%=node['elastic']['port']%>/<%=node['elastic']['epipe']['featurestore_index']%>
+
+curl -k -XPUT  --cert <%= @elkUserCert %> --key <%= @elkUserKey %> https://$HOSTNAME:<%=node['elastic']['port']%>/<%=node['elastic']['epipe']['featurestore_index']%> -H "Content-Type: application/json" -d '<%= @fsMappings %>'
+
+source <%= node['elastic']['dir'] %>/epipe/bin/reindex-epipe.sh
+
+systemctl start epipe 
