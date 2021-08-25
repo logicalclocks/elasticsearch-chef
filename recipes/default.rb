@@ -35,6 +35,7 @@ end
 # to the default action which is create
 elasticsearch_user 'elasticsearch' do
   username node['elastic']['user']
+  uid node['elastic']['user_id'].to_i
   groupname node['elastic']['group']
   shell '/bin/bash'
   comment 'Elasticsearch User'
