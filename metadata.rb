@@ -15,6 +15,7 @@ depends "ulimit2", '~> 0.2.0'
 depends "sysctl", '~> 1.0.3'
 depends "elasticsearch", '~> 4.0.0'
 depends "ark", '= 5.1.1'
+depends "yum", '= 6.1.1'
 depends 'conda'
 depends 'kagent'
 depends 'ndb'
@@ -40,8 +41,20 @@ attribute "elastic/user",
           :description =>  "User to install elastic as.",
           :type => 'string'
 
+attribute "elastic/user_id",
+          :description =>  "Elastic user ID. Default: 1501",
+          :type => 'string'
+
 attribute "elastic/user-home",
           :description =>  "Home directory of elastic user",
+          :type => 'string'
+
+attribute "elastic/elk-user",
+          :description =>  "Administrator user for ELK stack.",
+          :type => 'string'
+
+attribute "elastic/elk-user_id",
+          :description =>  "ELK stack admin user ID. Default: 1502",
           :type => 'string'
 
 attribute "elastic/elk-home",
@@ -50,6 +63,18 @@ attribute "elastic/elk-home",
 
 attribute "elastic/group",
           :description =>  "Group to install elastic as.",
+          :type => 'string'
+
+attribute "elastic/group_id",
+          :description =>  "Elastic group ID. Default: 1501",
+          :type => 'string'
+
+attribute "elastic/elk-group",
+          :description =>  "Group for ELK admin user.",
+          :type => 'string'
+
+attribute "elastic/elk-group_id",
+          :description =>  "ELK admin group ID. Default: 1502",
           :type => 'string'
 
 attribute "elastic/dir",

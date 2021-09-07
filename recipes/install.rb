@@ -4,12 +4,14 @@ sysctl_param 'vm.max_map_count' do
 end
 
 group node['elastic']['group'] do
+  gid node['elastic']['group_id']
   action :create
   not_if "getent group #{node['elastic']['group']}"
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 group node['elastic']['elk-group'] do
+  gid node['elastic']['elk-group_id']
   action :create
   not_if "getent group #{node['elastic']['elk-group']}"
   not_if { node['install']['external_users'].casecmp("true") == 0 }
@@ -17,6 +19,7 @@ end
 
 user node['elastic']['elk-user'] do
   home node['elastic']['elk-home']
+  uid node['elastic']['elk-user_id']
   gid node['elastic']['elk-group']
   shell "/bin/bash"
   manage_home true

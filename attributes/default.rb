@@ -6,9 +6,13 @@ default['elastic']['install_type']          = "tarball"
 default['elastic']['checksum']              = "4c77cfce006de44f4657469523c6305e2ae06b60021cabb4398c2d0a48e8920a"
 default['elastic']['url']                   = node['download_url'] + "/elasticsearch-oss-#{node['elastic']['version']}-linux-x86_64.tar.gz"
 default['elastic']['user']                  = node['install']['user'].empty? ? "elastic" : node['install']['user']
+default['elastic']['user_id']               = '1501'
 default['elastic']['elk-user']              = node['install']['user'].empty? ? "elkadmin" : node['install']['user']
+default['elastic']['elk-user_id']           = '1502'
 default['elastic']['group']                 = node['install']['user'].empty? ? "elastic" : node['install']['user']
+default['elastic']['group_id']              = '1501'
 default['elastic']['elk-group']             = node['install']['user'].empty? ? "elkadmin" : node['install']['user']
+default['elastic']['elk-group_id']          = '1502'
 default['elastic']['user-home']             = "/home/#{node['elastic']['user']}"
 default['elastic']['elk-home']              = "/home/#{node['elastic']['elk-user']}"
 
@@ -127,3 +131,4 @@ default['elastic']['epipe']['search_index']                                     
 default['elastic']['epipe']['app_provenance_index']                                 = "app_provenance"
 default['elastic']['epipe']['file_provenance_index_pattern']                        = "*__file_prov"
 default['elastic']['epipe']['featurestore_index']                                   = "featurestore"
+default['elastic']['epipe']['reindex-base-indices_script']                          = "#{node['elastic']['bin_dir']}/reindex-base-indices.sh"
