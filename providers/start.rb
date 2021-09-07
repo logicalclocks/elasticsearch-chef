@@ -231,7 +231,7 @@ action :run do
     message '
     {
        "index_patterns":[
-          "*.services-*"
+          ".services-*"
        ],
        "mappings":{
           "properties":{
@@ -242,10 +242,10 @@ action :run do
                 "type":"keyword"
              },
              "priority":{
-                "type":"text"
+                "type":"keyword"
              },
              "logger_name":{
-                "type":"keyword"
+                "type":"text"
              },
              "log_message":{
                 "type":"text"
