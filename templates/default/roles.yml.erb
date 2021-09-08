@@ -141,6 +141,13 @@ service_log_viewer:
   reserved: true
   index_permissions:
     - index_patterns:
+      - ".kibana_*_servicelogviewer"
+      allowed_actions:
+        - read
+        - write
+        - index
+        - get
+    - index_patterns:
       - ".services-*"
       allowed_actions:
         - read
@@ -153,7 +160,7 @@ service_log_viewer:
     - cluster:monitor/state
     - cluster:monitor/health
     - cluster:monitor/nodes/info
-    - indices:data/read/scroll/clear
+    - indices:data/read/scroll/clear/write/bulk
 
 epipe_hopsworks:
   description: "Provide the minimum permissions for ePipe"
