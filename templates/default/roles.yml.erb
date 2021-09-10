@@ -160,7 +160,8 @@ service_log_viewer:
     - cluster:monitor/state
     - cluster:monitor/health
     - cluster:monitor/nodes/info
-    - indices:data/read/scroll/clear/write/bulk
+    - indices:data/read/scroll/clear
+    - indices:data/write/bulk
 
 epipe_hopsworks:
   description: "Provide the minimum permissions for ePipe"
