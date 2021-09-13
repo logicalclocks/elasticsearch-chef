@@ -224,80 +224,35 @@ action :run do
     }'
   end
 
-  #Beam job server and sdkworker templates
-  elastic_http 'elastic-create-beamjobserver-template' do
+  elastic_http 'elastic-create-services-template' do
     action :put 
-    url "#{new_resource.elastic_url}/_template/beamjobserver"
+    url "#{new_resource.elastic_url}/_template/services"
     user new_resource.user
     password new_resource.password
     message '
     {
        "index_patterns":[
-          "*_beamjobserver-*"
+          ".services-*"
        ],
        "mappings":{
           "properties":{
+             "service":{
+                "type":"keyword"
+             },
              "host":{
                 "type":"keyword"
              },
-             "jobname":{
-                "type":"keyword"
-             },
-             "thread":{
-                "type":"keyword"
-             },
-             "file":{
+             "priority":{
                 "type":"keyword"
              },
              "logger_name":{
-                "type":"keyword"
-             },
-             "project":{
-                "type":"keyword"
+                "type":"text"
              },
              "log_message":{
                 "type":"text"
              },
-             "priority":{
-                "type":"text"
-             },
-             "jobport":{
-                "type":"text"
-             }
-          }
-       }
-    }'
-  end
-
-  elastic_http 'elastic-create-beamsdkworker-template' do
-    action :put 
-    url "#{new_resource.elastic_url}/_template/beamsdkworker"
-    user new_resource.user
-    password new_resource.password
-    message '
-    {
-       "index_patterns":[
-          "*_beamsdkworker-*"
-       ],
-       "mappings":{
-          "properties":{
-             "host":{
-                "type":"keyword"
-             },
-             "file":{
-                "type":"keyword"
-             },
-             "project":{
-                "type":"keyword"
-             },
-             "timestamp":{
+             "logdate":{
                 "type":"date"
-             },
-             "appid":{
-                "type":"keyword"
-             },
-             "log_message":{
-                "type":"text"
              }
           }
        }

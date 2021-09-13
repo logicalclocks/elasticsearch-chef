@@ -94,6 +94,8 @@ default['elastic']['opendistro_security']['elastic_exporter']['username']       
 default['elastic']['opendistro_security']['elastic_exporter']['password']           = "elastic_exporter"
 default['elastic']['opendistro_security']['epipe']['username']                      = "epipeuser"
 default['elastic']['opendistro_security']['epipe']['password']                      = "epipepassword"
+default['elastic']['opendistro_security']['service_log_viewer']['username']         = "service_log_viewer"
+default['elastic']['opendistro_security']['service_log_viewer']['password']         = "service_log_viewer"
 
 default['elastic']['opendistro_security']['keystore']['type']                       = "JKS"
 default['elastic']['opendistro_security']['keystore']['file']                       = "kstore.jks"
