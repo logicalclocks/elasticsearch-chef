@@ -45,8 +45,7 @@ logstash_hopsworks:
     - index_patterns:
       - "*_logs-*"
       - "*_serving-*"
-      - "*_beamjobserver-*"
-      - "*_beamsdkworker-*"
+      - ".services-*"
       allowed_actions:
         - crud
         - create_index
@@ -136,6 +135,33 @@ elastic_exporter_hopsworks:
     - cluster:monitor/health
     - cluster:monitor/nodes/info
     - indices:data/read/scroll/clear
+
+service_log_viewer:
+  description: "Provide the minimum permissions required to grant readonly access for Hopsworks admins to service logs"
+  reserved: true
+  index_permissions:
+    - index_patterns:
+      - ".kibana_*_servicelogviewer"
+      allowed_actions:
+        - read
+        - write
+        - index
+        - get
+    - index_patterns:
+      - ".services-*"
+      allowed_actions:
+        - read
+        - search
+        - indices_monitor
+        - get
+  cluster_permissions:
+    - cluster_composite_ops_ro
+    - cluster:monitor/main
+    - cluster:monitor/state
+    - cluster:monitor/health
+    - cluster:monitor/nodes/info
+    - indices:data/read/scroll/clear
+    - indices:data/write/bulk
 
 epipe_hopsworks:
   description: "Provide the minimum permissions for ePipe"
