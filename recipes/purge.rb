@@ -44,13 +44,13 @@ end
 #   action :remove
 # end
 
-directory node['elastic']['version_dir'] do
+directory node['elastic']['home'] do
   recursive true
   action :delete
   ignore_failure true
 end
 
-link node['elastic']['home_dir'] do
+link node['elastic']['base_dir'] do
   action :delete
   ignore_failure true
 end

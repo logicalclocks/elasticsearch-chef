@@ -95,18 +95,36 @@ install_dir = Hash.new
 install_dir['package'] = node['elastic']['dir']
 install_dir['tarball'] = node['elastic']['dir']
 
-node.override['ark']['prefix_root'] = node['elastic']['dir']
-node.override['ark']['prefix_bin'] = node['elastic']['dir']
-node.override['ark']['prefix_home'] = node['elastic']['dir']
+package_url = "#{node['elastic']['url']}"
+base_package_filename = File.basename(package_url)
+cached_package_filename = "#{Chef::Config['file_cache_path']}/#{base_package_filename}"
 
-elasticsearch_install 'elasticsearch' do
-  type "tarball"
-  version node['elastic']['opendistro']['version']
-  instance_name node['elastic']['node_name']
-  download_url node['elasticsearch']['download_urls']['tarball']
-  download_checksum node['elastic']['checksum']
-  dir node['elastic']['dir']
-  action :install
+remote_file cached_package_filename do
+  source package_url
+  owner "root"
+  mode "0644"
+  action :create_if_missing
+end
+
+elastic_downloaded = "#{node['elastic']['home']}/.elastic.extracted_#{node['elastic']['version']}"
+# Extract elastic
+bash 'extract_elastic' do
+        user "root"
+        code <<-EOH
+                tar -xf #{cached_package_filename} -C #{node['elastic']['dir']}
+                chown -R #{node['elastic']['user']}:#{node['elastic']['group']} #{node['elastic']['home']}
+                chmod 750 #{node['elastic']['home']}
+                cd #{node['elastic']['home']}
+                touch #{elastic_downloaded}
+                chown #{node['elastic']['user']} #{elastic_downloaded}
+        EOH
+     not_if { ::File.exists?( elastic_downloaded ) }
+end
+
+link node['elastic']['base_dir'] do
+  owner node['elastic']['user']
+  group node['elastic']['group']
+  to node['elastic']['home']
 end
 
 directory node['elastic']['data_volume']['log_dir'] do
@@ -162,7 +180,7 @@ node.override['elasticsearch']['version'] = node['elastic']['version']
 all_elastic_hosts = all_elastic_host_names()
 elastic_host = my_host()
 elasticsearch_configure 'elasticsearch' do
-   path_home node['elastic']['home_dir']
+   path_home node['elastic']['base_dir']
    path_conf node['elastic']['config_dir']
    path_data node['elastic']['data_dir']
    path_logs node['elastic']['log_dir']
@@ -308,28 +326,28 @@ elasticsearch_service "#{service_name}" do
    service_actions ['nothing']
 end
 
-template "#{node['elastic']['home_dir']}/config/jvm.options" do
+template "#{node['elastic']['base_dir']}/config/jvm.options" do
   source "jvm.options.erb"
   user node['elastic']['user']
   group node['elastic']['group']
   mode "755"
 end
 
-template "#{node['elastic']['home_dir']}/bin/elasticsearch-start.sh" do
+template "#{node['elastic']['base_dir']}/bin/elasticsearch-start.sh" do
   source "elasticsearch-start.sh.erb"
   user node['elastic']['user']
   group node['elastic']['group']
   mode "751"
 end
 
-template "#{node['elastic']['home_dir']}/bin/elasticsearch-stop.sh" do
+template "#{node['elastic']['base_dir']}/bin/elasticsearch-stop.sh" do
   source "elasticsearch-stop.sh.erb"
   user node['elastic']['user']
   group node['elastic']['group']
   mode "751"
 end
 
-template "#{node['elastic']['home_dir']}/bin/kill-process.sh" do
+template "#{node['elastic']['base_dir']}/bin/kill-process.sh" do
   source "kill-process.sh.erb"
   user node['elastic']['user']
   group node['elastic']['group']
@@ -342,7 +360,7 @@ if node['kagent']['enabled'] == "true"
 # "elasticsearch". The service_name will be the name of the init.d/systemd script.
   kagent_config service_name do
     service "ELK"
-    log_file "#{node['elastic']['home_dir']}/logs/#{node['elastic']['cluster_name']}.log"
+    log_file "#{node['elastic']['base_dir']}/logs/#{node['elastic']['cluster_name']}.log"
   end
 end
 
@@ -373,9 +391,9 @@ template "#{elastic_service}" do
   group "root"
   mode "754"
   variables({
-              :start_script => "#{node['elastic']['home_dir']}/bin/elasticsearch-start.sh",
-              :stop_script => "#{node['elastic']['home_dir']}/bin/elasticsearch-stop.sh",
-              :install_dir => "#{node['elastic']['home_dir']}",
+              :start_script => "#{node['elastic']['base_dir']}/bin/elasticsearch-start.sh",
+              :stop_script => "#{node['elastic']['base_dir']}/bin/elasticsearch-stop.sh",
+              :install_dir => "#{node['elastic']['base_dir']}",
               :pid => pid_file,
               :nofile_limit => node['elastic']['limits']['nofile'],
               :memlock_limit => node['elastic']['limits']['memory_limit']
