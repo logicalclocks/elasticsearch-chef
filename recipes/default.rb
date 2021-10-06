@@ -1,6 +1,6 @@
 include_recipe "java"
 
-node.override['elasticsearch']['version'] = node['elastic']['version']
+node.override['elasticsearch']['version'] = node['elastic']['opendistro']['version']
 node.override['elasticsearch']['download_urls']['tarball'] = node['elastic']['url']
 
 Chef::Log.info "Using systemd (1): #{node['elastic']['systemd']}"
@@ -101,7 +101,7 @@ node.override['ark']['prefix_home'] = node['elastic']['dir']
 
 elasticsearch_install 'elasticsearch' do
   type "tarball"
-  version node['elastic']['version']
+  version node['elastic']['opendistro']['version']
   instance_name node['elastic']['node_name']
   download_url node['elasticsearch']['download_urls']['tarball']
   download_checksum node['elastic']['checksum']
