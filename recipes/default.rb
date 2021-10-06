@@ -178,58 +178,36 @@ node.override['elasticsearch']['url'] = node['elastic']['url']
 node.override['elasticsearch']['version'] = node['elastic']['version']
 
 all_elastic_hosts = all_elastic_host_names()
+all_elastic_admin_dns = get_all_elastic_admin_dns(),
 elastic_host = my_host()
-elasticsearch_configure 'elasticsearch' do
-   path_home node['elastic']['base_dir']
-   path_conf node['elastic']['config_dir']
-   path_data node['elastic']['data_dir']
-   path_logs node['elastic']['log_dir']
-   path_plugins node['elastic']['plugins_dir']
-   path_bin node['elastic']['bin_dir']
-   logging({:"action" => 'INFO'})
-   configuration ({
-     'cluster.name' => node['elastic']['cluster_name'],
-     'node.name' => elastic_host,
-     'node.master' => node['elastic']['master'].casecmp?("true") ,
-     'node.data' => node['elastic']['data'].casecmp?("true"),
-     'network.host' =>  elastic_host,
-     'transport.port' => node['elastic']['ntn_port'],
-     'http.port' => node['elastic']['port'],
-     'http.cors.enabled' => true,
-     'http.cors.allow-origin' => "*",
-     'discovery.seed_hosts' => all_elastic_hosts,
-     'cluster.initial_master_nodes' => all_elastic_hosts,
-     'cluster.max_shards_per_node' => node['elastic']['cluster']['max_shards_per_node'],
-     'opendistro_security.allow_unsafe_democertificates' => false,
-     'opendistro_security.disabled' => node['elastic']['opendistro_security']['enabled'].casecmp?("false"),
-     'opendistro_security.ssl.transport.enabled' => true,
-     'opendistro_security.ssl.transport.keystore_type' => node['elastic']['opendistro_security']['keystore']['type'],
-     'opendistro_security.ssl.transport.keystore_filepath' => node['elastic']['opendistro_security']['keystore']['file'],
-     'opendistro_security.ssl.transport.keystore_password' =>  node['elastic']['opendistro_security']['keystore']['password'],
-     'opendistro_security.ssl.transport.truststore_type' => node['elastic']['opendistro_security']['truststore']['type'],
-     'opendistro_security.ssl.transport.truststore_filepath' => node['elastic']['opendistro_security']['truststore']['file'],
-     'opendistro_security.ssl.transport.truststore_password' => node['elastic']['opendistro_security']['truststore']['password'],
-     'opendistro_security.ssl.http.enabled' => node['elastic']['opendistro_security']['https']['enabled'].casecmp?("true"),
-     'opendistro_security.ssl.http.keystore_type' => node['elastic']['opendistro_security']['keystore']['type'],
-     'opendistro_security.ssl.http.keystore_filepath' => node['elastic']['opendistro_security']['keystore']['file'],
-     'opendistro_security.ssl.http.keystore_password' => node['elastic']['opendistro_security']['keystore']['password'],
-     'opendistro_security.ssl.http.truststore_type' => node['elastic']['opendistro_security']['truststore']['type'],
-     'opendistro_security.ssl.http.truststore_filepath' => node['elastic']['opendistro_security']['truststore']['file'],
-     'opendistro_security.ssl.http.truststore_password' =>  node['elastic']['opendistro_security']['truststore']['password'],
-     'opendistro_security.allow_default_init_securityindex' => true,
-     'opendistro_security.restapi.roles_enabled' => ["all_access", "security_rest_api_access"],
-     'opendistro_security.roles_mapping_resolution' => 'BOTH',
-     'opendistro_security.nodes_dn' => all_elastic_nodes_dns(),
-     'opendistro_security.authcz.admin_dn' => get_all_elastic_admin_dns(),
-     'opendistro_security.audit.enable_rest' => node['elastic']['opendistro_security']['audit']['enable_rest'].casecmp?("true"),
-     'opendistro_security.audit.enable_transport' => node['elastic']['opendistro_security']['audit']['enable_transport'].casecmp?("true"),
-     'opendistro_security.audit.type' => node['elastic']['opendistro_security']['audit']['type'],
-     'opendistro_security.audit.threadpool.size' => node['elastic']['opendistro_security']['audit']['threadpool']['size'],
-     'opendistro_security.audit.threadpool.max_queue_len' => node['elastic']['opendistro_security']['audit']['threadpool']['max_queue_len']
-   })
-   instance_name elastic_host
-   action :manage
+
+template "#{node['elastic']['config_dir']}/elasticsearch.yml" do
+  source "elasticsearch.yml.erb"
+  user node['elastic']['user']
+  group node['elastic']['group']
+  mode "650"
+  variables({
+              :path_home => node['elastic']['base_dir'],
+              :path_bin => 
+              :instance_name => elastic_host,
+              :node_master => node['elastic']['master'].casecmp?("true") ,
+              :node_data => node['elastic']['data'].casecmp?("true"),
+              :elastic_host =>  elastic_host,
+              :discovery_seed_hosts => all_elastic_hosts,
+              :cluster_initial_master_nodes => all_elastic_hosts,
+              :opendistro_security_disabled => node['elastic']['opendistro_security']['enabled'].casecmp?("false"),
+              :opendistro_security_ssl_http_enabled => node['elastic']['opendistro_security']['https']['enabled']_casecmp?("true"),
+              :opendistro_security_nodes_dn => all_elastic_nodes_dns(),
+              :opendistro_security_authcz_admin_dn => get_all_elastic_admin_dns(),
+              :opendistro_security_audit_enable_rest => node['elastic']['opendistro_security']['audit']['enable_rest'].casecmp?("true"),
+     :opendistro_security_audit_enable_transport => node['elastic']['opendistro_security']['audit']['enable_transport'].casecmp?("true"),
+     :opendistro_security_audit_type => node['elastic']['opendistro_security']['audit']['type'],
+     :opendistro_security_audit_threadpool_size => node['elastic']['opendistro_security']['audit']['threadpool']['size'],
+     :opendistro_security_audit_threadpool_max_queue_len => node['elastic']['opendistro_security']['audit']['threadpool']['max_queue_len']
+              
+  })
 end
+
 
 # We must change directory permissions again after elasticsearch_configure
 directory node['elastic']['data_volume']['data_dir'] do

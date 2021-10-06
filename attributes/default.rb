@@ -33,10 +33,10 @@ default['elastic']['dir']                   = node['install']['dir'].empty? ? "/
 default['elastic']['home']           = "#{node['elastic']['dir']}/opendistroforelasticsearch-#{node['elastic']['opendistro']['version']}"
 default['elastic']['base_dir']              = "#{node['elastic']['dir']}/opendistroforelasticsearch"
 default['elastic']['data_dir']              = "#{node['elastic']['dir']}/opendistroforelasticsearch-data"
-default['elastic']['config_dir']            = "#{node['elastic']['home_dir']}/config"
-default['elastic']['log_dir']               = "#{node['elastic']['home_dir']}/logs"
-default['elastic']['bin_dir']               = "#{node['elastic']['home_dir']}/bin"
-default['elastic']['plugins_dir']           = "#{node['elastic']['home_dir']}/plugins"
+default['elastic']['config_dir']            = "#{node['elastic']['base_dir']}/config"
+default['elastic']['log_dir']               = "#{node['elastic']['base_dir']}/logs"
+default['elastic']['bin_dir']               = "#{node['elastic']['base_dir']}/bin"
+default['elastic']['plugins_dir']           = "#{node['elastic']['base_dir']}/plugins"
 
 default['elastic']['limits']['nofile']      = "65536"
 default['elastic']['limits_nproc']          = '65536'
