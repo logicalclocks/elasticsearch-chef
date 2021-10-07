@@ -11,6 +11,10 @@ ExecStop = <%= @stop_script %>
 WorkingDirectory=<%= @install_dir %>
 LimitNOFILE=<%= @nofile_limit %>
 LimitMEMLOCK=<%= @memlock_limit %>
+#LimitAS=infinity
+#LimitRSS=infinity
+#LimitCORE=infinity
+
 Restart=on-failure
 RestartSec=2
 
