@@ -160,13 +160,7 @@ end
 node.override['ulimit']['conf_dir'] = "/etc/security"
 node.override['ulimit']['conf_file'] = "limits.conf"
 
-node.override['ulimit']['params']['default']['nofile'] = 65000     # hard and soft open file limit for all users
-node.override['ulimit']['params']['default']['nproc'] = 8000
-
-node.override['ulimit']['conf_dir'] = "/etc/security"
-node.override['ulimit']['conf_file'] = "limits.conf"
-
-node.override['ulimit']['params']['default']['nofile'] = 65000     # hard and soft open file limit for all users
+node.override['ulimit']['params']['default']['nofile'] = 65536     # hard and soft open file limit for all users
 node.override['ulimit']['params']['default']['nproc'] = 8000
 
 include_recipe "ulimit2"
