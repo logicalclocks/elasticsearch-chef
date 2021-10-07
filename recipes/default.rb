@@ -193,7 +193,7 @@ template "#{node['elastic']['config_dir']}/elasticsearch.yml" do
               :cluster_initial_master_nodes => all_elastic_hosts,
               :opendistro_security_disabled => node['elastic']['opendistro_security']['enabled'].casecmp?("false"),
               :opendistro_security_ssl_http_enabled => node['elastic']['opendistro_security']['https']['enabled'].casecmp?("true"),
-              :opendistro_security_nodes_dn => all_elastic_nodes,
+              :opendistro_security_nodes_dn => all_elastic_hosts,
               :opendistro_security_authcz_admin_dn => all_elastic_admin_dns,
               :opendistro_security_audit_enable_rest => node['elastic']['opendistro_security']['audit']['enable_rest'].casecmp?("true"),
               :opendistro_security_audit_enable_transport => node['elastic']['opendistro_security']['audit']['enable_transport'].casecmp?("true"),
