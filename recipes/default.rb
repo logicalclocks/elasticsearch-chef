@@ -3,11 +3,8 @@ include_recipe "java"
 node.override['elasticsearch']['version'] = node['elastic']['opendistro']['version']
 node.override['elasticsearch']['download_urls']['tarball'] = node['elastic']['url']
 
-Chef::Log.info "Using systemd (1): #{node['elastic']['systemd']}"
-
-#service_name = "elasticsearch-#{node['elastic']['node_name']}"
 service_name = "elasticsearch"
-pid_file = "/tmp/elasticsearch.pid"
+pid_file = "#{['elastic']['base_dir']}/elasticsearch.pid"
 
 case node['platform_family']
 when 'rhel'
@@ -188,7 +185,6 @@ template "#{node['elastic']['config_dir']}/elasticsearch.yml" do
   mode "650"
   variables({
               :path_home => node['elastic']['base_dir'],
-              :path_bin => 
               :instance_name => elastic_host,
               :node_master => node['elastic']['master'].casecmp?("true") ,
               :node_data => node['elastic']['data'].casecmp?("true"),
@@ -196,16 +192,16 @@ template "#{node['elastic']['config_dir']}/elasticsearch.yml" do
               :discovery_seed_hosts => all_elastic_hosts,
               :cluster_initial_master_nodes => all_elastic_hosts,
               :opendistro_security_disabled => node['elastic']['opendistro_security']['enabled'].casecmp?("false"),
-              :opendistro_security_ssl_http_enabled => node['elastic']['opendistro_security']['https']['enabled']_casecmp?("true"),
+              :opendistro_security_ssl_http_enabled => node['elastic']['opendistro_security']['https']['enabled'].casecmp?("true"),
               :opendistro_security_nodes_dn => all_elastic_nodes_dns(),
               :opendistro_security_authcz_admin_dn => get_all_elastic_admin_dns(),
               :opendistro_security_audit_enable_rest => node['elastic']['opendistro_security']['audit']['enable_rest'].casecmp?("true"),
-     :opendistro_security_audit_enable_transport => node['elastic']['opendistro_security']['audit']['enable_transport'].casecmp?("true"),
-     :opendistro_security_audit_type => node['elastic']['opendistro_security']['audit']['type'],
-     :opendistro_security_audit_threadpool_size => node['elastic']['opendistro_security']['audit']['threadpool']['size'],
-     :opendistro_security_audit_threadpool_max_queue_len => node['elastic']['opendistro_security']['audit']['threadpool']['max_queue_len']
+              :opendistro_security_audit_enable_transport => node['elastic']['opendistro_security']['audit']['enable_transport'].casecmp?("true"),
+              :opendistro_security_audit_type => node['elastic']['opendistro_security']['audit']['type'],
+              :opendistro_security_audit_threadpool_size => node['elastic']['opendistro_security']['audit']['threadpool']['size'],
+              :opendistro_security_audit_threadpool_max_queue_len => node['elastic']['opendistro_security']['audit']['threadpool']['max_queue_len']
               
-  })
+            })
 end
 
 
@@ -239,6 +235,10 @@ template "#{node['elastic']['opendistro_security']['config_dir']}/action_groups.
   user node['elastic']['user']
   group node['elastic']['group']
   mode "650"
+end
+
+file node['elastic']['opendistro_security']['tools']['hash'] do
+  mode '750'
 end
 
 template "#{node['elastic']['opendistro_security']['config_dir']}/internal_users.yml" do
@@ -297,11 +297,18 @@ template "#{node['elastic']['opendistro_security']['config_dir']}/config.yml" do
   })
 end
 
-elasticsearch_service "#{service_name}" do
-   instance_name node['elastic']['node_name']
-   init_source 'elasticsearch.erb'
-   init_cookbook 'elastic'
-   service_actions ['nothing']
+# elasticsearch_service "#{service_name}" do
+#    instance_name node['elastic']['node_name']
+#    init_source 'elasticsearch.erb'
+#    init_cookbook 'elastic'
+#    service_actions ['nothing']
+# end
+
+template "#{node['elastic']['base_dir']}/config/jvm.options" do
+  source "jvm.options.erb"
+  user node['elastic']['user']
+  group node['elastic']['group']
+  mode "755"
 end
 
 template "#{node['elastic']['base_dir']}/config/jvm.options" do
@@ -376,11 +383,7 @@ template "#{elastic_service}" do
               :nofile_limit => node['elastic']['limits']['nofile'],
               :memlock_limit => node['elastic']['limits']['memory_limit']
             })
-#    notifies :enable, "service[#{service_name}]"
-#    notifies :restart, "service[#{service_name}]", :immediately
 end
-
-Chef::Log.info "Using systemd (2): #{node['elastic']['systemd']}"
 
 service "#{service_name}" do
   case node['elastic']['systemd']

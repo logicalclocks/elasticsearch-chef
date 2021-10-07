@@ -16,7 +16,7 @@
 # chkconfig:   - 57 47
 # description: elasticsearch
 # processname: elasticsearch
-# config:      <%= node['elastic']['home_dir'] %>/etc/elasticsearch/elasticsearch.yml
+# config:      <%= node['elastic']['base_dir'] %>/etc/elasticsearch/elasticsearch.yml
 <% end %>
 
 # Source networking configuration
@@ -48,11 +48,11 @@ start() {
 
 
     touch $PIDFILE && chown <%= node['elastic']['user'] %> $PIDFILE
-    su <%= node['elastic']['user'] %> -c "<%= node['elastic']['home_dir'] %>/bin/elasticsearch-start.sh"
+    su <%= node['elastic']['user'] %> -c "<%= node['elastic']['base_dir'] %>/bin/elasticsearch-start.sh"
 }
 
 stop() {
-    <%= node['elastic']['home_dir'] %>/bin/elasticsearch-stop.sh E
+    <%= node['elastic']['base_dir'] %>/bin/elasticsearch-stop.sh E
 }
 
 restart() {
