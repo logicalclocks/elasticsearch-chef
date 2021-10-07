@@ -43,3 +43,4 @@ group node["kagent"]["certs_group"] do
   not_if { node['install']['external_users'].casecmp("true") == 0 }
   only_if { conda_helpers.is_upgrade }
 end
+

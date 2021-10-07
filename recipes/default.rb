@@ -4,7 +4,7 @@ node.override['elasticsearch']['version'] = node['elastic']['opendistro']['versi
 node.override['elasticsearch']['download_urls']['tarball'] = node['elastic']['url']
 
 service_name = "elasticsearch"
-pid_file = "#{['elastic']['base_dir']}/elasticsearch.pid"
+pid_file = "#{node['elastic']['base_dir']}/elasticsearch.pid"
 
 case node['platform_family']
 when 'rhel'
@@ -175,7 +175,7 @@ node.override['elasticsearch']['url'] = node['elastic']['url']
 node.override['elasticsearch']['version'] = node['elastic']['version']
 
 all_elastic_hosts = all_elastic_host_names()
-all_elastic_admin_dns = get_all_elastic_admin_dns(),
+all_elastic_admin_dns = get_all_elastic_admin_dns()
 elastic_host = my_host()
 
 template "#{node['elastic']['config_dir']}/elasticsearch.yml" do
@@ -193,8 +193,8 @@ template "#{node['elastic']['config_dir']}/elasticsearch.yml" do
               :cluster_initial_master_nodes => all_elastic_hosts,
               :opendistro_security_disabled => node['elastic']['opendistro_security']['enabled'].casecmp?("false"),
               :opendistro_security_ssl_http_enabled => node['elastic']['opendistro_security']['https']['enabled'].casecmp?("true"),
-              :opendistro_security_nodes_dn => all_elastic_nodes_dns(),
-              :opendistro_security_authcz_admin_dn => get_all_elastic_admin_dns(),
+              :opendistro_security_nodes_dn => all_elastic_nodes,
+              :opendistro_security_authcz_admin_dn => all_elastic_admin_dns,
               :opendistro_security_audit_enable_rest => node['elastic']['opendistro_security']['audit']['enable_rest'].casecmp?("true"),
               :opendistro_security_audit_enable_transport => node['elastic']['opendistro_security']['audit']['enable_transport'].casecmp?("true"),
               :opendistro_security_audit_type => node['elastic']['opendistro_security']['audit']['type'],
@@ -295,20 +295,6 @@ template "#{node['elastic']['opendistro_security']['config_dir']}/config.yml" do
   variables({
     :signing_key => signing_key,
   })
-end
-
-# elasticsearch_service "#{service_name}" do
-#    instance_name node['elastic']['node_name']
-#    init_source 'elasticsearch.erb'
-#    init_cookbook 'elastic'
-#    service_actions ['nothing']
-# end
-
-template "#{node['elastic']['base_dir']}/config/jvm.options" do
-  source "jvm.options.erb"
-  user node['elastic']['user']
-  group node['elastic']['group']
-  mode "755"
 end
 
 template "#{node['elastic']['base_dir']}/config/jvm.options" do

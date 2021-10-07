@@ -40,6 +40,7 @@ default['elastic']['plugins_dir']           = "#{node['elastic']['base_dir']}/pl
 
 default['elastic']['limits']['nofile']      = "65536"
 default['elastic']['limits_nproc']          = '65536'
+default['elastic']['limits']['memory_limit'] = 'infinity'
 
 default['elastic']['systemd']               = "true"
 
