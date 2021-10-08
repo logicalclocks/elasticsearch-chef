@@ -13,7 +13,6 @@ recipe            "elastic::purge",  "Deletes an elasticsearch server"
 depends "java", '~> 7.0.0'
 depends "ulimit2", '~> 0.2.0'
 depends "sysctl", '~> 1.0.3'
-depends "elasticsearch", '~> 4.0.0'
 depends "ark", '= 5.1.1'
 depends "yum", '= 6.1.1'
 depends 'conda'

@@ -44,3 +44,15 @@ group node["kagent"]["certs_group"] do
   only_if { conda_helpers.is_upgrade }
 end
 
+user node['elastic']['user'] do
+  home node['elastic']['user-home']
+  uid node['elastic']['user_id'].to_i  
+  gid node['elastic']['group']
+  gid node['elastic']['group_id']  
+  shell "/bin/bash"
+  manage_home true
+  system true
+  action :create
+  not_if "getent passwd #{node['elastic']['user']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end

@@ -27,27 +27,13 @@ group node['elastic']['elk-group'] do
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
-# This block is needed. Do not try adding action :nothing it won't work
-# As of v 4.0.0 they don't implement this action so it fallbacks
-# to the default action which is create
-elasticsearch_user 'elasticsearch' do
-  username node['elastic']['user']
-  uid node['elastic']['user_id'].to_i
-  groupname node['elastic']['group']
-  shell '/bin/bash'
-  comment 'Elasticsearch User'
-  instance_name node['elastic']['node_name']
-  not_if "getent passwd #{node['elastic']['user']}"
-  not_if { node['install']['external_users'].casecmp("true") == 0 }
-end
-
 # Manually create home directory for elastic user
-directory node['elastic']['user-home'] do
-  owner node['elastic']['user']
-  group node['elastic']['group']
-  mode "0700"
-  action :create
-end
+# directory node['elastic']['user-home'] do
+#   owner node['elastic']['user']
+#   group node['elastic']['group']
+#   mode "0700"
+#   action :create
+# end
 
 directory node['data']['dir'] do
   owner 'root'
