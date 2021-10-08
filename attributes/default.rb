@@ -1,7 +1,5 @@
 include_attribute "kagent"
-include_attribute "elasticsearch"
 
-#default['elastic']['version']               = "7.2.0"
 default['elastic']['opendistro']['version'] = "1.13.2"
 default['elastic']['version']               = node['elastic']['opendistro']['version']
 default['elastic']['install_type']          = "tarball"
