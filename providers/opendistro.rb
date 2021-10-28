@@ -1,15 +1,5 @@
 action :install_security do
 
-  # bash "install_opendistro_security_plugin" do
-  #   user node['elastic']['user']
-  #   group node['elastic']['group']
-  #   code <<-EOF
-  #   #{node['elastic']['bin_dir']}/elasticsearch-plugin install --batch #{node['elastic']['opendistro_security']['url']}
-  #   chmod -R 750 #{node['elastic']['opendistro_security']['base_dir']}
-  #   chmod 770 #{node['elastic']['opendistro_security']['tools_dir']}
-  #   EOF
-  # end
-
   hopsworks_alt_url = "https://#{private_recipe_ip("hopsworks","default")}:8181"
   if node.attribute? "hopsworks"
     if node["hopsworks"].attribute? "https" and node["hopsworks"]['https'].attribute? ('port')

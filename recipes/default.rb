@@ -27,14 +27,6 @@ group node['elastic']['elk-group'] do
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
-# Manually create home directory for elastic user
-# directory node['elastic']['user-home'] do
-#   owner node['elastic']['user']
-#   group node['elastic']['group']
-#   mode "0700"
-#   action :create
-# end
-
 directory node['data']['dir'] do
   owner 'root'
   group 'root'
@@ -99,7 +91,8 @@ bash 'extract_elastic' do
                 chmod 750 #{node['elastic']['home']}
                 cd #{node['elastic']['home']}
                 # Java 11 reqd -  java.nio.file.Path.of(..) not in Java 8, so remove this plugin
-                mv plugins/opendistro-reports-scheduler .
+                # Same as "rm -rf plugins/opendistro-reports-scheduler"
+                ./bin/elasticsearch-plugin remove opendistro-reports-scheduler
                 touch #{elastic_downloaded}
                 chown #{node['elastic']['user']} #{elastic_downloaded}
         EOH
