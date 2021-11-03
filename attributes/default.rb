@@ -1,10 +1,10 @@
 include_attribute "kagent"
 
-default['elastic']['opendistro']['version'] = "1.13.2"
+default['elastic']['opendistro']['version'] = "1.1.0"
 default['elastic']['version']               = node['elastic']['opendistro']['version']
 default['elastic']['install_type']          = "tarball"
-default['elastic']['checksum']              = "8ba8a7c1e32e02056d054638e144290c396b9c0656806a4249ac83fcd28b3c84f89eccf437200ffa435e3edb9f362d20c0a296d70d5a6fa583fd61f21047b16b"
-default['elastic']['url']                   = node['download_url'] + "/opendistro/opendistroforelasticsearch-#{node['elastic']['opendistro']['version']}-linux-x64.tar.gz"
+#default['elastic']['checksum']              = "8ba8a7c1e32e02056d054638e144290c396b9c0656806a4249ac83fcd28b3c84f89eccf437200ffa435e3edb9f362d20c0a296d70d5a6fa583fd61f21047b16b"
+default['elastic']['url']                   = node['download_url'] + "/opendistro/opensearch-#{node['elastic']['opendistro']['version']}-linux-x64.tar.gz"
 default['elastic']['user']                  = node['install']['user'].empty? ? "elastic" : node['install']['user']
 default['elastic']['user_id']               = '1501'
 default['elastic']['elk-user']              = node['install']['user'].empty? ? "elkadmin" : node['install']['user']
@@ -30,9 +30,9 @@ default['elastic']['data_volume']['data_dir'] = "#{node['elastic']['data_volume'
 default['elastic']['data_volume']['log_dir']  = "#{node['elastic']['data_volume']['root_dir']}/logs"
 
 default['elastic']['dir']                   = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
-default['elastic']['home']           = "#{node['elastic']['dir']}/opendistroforelasticsearch-#{node['elastic']['opendistro']['version']}"
-default['elastic']['base_dir']              = "#{node['elastic']['dir']}/opendistroforelasticsearch"
-default['elastic']['data_dir']              = "#{node['elastic']['dir']}/opendistroforelasticsearch-data"
+default['elastic']['home']           = "#{node['elastic']['dir']}/opensearch-#{node['elastic']['opendistro']['version']}"
+default['elastic']['base_dir']              = "#{node['elastic']['dir']}/opensearch"
+default['elastic']['data_dir']              = "#{node['elastic']['dir']}/opensearch-data"
 default['elastic']['config_dir']            = "#{node['elastic']['base_dir']}/config"
 default['elastic']['log_dir']               = "#{node['elastic']['base_dir']}/logs"
 default['elastic']['bin_dir']               = "#{node['elastic']['base_dir']}/bin"
