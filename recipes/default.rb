@@ -1,6 +1,6 @@
 #include_recipe "java"
 
-node.override['elasticsearch']['version'] = node['elastic']['opendistro']['version']
+node.override['elasticsearch']['version'] = node['elastic']['opensearch']['version']
 node.override['elasticsearch']['download_urls']['tarball'] = node['elastic']['url']
 
 service_name = "elasticsearch"
@@ -91,8 +91,8 @@ bash 'extract_elastic' do
                 chmod 750 #{node['elastic']['home']}
                 cd #{node['elastic']['home']}
                 # Java 11 reqd -  java.nio.file.Path.of(..) not in Java 8, so remove this plugin
-                # Same as "rm -rf plugins/opendistro-reports-scheduler"
-                ./bin/elasticsearch-plugin remove opendistro-reports-scheduler
+                # Same as "rm -rf plugins/opensearch-reports-scheduler"
+                # ./bin/elasticsearch-plugin remove opendistro-reports-scheduler
                 touch #{elastic_downloaded}
                 chown #{node['elastic']['user']} #{elastic_downloaded}
         EOH
@@ -153,8 +153,8 @@ all_elastic_hosts = all_elastic_host_names()
 all_elastic_admin_dns = get_all_elastic_admin_dns()
 elastic_host = my_host()
 
-template "#{node['elastic']['config_dir']}/elasticsearch.yml" do
-  source "elasticsearch.yml.erb"
+template "#{node['elastic']['config_dir']}/opensearch.yml" do
+  source "opensearch.yml.erb"
   user node['elastic']['user']
   group node['elastic']['group']
   mode "650"
@@ -166,15 +166,15 @@ template "#{node['elastic']['config_dir']}/elasticsearch.yml" do
               :elastic_host =>  elastic_host,
               :discovery_seed_hosts => all_elastic_hosts,
               :cluster_initial_master_nodes => all_elastic_hosts,
-              :opendistro_security_disabled => node['elastic']['opendistro_security']['enabled'].casecmp?("false"),
-              :opendistro_security_ssl_http_enabled => node['elastic']['opendistro_security']['https']['enabled'].casecmp?("true"),
-              :opendistro_security_nodes_dn => all_elastic_hosts,
-              :opendistro_security_authcz_admin_dn => all_elastic_admin_dns,
-              :opendistro_security_audit_enable_rest => node['elastic']['opendistro_security']['audit']['enable_rest'].casecmp?("true"),
-              :opendistro_security_audit_enable_transport => node['elastic']['opendistro_security']['audit']['enable_transport'].casecmp?("true"),
-              :opendistro_security_audit_type => node['elastic']['opendistro_security']['audit']['type'],
-              :opendistro_security_audit_threadpool_size => node['elastic']['opendistro_security']['audit']['threadpool']['size'],
-              :opendistro_security_audit_threadpool_max_queue_len => node['elastic']['opendistro_security']['audit']['threadpool']['max_queue_len']
+              :opensearch_security_disabled => node['elastic']['opensearch_security']['enabled'].casecmp?("false"),
+              :opensearch_security_ssl_http_enabled => node['elastic']['opensearch_security']['https']['enabled'].casecmp?("true"),
+              :opensearch_security_nodes_dn => all_elastic_hosts,
+              :opensearch_security_authcz_admin_dn => all_elastic_admin_dns,
+              :opensearch_security_audit_enable_rest => node['elastic']['opensearch_security']['audit']['enable_rest'].casecmp?("true"),
+              :opensearch_security_audit_enable_transport => node['elastic']['opensearch_security']['audit']['enable_transport'].casecmp?("true"),
+              :opensearch_security_audit_type => node['elastic']['opensearch_security']['audit']['type'],
+              :opensearch_security_audit_threadpool_size => node['elastic']['opensearch_security']['audit']['threadpool']['size'],
+              :opensearch_security_audit_threadpool_max_queue_len => node['elastic']['opensearch_security']['audit']['threadpool']['max_queue_len']
               
             })
 end
@@ -200,44 +200,44 @@ if node.attribute? "hopsworks"
   end
 end
 
-elastic_opendistro 'opendistro_security' do
+elastic_opensearch 'opensearch_security' do
   hopsworks_alt_url hopsworks_alt_url
   action :install_security
 end
 
-template "#{node['elastic']['opendistro_security']['config_dir']}/action_groups.yml" do
+template "#{node['elastic']['opensearch_security']['config_dir']}/action_groups.yml" do
   source "action_groups.yml.erb"
   user node['elastic']['user']
   group node['elastic']['group']
   mode "650"
 end
 
-file node['elastic']['opendistro_security']['tools']['hash'] do
+file node['elastic']['opensearch_security']['tools']['hash'] do
   mode '750'
 end
 
-template "#{node['elastic']['opendistro_security']['config_dir']}/internal_users.yml" do
+template "#{node['elastic']['opensearch_security']['config_dir']}/internal_users.yml" do
   source "internal_users.yml.erb"
   user node['elastic']['user']
   group node['elastic']['group']
   mode "650"
 end
 
-template "#{node['elastic']['opendistro_security']['config_dir']}/roles.yml" do
+template "#{node['elastic']['opensearch_security']['config_dir']}/roles.yml" do
   source "roles.yml.erb"
   user node['elastic']['user']
   group node['elastic']['group']
   mode "650"
 end
 
-template "#{node['elastic']['opendistro_security']['config_dir']}/roles_mapping.yml" do
+template "#{node['elastic']['opensearch_security']['config_dir']}/roles_mapping.yml" do
   source "roles_mapping.yml.erb"
   user node['elastic']['user']
   group node['elastic']['group']
   mode "650"
 end
 
-template "#{node['elastic']['opendistro_security']['config_dir']}/tenants.yml" do
+template "#{node['elastic']['opensearch_security']['config_dir']}/tenants.yml" do
   source "tenants.yml.erb"
   user node['elastic']['user']
   group node['elastic']['group']
@@ -245,7 +245,7 @@ template "#{node['elastic']['opendistro_security']['config_dir']}/tenants.yml" d
 end
 
 elk_crypto_dir = x509_helper.get_crypto_dir(node['elastic']['elk-user'])
-template "#{node['elastic']['opendistro_security']['tools_dir']}/run_securityAdmin.sh" do
+template "#{node['elastic']['opensearch_security']['tools_dir']}/run_securityAdmin.sh" do
   source "run_securityAdmin.sh.erb"
   user node['elastic']['elk-user']
   group node['elastic']['group']
@@ -258,11 +258,11 @@ template "#{node['elastic']['opendistro_security']['tools_dir']}/run_securityAdm
 end
 
 signing_key = ""
-if node['elastic']['opendistro_security']['jwt']['enabled'].casecmp?("true")
+if node['elastic']['opensearch_security']['jwt']['enabled'].casecmp?("true")
   signing_key = get_elk_signing_key()
 end
 
-template "#{node['elastic']['opendistro_security']['config_dir']}/config.yml" do
+template "#{node['elastic']['opensearch_security']['config_dir']}/config.yml" do
   source "config.yml.erb"
   user node['elastic']['user']
   group node['elastic']['group']
@@ -362,9 +362,9 @@ end
 
 elastic_start "start_install_elastic" do
   elastic_url my_elastic_url()
-  if opendistro_security?()
-    user node['elastic']['opendistro_security']['admin']['username']
-    password node['elastic']['opendistro_security']['admin']['password']
+  if opensearch_security?()
+    user node['elastic']['opensearch_security']['admin']['username']
+    password node['elastic']['opensearch_security']['admin']['password']
   end
   action :run
 end
