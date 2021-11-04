@@ -4,7 +4,6 @@ node.override['elasticsearch']['version'] = node['elastic']['opensearch']['versi
 node.override['elasticsearch']['download_urls']['tarball'] = node['elastic']['url']
 
 service_name = "opensearch"
-pid_file = "#{node['elastic']['base_dir']}/opensearch.pid"
 
 case node['platform_family']
 when 'rhel'
@@ -340,7 +339,6 @@ template "#{elastic_service}" do
               :start_script => "#{node['elastic']['base_dir']}/bin/opensearch-start.sh",
               :stop_script => "#{node['elastic']['base_dir']}/bin/opensearch-stop.sh",
               :install_dir => "#{node['elastic']['base_dir']}",
-              :pid_file => pid_file,
               :nofile_limit => node['elastic']['limits']['nofile'],
               :memlock_limit => node['elastic']['limits']['memory_limit']
             })

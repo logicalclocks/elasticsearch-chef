@@ -5,7 +5,7 @@ StartLimitBurst=15
 
 [Service]
 User = <%= node['elastic']['user'] %>
-PIDFile = <%= @pid_file %>
+PIDFile = <%= node['elastic']['pid_file'] %>
 ExecStart = <%= @start_script %>
 ExecStop = <%= @stop_script %>
 WorkingDirectory=<%= @install_dir %>

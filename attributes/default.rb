@@ -38,6 +38,8 @@ default['elastic']['log_dir']               = "#{node['elastic']['base_dir']}/lo
 default['elastic']['bin_dir']               = "#{node['elastic']['base_dir']}/bin"
 default['elastic']['plugins_dir']           = "#{node['elastic']['base_dir']}/plugins"
 
+default['elastic']['pid_file']              = "#{node['elastic']['base_dir']}/opensearch.pid"
+
 default['elastic']['limits']['nofile']      = "65536"
 default['elastic']['limits_nproc']          = '65536'
 default['elastic']['limits']['memory_limit'] = 'infinity'
@@ -50,8 +52,6 @@ default['elastic']['cluster']['max_shards_per_node'] = "3000"
 
 default['elastic']['thread_stack_size']     = "512k"
 
-
-default['elastic']['pid_file']              = "/tmp/elasticsearch.pid"
 
 # Kernel tuning
 default['elastic']['kernel']['vm.max_map_count']      = "262144"
