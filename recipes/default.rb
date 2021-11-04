@@ -3,8 +3,8 @@
 node.override['elasticsearch']['version'] = node['elastic']['opensearch']['version']
 node.override['elasticsearch']['download_urls']['tarball'] = node['elastic']['url']
 
-service_name = "elasticsearch"
-pid_file = "#{node['elastic']['base_dir']}/elasticsearch.pid"
+service_name = "opensearch"
+pid_file = "#{node['elastic']['base_dir']}/opensearch.pid"
 
 case node['platform_family']
 when 'rhel'
@@ -279,15 +279,15 @@ template "#{node['elastic']['base_dir']}/config/jvm.options" do
   mode "755"
 end
 
-template "#{node['elastic']['base_dir']}/bin/elasticsearch-start.sh" do
-  source "elasticsearch-start.sh.erb"
+template "#{node['elastic']['base_dir']}/bin/opensearch-start.sh" do
+  source "opensearch-start.sh.erb"
   user node['elastic']['user']
   group node['elastic']['group']
   mode "751"
 end
 
-template "#{node['elastic']['base_dir']}/bin/elasticsearch-stop.sh" do
-  source "elasticsearch-stop.sh.erb"
+template "#{node['elastic']['base_dir']}/bin/opensearch-stop.sh" do
+  source "opensearch-stop.sh.erb"
   user node['elastic']['user']
   group node['elastic']['group']
   mode "751"
@@ -332,15 +332,15 @@ end
 execute "systemctl daemon-reload"
 
 template "#{elastic_service}" do
-  source "elasticsearch.service.erb"
+  source "opensearch.service.erb"
   user "root"
   group "root"
   mode "754"
   variables({
-              :start_script => "#{node['elastic']['base_dir']}/bin/elasticsearch-start.sh",
-              :stop_script => "#{node['elastic']['base_dir']}/bin/elasticsearch-stop.sh",
+              :start_script => "#{node['elastic']['base_dir']}/bin/opensearch-start.sh",
+              :stop_script => "#{node['elastic']['base_dir']}/bin/opensearch-stop.sh",
               :install_dir => "#{node['elastic']['base_dir']}",
-              :pid => pid_file,
+              :pid_file => pid_file,
               :nofile_limit => node['elastic']['limits']['nofile'],
               :memlock_limit => node['elastic']['limits']['memory_limit']
             })
