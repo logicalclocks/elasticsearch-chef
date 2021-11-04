@@ -2,9 +2,6 @@
 # Xms and Xmx must be equal
 -Xms<%= node['elastic']['memory']['Xms'] %>
 -Xmx<%= node['elastic']['memory']['Xmx'] %>
--XX:+UseConcMarkSweepGC
--XX:CMSInitiatingOccupancyFraction=75
--XX:+UseCMSInitiatingOccupancyOnly
 -XX:+AlwaysPreTouch
 -server
 -Xss1m
