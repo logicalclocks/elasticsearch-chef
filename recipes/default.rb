@@ -332,7 +332,7 @@ end
 execute "systemctl daemon-reload"
 
 template "#{elastic_service}" do
-  source "opensearch.service.erb"
+  source "#{service_name}.service.erb"
   user "root"
   group "root"
   mode "754"
@@ -366,6 +366,7 @@ elastic_start "start_install_elastic" do
     user node['elastic']['opensearch_security']['admin']['username']
     password node['elastic']['opensearch_security']['admin']['password']
   end
+  service_name service_name
   action :run
 end
 
@@ -415,7 +416,7 @@ service "elastic_exporter" do
   action :nothing
 end
 
-deps = "elasticsearch.service"
+deps = "#{service_name}.service"
 
 elastic_crypto_dir = x509_helper.get_crypto_dir(node['elastic']['user'])
 template systemd_script do
