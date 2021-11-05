@@ -89,9 +89,6 @@ bash 'extract_elastic' do
                 chown -R #{node['elastic']['user']}:#{node['elastic']['group']} #{node['elastic']['home']}
                 chmod 750 #{node['elastic']['home']}
                 cd #{node['elastic']['home']}
-                # Java 11 reqd -  java.nio.file.Path.of(..) not in Java 8, so remove this plugin
-                # Same as "rm -rf plugins/opensearch-reports-scheduler"
-                # ./bin/elasticsearch-plugin remove opendistro-reports-scheduler
                 touch #{elastic_downloaded}
                 chown #{node['elastic']['user']} #{elastic_downloaded}
         EOH

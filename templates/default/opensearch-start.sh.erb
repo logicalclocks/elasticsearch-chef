@@ -3,7 +3,7 @@ set -e
 
 export ES_PATH_CONF=<%= node['elastic']['base_dir'] %>/config
 export ES_HOME=<%= node['elastic']['base_dir'] %>
-export JAVA_HOME=<%= node['elastic']['base_dir'] %>/jdk
+export OPENSEARCH_JAVA_HOME=<%= node['elastic']['base_dir'] %>/jdk
 
 nohup <%= node['elastic']['base_dir'] %>/bin/opensearch > <%= node['elastic']['base_dir'] %>/opensearch.log 2>&1 & 
 echo $! > <%= node['elastic']['pid_file'] %>

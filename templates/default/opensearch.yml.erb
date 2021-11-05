@@ -1,6 +1,6 @@
-# ======================== Elasticsearch Configuration =========================
+# ======================== OpenSearch Configuration =========================
 #
-# NOTE: Elasticsearch comes with reasonable defaults for most settings.
+# NOTE: OpenSearch comes with reasonable defaults for most settings.
 #       Before you set out to tweak and tune the configuration, make sure you
 #       understand what are you trying to accomplish and the consequences.
 #
@@ -8,7 +8,7 @@
 # the most important settings you may want to configure for a production cluster.
 #
 # Please consult the documentation for further information on configuration options:
-# https://www.elastic.co/guide/en/elasticsearch/reference/index.html
+# https://www.opensearch.org
 #
 # ---------------------------------- Cluster -----------------------------------
 #
@@ -47,7 +47,7 @@ path.logs: <%= node['elastic']['log_dir'] %>
 # on the system and that the owner of the process is allowed to use this
 # limit.
 #
-# Elasticsearch performs poorly when the system is swapping the memory.
+# Opensearch performs poorly when the system is swapping the memory.
 #
 # ---------------------------------- Network -----------------------------------
 #
@@ -117,7 +117,7 @@ plugins.security.roles_mapping_resolution: 'BOTH'
 plugins.security.nodes_dn: <%= @opensearch_security_nodes_dn %>
 plugins.security.authcz.admin_dn: <%= @opensearch_security_authcz_admin_dn %>
 
-opendistro_security.audit.enable_rest: <%= @opensearch_security_audit_enable_rest %>
-opendistro_security.audit.enable_transport: <%= @opensearch_security_audit_enable_transport %>
+plugins.security.audit.enable_rest: <%= @opensearch_security_audit_enable_rest %>
+plugins.security.audit.enable_transport: <%= @opensearch_security_audit_enable_transport %>
 
 
