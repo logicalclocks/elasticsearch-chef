@@ -141,47 +141,47 @@ attribute "elastic/data",
           :type => 'string'
 
 attribute "elastic/opensearch_security/admin/username",
-          :description =>  "Admin username for OpenDistro security.",
+          :description =>  "Admin username for Opensearch security.",
           :type => 'string'
 
 attribute "elastic/opensearch_security/admin/password",
-          :description =>  "Admin password for OpenDistro security.",
+          :description =>  "Admin password for Opensearch security.",
           :type => 'string'
 
 attribute "elastic/opensearch_security/kibana/username",
-          :description =>  "Username used by kibana to interact with elasticsearch while using OpenDistro security.",
+          :description =>  "Username used by kibana to interact with Opensearch.",
           :type => 'string'
 
 attribute "elastic/opensearch_security/kibana/password",
-          :description =>  "Password used by kibana to interact with elasticsearch while using OpenDistro security.",
+          :description =>  "Password used by kibana to interact with Opensearch.",
           :type => 'string'
 
 attribute "elastic/opensearch_security/logstash/username",
-          :description =>  "Username used by logstash to interact with elasticsearch while using OpenDistro security.",
+          :description =>  "Username used by logstash to interact with Opensearch.",
           :type => 'string'
 
 attribute "elastic/opensearch_security/logstash/password",
-          :description =>  "Password used by logstash to interact with elasticsearch while using OpenDistro security.",
+          :description =>  "Password used by logstash to interact with Opensearch.",
           :type => 'string'
 
 attribute "elastic/opensearch_security/epipe/username",
-          :description =>  "Username used by epipe to interact with elasticsearch while using OpenDistro security.",
+          :description =>  "Username used by epipe to interact with Opensearch.",
           :type => 'string'
 
 attribute "elastic/opensearch_security/epipe/password",
-          :description =>  "Password used by epipe to interact with elasticsearch while using OpenDistro security.",
+          :description =>  "Password used by epipe to interact with Opensearch.",
           :type => 'string'
 
 attribute "elastic/opensearch_security/elastic_exporter/username",
-          :description =>  "Username used by elastic_exporter to interact with elasticsearch while using OpenDistro security.",
+          :description =>  "Username used by elastic_exporter to interact with Opensearch.",
           :type => 'string'
 
 attribute "elastic/opensearch_security/elastic_exporter/password",
-          :description =>  "Password used by elastic_exporter to interact with elasticsearch while using OpenDistro security.",
+          :description =>  "Password used by elastic_exporter to interact with Opensearch.",
           :type => 'string'
 
 attribute "elastic/opensearch_security/jwt/exp_ms",
-          :description =>  "The expiration time in milliseconds for a jwt token generated for OpenDistro security.",
+          :description =>  "The expiration time in milliseconds for a jwt token generated for Opensearch security.",
           :type => 'string'
 
 attribute "elastic/opensearch_security/audit/enable_rest",
