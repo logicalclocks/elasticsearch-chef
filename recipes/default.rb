@@ -212,6 +212,10 @@ file node['elastic']['opensearch_security']['tools']['hash'] do
   mode '750'
 end
 
+file node['elastic']['opensearch_security']['tools']['securityadmin'] do
+  mode '750'
+end
+
 template "#{node['elastic']['opensearch_security']['config_dir']}/internal_users.yml" do
   source "internal_users.yml.erb"
   user node['elastic']['user']
