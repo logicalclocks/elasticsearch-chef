@@ -90,18 +90,6 @@ bash 'Move elasticsearch data to data volume' do
   not_if { File.symlink?(node['elastic']['data_dir'])}
 end
 
-bash 'Move elasticsearch backup to backup volume' do
-  user 'root'
-  code <<-EOH
-    set -e
-    mv -f #{node['elastic']['backup_dir']}/* #{node['elastic']['data_volume']['backup_dir']}
-    mv -f #{node['elastic']['backup_dir']} #{node['elastic']['backup_dir']}_deprecated
-  EOH
-  only_if { conda_helpers.is_upgrade }
-  only_if { File.directory?(node['elastic']['backup_dir'])}
-  not_if { File.symlink?(node['elastic']['backup_dir'])}
-end
-
 link node['elastic']['data_dir'] do
   owner node['elastic']['user']
   group node['elastic']['group']
