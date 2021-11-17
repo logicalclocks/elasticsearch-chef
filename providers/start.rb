@@ -21,36 +21,33 @@ action :run do
     only_if_cond node['elastic']['projects']['reindex'] == "true"
     only_if_exists true
   end
-  projects_index_mappings = '"mappings":{
-      "dynamic":"strict",
-      "properties":{
-         "doc_type"     :{"type":"keyword"},
-         "project_id"   :{"type":"integer"},
-         "dataset_id"   :{"type":"long"},
-         "public_ds"    :{"type":"boolean"},
-         "description"  :{"type":"text"},
-         "name"         :{"type":"text"},
-         "parent_id"     :{"type":"long"},
-         "partition_id" :{"type":"long"},
-         "user"         :{"type":"keyword"},
-         "group"        :{"type":"keyword"},
-         "operation"    :{"type":"short"},
-         "size"         :{"type":"long"},
-         "timestamp"    :{"type":"long"},
-         "xattr"        :{"type":"nested","dynamic":true}
-      }
-    }'
-  projects_index = node['elastic']['epipe']['search_index']
-  projects_template = "{
-    \"index_patterns\":[ \"#{projects_index}\" ],
-    #{projects_index_mappings}
-  }".split.join(' ') #remove new lines and extra spaces
   elastic_http 'elastic-create-projects-template' do
     action :put
     url "#{new_resource.elastic_url}/_template/#{node['elastic']['epipe']['search_index']}"
     user new_resource.user
     password new_resource.password
-    message projects_template
+    message "{
+      \"index_patterns\":[ \"#{node['elastic']['epipe']['search_index']}\" ],
+      \"mappings\":{
+        \"dynamic\":\"strict\",
+        \"properties\":{
+           \"doc_type\"     :{\"type\":\"keyword\"},
+           \"project_id\"   :{\"type\":\"integer\"},
+           \"dataset_id\"   :{\"type\":\"long\"},
+           \"public_ds\"    :{\"type\":\"boolean\"},
+           \"description\"  :{\"type\":\"text\"},
+           \"name\"         :{\"type\":\"text\"},
+           \"parent_id\"     :{\"type\":\"long\"},
+           \"partition_id\" :{\"type\":\"long\"},
+           \"user\"         :{\"type\":\"keyword\"},
+           \"group\"        :{\"type\":\"keyword\"},
+           \"operation\"    :{\"type\":\"short\"},
+           \"size\"         :{\"type\":\"long\"},
+           \"timestamp\"    :{\"type\":\"long\"},
+           \"xattr\"        :{\"type\":\"nested\",\"dynamic\":true}
+        }
+      }
+    }"
   end
   elastic_http 'elastic-create-projects-index' do
     action :put
@@ -316,26 +313,23 @@ action :run do
     }'
   end
 
-  app_provenance_mapping = '"mappings":{
-    "properties":{
-      "app_id"    :{"type":"keyword"},
-      "app_state" :{"type":"keyword"},
-      "timestamp" :{"type":"long"},
-      "app_name"  :{"type":"text"},
-      "app_user"  :{"type":"text"}
-    }
-  }'
-  app_provenance_index = node['elastic']['epipe']['app_provenance_index']
-  app_provenance_template = "{
-    \"index_patterns\":[ \"#{app_provenance_index}\" ],
-    #{app_provenance_mapping}
-  }".split.join(' ') #remove new lines and extra spaces
   elastic_http 'elastic-create-app-provenance-template' do
     action :put
     url "#{new_resource.elastic_url}/_template/#{node['elastic']['epipe']['app_provenance_index']}"
     user new_resource.user
     password new_resource.password
-    message app_provenance_template
+    message "{
+      \"index_patterns\":[ \"#{node['elastic']['epipe']['app_provenance_index']}\" ],
+      \"mappings\":{
+        \"properties\":{
+          \"app_id\"    :{\"type\":\"keyword\"},
+          \"app_state\" :{\"type\":\"keyword\"},
+          \"timestamp\" :{\"type\":\"long\"},
+          \"app_name\"  :{\"type\":\"text\"},
+          \"app_user\"  :{\"type\":\"text\"}
+        }
+      }
+    }"
   end
   elastic_http 'elastic-create-app-provenance-index' do
     action :put
@@ -355,30 +349,26 @@ action :run do
     only_if_exists true
   end
 
-  featurestore_index_mappings = '"mappings":{
-    "dynamic":"strict",
-    "properties":{
-      "doc_type"    :{"type":"keyword"},
-      "name"        :{"type":"text"},
-      "version"     :{"type":"integer"},
-      "project_id"  :{"type":"integer"},
-      "project_name":{"type":"text"},
-      "dataset_iid" :{"type":"long"},
-      "xattr"       :{"type":"nested","dynamic":true}
-    }
-  }'
-  featurestore_index = node['elastic']['epipe']['featurestore_index']
-  featurestore_template = "
-    {
-      \"index_patterns\":[ \"#{featurestore_index}\" ],
-      #{featurestore_index_mappings}
-    }".split.join(' ') #remove new lines and extra spaces
   elastic_http 'elastic-create-featurestore-template' do
     action :put
     url "#{new_resource.elastic_url}/_template/#{node['elastic']['epipe']['featurestore_index']}"
     user new_resource.user
     password new_resource.password
-    message featurestore_template
+    message "{
+      \"index_patterns\":[ \"#{node['elastic']['epipe']['featurestore_index']}\" ],
+      \"mappings\":{
+        \"dynamic\":\"strict\",
+        \"properties\":{
+          \"doc_type\"    :{\"type\":\"keyword\"},
+          \"name\"        :{\"type\":\"text\"},
+          \"version\"     :{\"type\":\"integer\"},
+          \"project_id\"  :{\"type\":\"integer\"},
+          \"project_name\":{\"type\":\"text\"},
+          \"dataset_iid\" :{\"type\":\"long\"},
+          \"xattr\"       :{\"type\":\"nested\",\"dynamic\":true}
+        }
+      }
+    }"
   end
   elastic_http 'elastic-create-featurestore-index' do
     action :put
