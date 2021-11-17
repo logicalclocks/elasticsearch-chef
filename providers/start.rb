@@ -15,7 +15,7 @@ action :run do
 
   elastic_http 'delete projects index' do
     action :delete 
-    url "#{new_resource.elastic_url}/#{node['elastic']['epipe']['search_index']}"
+    url "#{new_resource.elastic_url}/projects"
     user new_resource.user
     password new_resource.password
     only_if_cond node['elastic']['projects']['reindex'] == "true"
@@ -408,19 +408,4 @@ action :run do
       }
     }'
   end
-  
-  elk_crypto_dir = x509_helper.get_crypto_dir(node['elastic']['elk-user'])
-  template node['elastic']['epipe']['reindex-base-indices_script'] do
-      source "reindex-base-indices.sh.erb"
-      owner "root"
-      group "root"
-      mode 0750
-      variables({
-         :elkUserCert => "#{elk_crypto_dir}/#{x509_helper.get_certificate_bundle_name(node['elastic']['elk-user'])}",
-         :elkUserKey => "#{elk_crypto_dir}/#{x509_helper.get_private_key_pkcs8_name(node['elastic']['elk-user'])}",
-         :projectsMappings => "{#{projects_index_mappings}}",
-         :fsMappings => "{#{featurestore_index_mappings}}"
-      })
-  end
-
 end
