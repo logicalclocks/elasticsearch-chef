@@ -46,6 +46,12 @@ directory node['elastic']['data_volume']['data_dir'] do
   mode '0700'
 end
 
+directory node['elastic']['data_volume']['backup_dir'] do
+  owner node['elastic']['user']
+  group node['elastic']['group']
+  mode '0700'
+end
+
 bash 'Move elasticsearch data to data volume' do
   user 'root'
   code <<-EOH
@@ -63,6 +69,13 @@ link node['elastic']['data_dir'] do
   group node['elastic']['group']
   mode '0700'
   to node['elastic']['data_volume']['data_dir']
+end
+
+link node['elastic']['backup_dir'] do
+  owner node['elastic']['user']
+  group node['elastic']['group']
+  mode '0700'
+  to node['elastic']['data_volume']['backup_dir']
 end
 
 install_dir = Hash.new
@@ -178,6 +191,12 @@ end
 
 # We must change directory permissions again after elasticsearch_configure
 directory node['elastic']['data_volume']['data_dir'] do
+  owner node['elastic']['user']
+  group node['elastic']['group']
+  mode '0700'
+end
+
+directory node['elastic']['data_volume']['backup_dir'] do
   owner node['elastic']['user']
   group node['elastic']['group']
   mode '0700'

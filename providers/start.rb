@@ -15,71 +15,47 @@ action :run do
 
   elastic_http 'delete projects index' do
     action :delete 
-    url "#{new_resource.elastic_url}/#{node['elastic']['epipe']['search_index']}"
+    url "#{new_resource.elastic_url}/projects"
     user new_resource.user
     password new_resource.password
     only_if_cond node['elastic']['projects']['reindex'] == "true"
     only_if_exists true
   end
-  projects_index_mappings = '
-  {
-     "mappings":{
-        "dynamic":"strict",
-        "properties":{
-           "doc_type":{
-              "type":"keyword"
-           },
-           "project_id":{
-              "type":"integer"
-           },
-           "dataset_id":{
-              "type":"long"
-           },
-           "public_ds":{
-              "type":"boolean"
-           },
-           "description":{
-              "type":"text"
-           },
-           "name":{
-              "type":"text"
-           },
-           "parent_id":{
-              "type":"long"
-           },
-           "partition_id":{
-              "type":"long"
-           },
-           "user":{
-              "type":"keyword"
-           },
-           "group":{
-              "type":"keyword"
-           },
-           "operation":{
-              "type":"short"
-           },
-           "size":{
-              "type":"long"
-           },
-           "timestamp":{
-              "type":"long"
-           },
-           "xattr":{
-              "type":"nested",
-              "dynamic":true
-           }
+  elastic_http 'elastic-create-projects-template' do
+    action :put
+    url "#{new_resource.elastic_url}/_template/#{node['elastic']['epipe']['search_index']}"
+    user new_resource.user
+    password new_resource.password
+    message "{
+      \"index_patterns\":[ \"#{node['elastic']['epipe']['search_index']}\" ],
+      \"mappings\":{
+        \"dynamic\":\"strict\",
+        \"properties\":{
+           \"doc_type\"     :{\"type\":\"keyword\"},
+           \"project_id\"   :{\"type\":\"integer\"},
+           \"dataset_id\"   :{\"type\":\"long\"},
+           \"public_ds\"    :{\"type\":\"boolean\"},
+           \"description\"  :{\"type\":\"text\"},
+           \"name\"         :{\"type\":\"text\"},
+           \"parent_id\"     :{\"type\":\"long\"},
+           \"partition_id\" :{\"type\":\"long\"},
+           \"user\"         :{\"type\":\"keyword\"},
+           \"group\"        :{\"type\":\"keyword\"},
+           \"operation\"    :{\"type\":\"short\"},
+           \"size\"         :{\"type\":\"long\"},
+           \"timestamp\"    :{\"type\":\"long\"},
+           \"xattr\"        :{\"type\":\"nested\",\"dynamic\":true}
         }
-     }
-  }'
-
-  elastic_http 'elastic-install-projects-index' do
+      }
+    }"
+  end
+  elastic_http 'elastic-create-projects-index' do
     action :put
     url "#{new_resource.elastic_url}/#{node['elastic']['epipe']['search_index']}"
     user new_resource.user
     password new_resource.password
     only_if_exists false
-    message projects_index_mappings
+    message ''
   end
 
   elastic_http 'elastic-create-logs-template' do
@@ -337,34 +313,31 @@ action :run do
     }'
   end
 
-  elastic_http 'elastic-install-app-provenance-index' do
+  elastic_http 'elastic-create-app-provenance-template' do
+    action :put
+    url "#{new_resource.elastic_url}/_template/#{node['elastic']['epipe']['app_provenance_index']}"
+    user new_resource.user
+    password new_resource.password
+    message "{
+      \"index_patterns\":[ \"#{node['elastic']['epipe']['app_provenance_index']}\" ],
+      \"mappings\":{
+        \"properties\":{
+          \"app_id\"    :{\"type\":\"keyword\"},
+          \"app_state\" :{\"type\":\"keyword\"},
+          \"timestamp\" :{\"type\":\"long\"},
+          \"app_name\"  :{\"type\":\"text\"},
+          \"app_user\"  :{\"type\":\"text\"}
+        }
+      }
+    }"
+  end
+  elastic_http 'elastic-create-app-provenance-index' do
     action :put
     url "#{new_resource.elastic_url}/#{node['elastic']['epipe']['app_provenance_index']}"
     user new_resource.user
     password new_resource.password
-    message '
-    {
-      "mappings":{
-        "properties":{
-          "app_id":{
-            "type":"keyword"
-          },
-          "app_state":{
-            "type":"keyword"
-          },
-          "timestamp":{
-            "type":"long"
-          },
-          "app_name":{
-            "type":"text"
-          },
-          "app_user":{
-            "type":"text"
-          }
-        }
-      }
-    }'
     only_if_exists false
+    message ''
   end
   
   elastic_http 'delete featurestore index' do
@@ -376,44 +349,34 @@ action :run do
     only_if_exists true
   end
 
-  featurestore_index_mappings = '
-  {
-    "mappings":{
-      "dynamic":"strict",
-      "properties":{
-        "doc_type":{
-          "type":"keyword"
-        },
-        "name":{
-          "type":"text"
-        },
-        "version":{
-          "type":"integer"
-        },
-        "project_id":{
-          "type":"integer"
-        },
-        "project_name":{
-          "type":"text"
-        },
-        "dataset_iid":{
-          "type":"long"
-        },
-        "xattr":{
-          "type":"nested",
-          "dynamic":true
+  elastic_http 'elastic-create-featurestore-template' do
+    action :put
+    url "#{new_resource.elastic_url}/_template/#{node['elastic']['epipe']['featurestore_index']}"
+    user new_resource.user
+    password new_resource.password
+    message "{
+      \"index_patterns\":[ \"#{node['elastic']['epipe']['featurestore_index']}\" ],
+      \"mappings\":{
+        \"dynamic\":\"strict\",
+        \"properties\":{
+          \"doc_type\"    :{\"type\":\"keyword\"},
+          \"name\"        :{\"type\":\"text\"},
+          \"version\"     :{\"type\":\"integer\"},
+          \"project_id\"  :{\"type\":\"integer\"},
+          \"project_name\":{\"type\":\"text\"},
+          \"dataset_iid\" :{\"type\":\"long\"},
+          \"xattr\"       :{\"type\":\"nested\",\"dynamic\":true}
         }
       }
-    }
-  }'
-
-  elastic_http 'elastic-install-featurestore-index' do
+    }"
+  end
+  elastic_http 'elastic-create-featurestore-index' do
     action :put
     url "#{new_resource.elastic_url}/#{node['elastic']['epipe']['featurestore_index']}"
     user new_resource.user
     password new_resource.password
     only_if_exists false
-    message featurestore_index_mappings
+    message ''
   end
 
   elastic_http 'elastic-create-pypi-template' do
@@ -435,19 +398,4 @@ action :run do
       }
     }'
   end
-  
-  elk_crypto_dir = x509_helper.get_crypto_dir(node['elastic']['elk-user'])
-  template node['elastic']['epipe']['reindex-base-indices_script'] do
-      source "reindex-base-indices.sh.erb"
-      owner "root"
-      group "root"
-      mode 0750
-      variables({
-         :elkUserCert => "#{elk_crypto_dir}/#{x509_helper.get_certificate_bundle_name(node['elastic']['elk-user'])}",
-         :elkUserKey => "#{elk_crypto_dir}/#{x509_helper.get_private_key_pkcs8_name(node['elastic']['elk-user'])}",
-         :projectsMappings => projects_index_mappings,
-         :fsMappings => featurestore_index_mappings
-      })
-  end
-
 end
