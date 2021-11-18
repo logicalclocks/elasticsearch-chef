@@ -72,6 +72,12 @@ directory node['elastic']['data_volume']['data_dir'] do
   mode '0700'
 end
 
+directory node['elastic']['data_volume']['backup_dir'] do
+  owner node['elastic']['user']
+  group node['elastic']['group']
+  mode '0700'
+end
+
 bash 'Move elasticsearch data to data volume' do
   user 'root'
   code <<-EOH
@@ -89,6 +95,13 @@ link node['elastic']['data_dir'] do
   group node['elastic']['group']
   mode '0700'
   to node['elastic']['data_volume']['data_dir']
+end
+
+link node['elastic']['backup_dir'] do
+  owner node['elastic']['user']
+  group node['elastic']['group']
+  mode '0700'
+  to node['elastic']['data_volume']['backup_dir']
 end
 
 install_dir = Hash.new
@@ -207,7 +220,8 @@ elasticsearch_configure 'elasticsearch' do
      'opendistro_security.audit.enable_transport' => node['elastic']['opendistro_security']['audit']['enable_transport'].casecmp?("true"),
      'opendistro_security.audit.type' => node['elastic']['opendistro_security']['audit']['type'],
      'opendistro_security.audit.threadpool.size' => node['elastic']['opendistro_security']['audit']['threadpool']['size'],
-     'opendistro_security.audit.threadpool.max_queue_len' => node['elastic']['opendistro_security']['audit']['threadpool']['max_queue_len']
+     'opendistro_security.audit.threadpool.max_queue_len' => node['elastic']['opendistro_security']['audit']['threadpool']['max_queue_len'],
+     'path.repo' => node['elastic']['backup_dir']
    })
    instance_name elastic_host
    action :manage
@@ -215,6 +229,12 @@ end
 
 # We must change directory permissions again after elasticsearch_configure
 directory node['elastic']['data_volume']['data_dir'] do
+  owner node['elastic']['user']
+  group node['elastic']['group']
+  mode '0700'
+end
+
+directory node['elastic']['data_volume']['backup_dir'] do
   owner node['elastic']['user']
   group node['elastic']['group']
   mode '0700'
