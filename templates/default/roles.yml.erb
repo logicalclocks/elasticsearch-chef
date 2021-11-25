@@ -306,6 +306,7 @@ epipe_hopsworks:
       - "<%=node['elastic']['epipe']['featurestore_index'] %>"
       allowed_actions:
         - crud
+        - create_index
     - index_patterns:
       - "<%=node['elastic']['epipe']['file_provenance_index_pattern']%>"
       allowed_actions:

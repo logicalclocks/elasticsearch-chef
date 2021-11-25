@@ -84,6 +84,10 @@ attribute "elastic/data_dir",
           :description =>  "Directory to store elastic data.",
           :type => 'string'
 
+attribute "elastic/backup_dir",
+          :description =>  "Directory to store elastic backup snapshots.",
+          :type => 'string'
+
 attribute "elastic/memory",
           :description =>  "Amount of memory for Elasticsearch.",
           :type => 'string'
