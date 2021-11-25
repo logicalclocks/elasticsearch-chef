@@ -26,7 +26,6 @@ default['elastic']['data']                  = "true"
 # Data volume directories
 default['elastic']['data_volume']['root_dir'] = "#{node['data']['dir']}/elasticsearch"
 default['elastic']['data_volume']['data_dir'] = "#{node['elastic']['data_volume']['root_dir']}/elasticsearch-data"
-<<<<<<< HEAD
 
 default['elastic']['data_volume']['backup_dir'] = "#{node['elastic']['data_volume']['root_dir']}/elasticsearch-backup"
 default['elastic']['data_volume']['log_dir']  = "#{node['elastic']['data_volume']['root_dir']}/logs"
