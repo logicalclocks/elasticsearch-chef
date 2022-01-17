@@ -56,3 +56,11 @@ user node['elastic']['user'] do
   not_if "getent passwd #{node['elastic']['user']}"
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
+
+
+# Disable elasticsearch service to handle upgrades from 2.4 to 2.5
+service "elasticsearch" do
+  case node['elastic']['systemd']
+  supports :restart => true, :stop => true, :start => true, :status => true
+  action [:disable, :stop]
+end
