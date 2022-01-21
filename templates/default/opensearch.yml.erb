@@ -36,6 +36,7 @@ path.data: <%= node['elastic']['data_dir'] %>
 path.logs: <%= node['elastic']['log_dir'] %>
 # path.plugins: <%= node['elastic']['plugins_dir'] %>
 # path.bin: <%= node['elastic']['bin_dir'] %>
+path.repo: [<%= node['elastic']['backup_dir'] %>]
 #
 # ----------------------------------- Memory -----------------------------------
 #

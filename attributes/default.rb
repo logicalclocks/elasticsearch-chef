@@ -34,6 +34,7 @@ default['elastic']['dir']                   = node['install']['dir'].empty? ? "/
 default['elastic']['home']                  = "#{node['elastic']['dir']}/opensearch-#{node['elastic']['opensearch']['version']}"
 default['elastic']['base_dir']              = "#{node['elastic']['dir']}/opensearch"
 default['elastic']['data_dir']              = "#{node['elastic']['dir']}/opensearch-data"
+default['elastic']['backup_dir']            = "#{node['elastic']['dir']}/opensearch-backup"
 default['elastic']['config_dir']            = "#{node['elastic']['base_dir']}/config"
 default['elastic']['log_dir']               = "#{node['elastic']['base_dir']}/logs"
 default['elastic']['bin_dir']               = "#{node['elastic']['base_dir']}/bin"
