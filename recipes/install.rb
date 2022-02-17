@@ -92,4 +92,8 @@ if node['hopsworks']['current_version'].to_f <= 2.5
     action :delete
   end
   
+  link "{node['install']['dir']}/elasticsearch-plugin" do
+    action :delete
+  end
+  
 end
