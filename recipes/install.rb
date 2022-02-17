@@ -58,9 +58,38 @@ user node['elastic']['user'] do
 end
 
 
-# Disable elasticsearch service to handle upgrades from 2.4 to 2.5
-service "elasticsearch" do
-  provider Chef::Provider::Service::Systemd
-  supports :restart => true, :stop => true, :start => true, :status => true
-  action [:disable, :stop]
+#
+# Cleanup/Disable elasticsearch service to handle upgrades to OpenSearch
+#
+if node['hopsworks']['current_version'].to_f <= 2.5
+
+  # If the data-dir is not in a separate directory, refuse to upgrade
+  raise if node['hopsworks']['current_version'].to_f <= 2.3
+
+  service "elasticsearch" do
+    provider Chef::Provider::Service::Systemd
+    supports :restart => true, :stop => true, :start => true, :status => true
+    action [:disable, :stop]
+  end
+
+  old_elastic = "/lib/systemd/system/elasticsearch.service"
+
+  case node['platform_family']
+  when "rhel"
+    old_elastic =  "/usr/lib/systemd/system/elasticsearch.service"
+  end
+
+  file old_elastic do
+    action :delete
+  end
+
+  directory "{node['install']['dir']}/elasticsearch-#{node['hopsworks']['current_version']}" do
+    recursive true
+    action :delete
+  end
+
+  link "{node['install']['dir']}/elasticsearch" do
+    action :delete
+  end
+  
 end
