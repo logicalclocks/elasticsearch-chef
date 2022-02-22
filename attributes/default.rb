@@ -134,3 +134,15 @@ default['elastic']['epipe']['search_index']                                     
 default['elastic']['epipe']['app_provenance_index']                                 = "app_provenance"
 default['elastic']['epipe']['file_provenance_index_pattern']                        = "*__file_prov"
 default['elastic']['epipe']['featurestore_index']                                   = "featurestore"
+
+
+# kNN settings
+
+default['elastic']['knn']['enabled']                                   = "true"
+default['elastic']['knn']['index_threads']                             = 1
+default['elastic']['knn']['cache_expire']['enabled']                   = "false"
+default['elastic']['knn']['circuit_breaker']['percent']                = "75.0"
+default['elastic']['knn']['circuit_breaker']['triggered']              = "true"
+default['elastic']['knn']['memory_circuit_breaker']['limit']           = "50%"
+default['elastic']['knn']['memory_circuit_breaker']['enabled']         = "true"
+

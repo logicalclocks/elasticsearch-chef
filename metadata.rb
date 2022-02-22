@@ -195,3 +195,33 @@ attribute "elastic/opensearch_security/audit/enable_rest",
 attribute "elastic/opensearch_security/audit/enable_transport",
           :description =>  "Enable or disable audit on the transport layer. Default is false.",
           :type => 'string'
+
+attribute "elastic/knn/enabled",
+          :description =>  "Default: true",
+          :type => 'string'
+
+attribute "elastic/knn/index_threads",
+          :description =>  "Default: 1",
+          :type => 'string'
+
+attribute "elastic/knn/cache_expire/enabled",
+          :description =>  "Default: false",
+          :type => 'string'
+
+attribute "elastic/knn/circuit_breaker/percent",
+          :description =>  "Default: 75%",
+          :type => 'string'
+
+attribute "elastic/knn/circuit_breaker/triggered",
+          :description =>  "Default: false",
+          :type => 'string'
+
+attribute "elastic/knn/memory_circuit_breaker/limit",
+          :description =>  "Default: 50%",
+          :type => 'string'
+
+attribute "elastic/knn/memory_circuit_breaker/enabled",
+          :description =>  "Default: true",
+          :type => 'string'
+
+
