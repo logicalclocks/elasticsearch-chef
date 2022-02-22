@@ -124,3 +124,15 @@ opendistro_security.audit.enable_transport: <%= @opensearch_security_audit_enabl
 # If you use clients that include a version check, such as recent versions of Logstash OSS or Filebeat OSS, enable the setting
 # https://opensearch.org/docs/latest/clients/agents-and-ingestion-tools/index/
 compatibility.override_main_response_version: true
+
+# k-NN plugin settings
+#
+knn.plugin.enabled: <%= node['elastic']['knn']['enabled'] %>
+knn.algo_param.index_thread_qty: <%= node['elastic']['knn']['index_threads'] %>
+knn.cache.item.expiry.enabled: <%= node['elastic']['knn']['cached_expire']['enabled'] %>
+knn.circuit_breaker.unset.percentage: <%= node['elastic']['knn']['circuit_breaker']['percent'] %>
+knn.circuit_breaker.triggered: <%= node['elastic']['knn']['circuit_breaker']['triggered'] %>
+knn.memory.circuit_breaker.limit: <%= node['elastic']['knn']['memory_circuit_breaker']['limit'] %>
+knn.memory.circuit_breaker.enabled: <%= node['elastic']['knn']['memory_circuit_breaker']['enabled'] %>
+
+
