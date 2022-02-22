@@ -129,7 +129,7 @@ compatibility.override_main_response_version: true
 #
 knn.plugin.enabled: <%= node['elastic']['knn']['enabled'] %>
 knn.algo_param.index_thread_qty: <%= node['elastic']['knn']['index_threads'] %>
-knn.cache.item.expiry.enabled: <%= node['elastic']['knn']['cached_expire']['enabled'] %>
+knn.cache.item.expiry.enabled: <%= node['elastic']['knn']['cache_expire']['enabled'] %>
 knn.circuit_breaker.unset.percentage: <%= node['elastic']['knn']['circuit_breaker']['percent'] %>
 knn.circuit_breaker.triggered: <%= node['elastic']['knn']['circuit_breaker']['triggered'] %>
 knn.memory.circuit_breaker.limit: <%= node['elastic']['knn']['memory_circuit_breaker']['limit'] %>
