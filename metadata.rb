@@ -2,12 +2,12 @@ name             "elastic"
 maintainer       "Jim Dowling"
 maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
-description      'Installs/Configures/Runs elasticsearch'
+description      'Installs/Configures/Runs opensearch'
 version          "2.6.0"
 
-recipe            "elastic::install", "Experiment setup for elasticsearch"
-recipe            "elastic::default",  "Configures and starts an elasticsearch server"
-recipe            "elastic::purge",  "Deletes an elasticsearch server"
+recipe            "elastic::install", "Experiment setup for opensearch"
+recipe            "elastic::default",  "Configures and starts an opensearch server"
+recipe            "elastic::purge",  "Deletes an opensearch server"
 
 
 depends "java", '~> 7.0.0'
@@ -25,7 +25,7 @@ depends 'ndb'
 end
 
 attribute "elastic/port",
-          :description =>  "Port for elasticsearch service (default: 9200)",
+          :description =>  "Port for opensearch service (default: 9200)",
           :type => 'string'
 
 attribute "elastic/ulimit_files",
@@ -88,28 +88,24 @@ attribute "elastic/backup_dir",
           :description =>  "Directory to store elastic backup snapshots.",
           :type => 'string'
 
-attribute "elastic/memory",
-          :description =>  "Amount of memory for Elasticsearch.",
+attribute "elastic/memory/Xms",
+          :description =>  "Amount of minimum heap memory for Opensearch. Default '512m'.",
           :type => 'string'
 
-attribute "elastic/memory/Xms",
-          :description =>  "Amount of minimum heap memory for Elasticsearch.",
+attribute "elastic/memory/Xmx",
+          :description =>  "Amount of maximum heap memory for Opensearch. Default: '1024m'.",
           :type => 'string'
 
 attribute "elastic/cluster/max_shards_per_node",
           :description =>  "Amount of maximum shards per node.",
           :type => 'string'
 
-attribute "elastic/memory/Xmx",
-          :description =>  "Amount of maximum heap memory for Elasticsearch.",
-          :type => 'string'
-
 attribute "elastic/version",
-          :description =>  "Elasticsearch version, .e.g, '6.2.4'",
+          :description =>  "Opensearch version, .e.g, '1.2.4'",
           :type => 'string'
 
 attribute "elastic/checksum",
-          :description =>  "Sha-512 checksum for the elasticsearch .tar.gz file",
+          :description =>  "Sha-512 checksum for the opensearch .tar.gz file",
           :type => 'string'
 
 attribute "elastic/default/private_ips",

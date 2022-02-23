@@ -1,5 +1,3 @@
-#include_recipe "java"
-
 node.override['elasticsearch']['version'] = node['elastic']['opensearch']['version']
 node.override['elasticsearch']['download_urls']['tarball'] = node['elastic']['url']
 
