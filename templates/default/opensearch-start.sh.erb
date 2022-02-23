@@ -5,7 +5,7 @@ export ES_PATH_CONF=<%= node['elastic']['base_dir'] %>/config
 export ES_HOME=<%= node['elastic']['base_dir'] %>
 export OPENSEARCH_JAVA_HOME=<%= node['elastic']['base_dir'] %>/jdk
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<%= node['elastic']['base_dir'] %>/plugins/opensearch-knn/knnlib
-export OPENSEARCH_JAVA_OPTS="-Xms<%= node['elastic']['memory'['Xms'] %> -Xmx<%= node['elastic']['memory'['Xmx'] %>"
+export OPENSEARCH_JAVA_OPTS="-Xms<%= node['elastic']['memory']['Xms'] %> -Xmx<%= node['elastic']['memory']['Xmx'] %>"
 nohup <%= node['elastic']['base_dir'] %>/bin/opensearch > <%= node['elastic']['base_dir'] %>/opensearch.log 2>&1 & 
 echo $! > <%= node['elastic']['pid_file'] %>
 exit 0
