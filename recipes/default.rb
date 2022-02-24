@@ -293,7 +293,7 @@ template "#{node['elastic']['base_dir']}/config/jvm.options" do
   source "jvm.options.erb"
   user node['elastic']['user']
   group node['elastic']['group']
-  mode "755"
+  mode "600"
 end
 
 template "#{node['elastic']['base_dir']}/bin/opensearch-start.sh" do
