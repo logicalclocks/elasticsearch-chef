@@ -48,7 +48,8 @@ default['elastic']['limits']['memory_limit'] = 'infinity'
 
 default['elastic']['systemd']               = "true"
 
-default['elastic']['memory']['Xms']         = "1024m"
+# You should make Xms and Xmx the same size
+default['elastic']['memory']['Xms']         = "1g"
 default['elastic']['memory']['Xmx']         = "4g"
 default['elastic']['cluster']['max_shards_per_node'] = "3000"
 
