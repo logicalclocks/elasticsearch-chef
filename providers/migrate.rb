@@ -15,7 +15,6 @@ end
 bash 'Move elasticsearch logs to data volume' do
   user 'root'
   code <<-EOH
-    set -e
     mv -f #{node['elastic']['log_dir']}/* #{node['elastic']['data_volume']['log_dir']}
     mv -f #{node['elastic']['log_dir']} #{node['elastic']['log_dir']}_deprecated
   EOH
