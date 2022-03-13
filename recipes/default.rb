@@ -101,7 +101,7 @@ directory node['elastic']['log_dir'] do
 end
 
 
-elastic_migrate "move to data volume"
+elastic_migrate "move to data volume" do
   action :run
 end
 
