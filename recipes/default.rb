@@ -454,6 +454,14 @@ if service_discovery_enabled()
   end
 end
 
+
+if node['hopsworks']['current_version'] != "" and node['hopsworks']['current_version'].to_f <= 2.5
+  elastic_migrate "run_secureadmin" do
+    elastic_host elastic_host
+    action :secureadmin
+  end
+end  
+
 if conda_helpers.is_upgrade
   kagent_config "#{service_name}" do
     action :systemd_reload
@@ -463,3 +471,4 @@ if conda_helpers.is_upgrade
     action :systemd_reload
   end
 end
+
