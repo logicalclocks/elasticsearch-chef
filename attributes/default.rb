@@ -113,7 +113,7 @@ default['elastic']['opensearch_security']['truststore']['password']             
 
 default['elastic']['opensearch_security']['https']['enabled']                       = "true"
 default['elastic']['opensearch_security']['kibana']['multitenancy']['enabled']      = "true"
-default['elastic']['opensearch_security']['kibana']['index']                        = ".kibana"
+default['elastic']['opensearch_security']['kibana']['index']                        = ".opensearch-dashboards"
 
 default['elastic']['opensearch_security']['jwt']['enabled']                         = "true"
 default['elastic']['opensearch_security']['jwt']['url_parameter']                   = "jt"
