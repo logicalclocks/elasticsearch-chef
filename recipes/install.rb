@@ -97,5 +97,13 @@ if node['hopsworks']['current_version'] != "" and node['hopsworks']['current_ver
   link "{node['install']['dir']}/elasticsearch-plugin" do
     action :delete
   end
+
+
+  if node['kagent']['enabled'] == "true"
+    kagent_config "elasticsearch" do
+      service "ELK"
+      action :remove
+    end
+  end
   
 end
