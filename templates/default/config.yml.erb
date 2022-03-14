@@ -65,7 +65,8 @@ config:
     # Set filtered_alias_mode to 'nowarn' to allow more than 2 filtered aliases per index silently
     #filtered_alias_mode: warn
     #do_not_fail_on_forbidden: false
-    opensearch-dashboards:
+    #opensearch-dashboards:
+    kibana:
       # Kibana multitenancy
       multitenancy_enabled: <%= node['elastic']['opensearch_security']['kibana']['multitenancy']['enabled'].casecmp?("true") %>
       server_username: "<%= node['elastic']['opensearch_security']['kibana']['username'] %>"
