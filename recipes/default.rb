@@ -74,6 +74,7 @@ bash 'extract_elastic' do
                 chown -R #{node['elastic']['user']}:#{node['elastic']['group']} #{node['elastic']['home']}
                 chmod 750 #{node['elastic']['home']}
                 cd #{node['elastic']['home']}
+		chmod 700 #{node['elastic']['home']}/config
                 touch #{elastic_downloaded}
                 chown #{node['elastic']['user']} #{elastic_downloaded}
         EOH
@@ -145,7 +146,7 @@ template "#{node['elastic']['config_dir']}/opensearch.yml" do
   source "opensearch.yml.erb"
   user node['elastic']['user']
   group node['elastic']['group']
-  mode "650"
+  mode "600"
   variables({
               :path_home => node['elastic']['base_dir'],
               :instance_name => elastic_host,

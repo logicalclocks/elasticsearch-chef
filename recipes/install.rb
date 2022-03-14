@@ -81,22 +81,22 @@ if node['hopsworks']['current_version'] != "" and node['hopsworks']['current_ver
     old_elastic =  "/usr/lib/systemd/system/elasticsearch.service"
   end
 
-  file old_elastic do
-    action :delete
-  end
+  # file old_elastic do
+  #   action :delete
+  # end
 
-  directory "{node['install']['dir']}/elasticsearch-#{node['hopsworks']['current_version']}" do
-    recursive true
-    action :delete
-  end
+  # directory "{node['install']['dir']}/elasticsearch-#{node['hopsworks']['current_version']}" do
+  #   recursive true
+  #   action :delete
+  # end
 
-  link "{node['install']['dir']}/elasticsearch" do
-    action :delete
-  end
+  # link "{node['install']['dir']}/elasticsearch" do
+  #   action :delete
+  # end
   
-  link "{node['install']['dir']}/elasticsearch-plugin" do
-    action :delete
-  end
+  # link "{node['install']['dir']}/elasticsearch-plugin" do
+  #   action :delete
+  # end
 
 
   if node['kagent']['enabled'] == "true"
