@@ -61,7 +61,7 @@ end
 #
 # Cleanup/Disable elasticsearch service to handle upgrades to OpenSearch
 #
-if node['hopsworks']['current_version'] != "" and node['hopsworks']['current_version'].to_f <= 2.5
+if node['install']['current_version'] != "" and node['install']['current_version'].to_f <= 2.5
 
   # If the data-dir is not in a separate directory, refuse to upgrade
   if node['hopsworks']['current_version'].to_f <= 2.3
