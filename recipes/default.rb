@@ -455,7 +455,7 @@ if service_discovery_enabled()
 end
 
 
-if node['hopsworks']['current_version'] != "" and node['hopsworks']['current_version'].to_f <= 2.5
+if node['install']['current_version'] != "" and node['install']['current_version'].to_f <= 2.5
   elastic_migrate "run_secureadmin" do
     elastic_host elastic_host
     action :secureadmin
