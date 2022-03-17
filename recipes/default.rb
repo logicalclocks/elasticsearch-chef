@@ -358,6 +358,13 @@ service "#{service_name}" do
 end
 
 
+if node['install']['current_version'] != "" and node['install']['current_version'].to_f <= 3.5
+  elastic_migrate "run_secureadmin" do
+    elastic_host elastic_host
+    action :secureadmin
+  end
+end  
+
 elastic_start "start_install_elastic" do
   elastic_url my_elastic_url()
   if opensearch_security?()
@@ -454,13 +461,6 @@ if service_discovery_enabled()
   end
 end
 
-
-if node['install']['current_version'] != "" and node['install']['current_version'].to_f <= 2.5
-  elastic_migrate "run_secureadmin" do
-    elastic_host elastic_host
-    action :secureadmin
-  end
-end  
 
 if conda_helpers.is_upgrade
   kagent_config "#{service_name}" do
