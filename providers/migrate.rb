@@ -29,10 +29,11 @@ action :secureadmin do
 
   bash 'Run secureadmin.sh on opensearch' do
     user 'root'
+    retries 1
     code <<-EOH
     # opensearch needs to be running when you call the run_securityAdmin.sh script
     systemctl restart opensearch
-    sleep 20
+    sleep 60
     #{node['elastic']['opensearch_security']['tools_dir']}/run_securityAdmin.sh
      # cd #{node['elastic']['opensearch_security']['config_dir']}
 #      ../tools/securityadmin.sh -icl -nhnv -ts #{node['elastic']['opensearch_security']['truststore']['location']} -ks #{node['elastic']['opensearch_security']['keystore']['location']} -kspass #{node['elastic']['opensearch_security']['keystore']['password']} -tspass #{node['elastic']['opensearch_security']['truststore']['password']} -h #{new_resource.elastic_host}
