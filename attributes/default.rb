@@ -1,6 +1,6 @@
 include_attribute "kagent"
 
-default['elastic']['opensearch']['version'] = "1.2.4"
+default['elastic']['opensearch']['version'] = "1.3.1"
 default['elastic']['version']               = node['elastic']['opensearch']['version']
 default['elastic']['install_type']          = "tarball"
 #default['elastic']['checksum']              = "8ba8a7c1e32e02056d054638e144290c396b9c0656806a4249ac83fcd28b3c84f89eccf437200ffa435e3edb9f362d20c0a296d70d5a6fa583fd61f21047b16b"
