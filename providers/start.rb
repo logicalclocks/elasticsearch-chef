@@ -1,6 +1,6 @@
 action :run do
 
-  kagent_config "elasticsearch" do
+  kagent_config "#{new_resource.service_name}" do
     action :systemd_reload
   end
     

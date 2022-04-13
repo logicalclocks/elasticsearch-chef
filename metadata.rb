@@ -2,18 +2,17 @@ name             "elastic"
 maintainer       "Jim Dowling"
 maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
-description      'Installs/Configures/Runs elasticsearch'
+description      'Installs/Configures/Runs opensearch'
 version          "2.6.0"
 
-recipe            "elastic::install", "Experiment setup for elasticsearch"
-recipe            "elastic::default",  "Configures and starts an elasticsearch server"
-recipe            "elastic::purge",  "Deletes an elasticsearch server"
+recipe            "elastic::install", "Experiment setup for opensearch"
+recipe            "elastic::default",  "Configures and starts an opensearch server"
+recipe            "elastic::purge",  "Deletes an opensearch server"
 
 
 depends "java", '~> 7.0.0'
 depends "ulimit2", '~> 0.2.0'
 depends "sysctl", '~> 1.0.3'
-depends "elasticsearch", '~> 4.0.0'
 depends "ark", '= 5.1.1'
 depends "yum", '= 6.1.1'
 depends 'conda'
@@ -26,7 +25,7 @@ depends 'ndb'
 end
 
 attribute "elastic/port",
-          :description =>  "Port for elasticsearch service (default: 9200)",
+          :description =>  "Port for opensearch service (default: 9200)",
           :type => 'string'
 
 attribute "elastic/ulimit_files",
@@ -89,28 +88,24 @@ attribute "elastic/backup_dir",
           :description =>  "Directory to store elastic backup snapshots.",
           :type => 'string'
 
-attribute "elastic/memory",
-          :description =>  "Amount of memory for Elasticsearch.",
+attribute "elastic/memory/Xms",
+          :description =>  "Amount of minimum heap memory for Opensearch. Default '512m'.",
           :type => 'string'
 
-attribute "elastic/memory/Xms",
-          :description =>  "Amount of minimum heap memory for Elasticsearch.",
+attribute "elastic/memory/Xmx",
+          :description =>  "Amount of maximum heap memory for Opensearch. Default: '1024m'.",
           :type => 'string'
 
 attribute "elastic/cluster/max_shards_per_node",
           :description =>  "Amount of maximum shards per node.",
           :type => 'string'
 
-attribute "elastic/memory/Xmx",
-          :description =>  "Amount of maximum heap memory for Elasticsearch.",
-          :type => 'string'
-
 attribute "elastic/version",
-          :description =>  "Elasticsearch version, .e.g, '6.2.4'",
+          :description =>  "Opensearch version, .e.g, '1.2.4'",
           :type => 'string'
 
 attribute "elastic/checksum",
-          :description =>  "Sha-512 checksum for the elasticsearch .tar.gz file",
+          :description =>  "Sha-512 checksum for the opensearch .tar.gz file",
           :type => 'string'
 
 attribute "elastic/default/private_ips",
@@ -145,54 +140,84 @@ attribute "elastic/data",
           :description =>  "Data node. Default is true.",
           :type => 'string'
 
-attribute "elastic/opendistro_security/admin/username",
-          :description =>  "Admin username for OpenDistro security.",
+attribute "elastic/opensearch_security/admin/username",
+          :description =>  "Admin username for Opensearch security.",
           :type => 'string'
 
-attribute "elastic/opendistro_security/admin/password",
-          :description =>  "Admin password for OpenDistro security.",
+attribute "elastic/opensearch_security/admin/password",
+          :description =>  "Admin password for Opensearch security.",
           :type => 'string'
 
-attribute "elastic/opendistro_security/kibana/username",
-          :description =>  "Username used by kibana to interact with elasticsearch while using OpenDistro security.",
+attribute "elastic/opensearch_security/kibana/username",
+          :description =>  "Username used by kibana to interact with Opensearch.",
           :type => 'string'
 
-attribute "elastic/opendistro_security/kibana/password",
-          :description =>  "Password used by kibana to interact with elasticsearch while using OpenDistro security.",
+attribute "elastic/opensearch_security/kibana/password",
+          :description =>  "Password used by kibana to interact with Opensearch.",
           :type => 'string'
 
-attribute "elastic/opendistro_security/logstash/username",
-          :description =>  "Username used by logstash to interact with elasticsearch while using OpenDistro security.",
+attribute "elastic/opensearch_security/logstash/username",
+          :description =>  "Username used by logstash to interact with Opensearch.",
           :type => 'string'
 
-attribute "elastic/opendistro_security/logstash/password",
-          :description =>  "Password used by logstash to interact with elasticsearch while using OpenDistro security.",
+attribute "elastic/opensearch_security/logstash/password",
+          :description =>  "Password used by logstash to interact with Opensearch.",
           :type => 'string'
 
-attribute "elastic/opendistro_security/epipe/username",
-          :description =>  "Username used by epipe to interact with elasticsearch while using OpenDistro security.",
+attribute "elastic/opensearch_security/epipe/username",
+          :description =>  "Username used by epipe to interact with Opensearch.",
           :type => 'string'
 
-attribute "elastic/opendistro_security/epipe/password",
-          :description =>  "Password used by epipe to interact with elasticsearch while using OpenDistro security.",
+attribute "elastic/opensearch_security/epipe/password",
+          :description =>  "Password used by epipe to interact with Opensearch.",
           :type => 'string'
 
-attribute "elastic/opendistro_security/elastic_exporter/username",
-          :description =>  "Username used by elastic_exporter to interact with elasticsearch while using OpenDistro security.",
+attribute "elastic/opensearch_security/elastic_exporter/username",
+          :description =>  "Username used by elastic_exporter to interact with Opensearch.",
           :type => 'string'
 
-attribute "elastic/opendistro_security/elastic_exporter/password",
-          :description =>  "Password used by elastic_exporter to interact with elasticsearch while using OpenDistro security.",
+attribute "elastic/opensearch_security/elastic_exporter/password",
+          :description =>  "Password used by elastic_exporter to interact with Opensearch.",
           :type => 'string'
 
-attribute "elastic/opendistro_security/jwt/exp_ms",
-          :description =>  "The expiration time in milliseconds for a jwt token generated for OpenDistro security.",
+attribute "elastic/opensearch_security/jwt/exp_ms",
+          :description =>  "The expiration time in milliseconds for a jwt token generated for Opensearch security.",
           :type => 'string'
 
-attribute "elastic/opendistro_security/audit/enable_rest",
+attribute "elastic/opensearch_security/audit/enable_rest",
           :description =>  "Enable or disable audit on the REST API. Default is true.",
           :type => 'string'
 
-attribute "elastic/opendistro_security/audit/enable_transport",
+attribute "elastic/opensearch_security/audit/enable_transport",
           :description =>  "Enable or disable audit on the transport layer. Default is false.",
           :type => 'string'
+
+attribute "elastic/knn/enabled",
+          :description =>  "Default: true",
+          :type => 'string'
+
+attribute "elastic/knn/index_threads",
+          :description =>  "Default: 1",
+          :type => 'string'
+
+attribute "elastic/knn/cache_expire/enabled",
+          :description =>  "Default: false",
+          :type => 'string'
+
+attribute "elastic/knn/circuit_breaker/percent",
+          :description =>  "Default: 75%",
+          :type => 'string'
+
+attribute "elastic/knn/circuit_breaker/triggered",
+          :description =>  "Default: false",
+          :type => 'string'
+
+attribute "elastic/knn/memory_circuit_breaker/limit",
+          :description =>  "Default: 50%",
+          :type => 'string'
+
+attribute "elastic/knn/memory_circuit_breaker/enabled",
+          :description =>  "Default: true",
+          :type => 'string'
+
+
