@@ -65,11 +65,12 @@ config:
     # Set filtered_alias_mode to 'nowarn' to allow more than 2 filtered aliases per index silently
     #filtered_alias_mode: warn
     #do_not_fail_on_forbidden: false
+    #opensearch-dashboards:
     kibana:
       # Kibana multitenancy
-      multitenancy_enabled: <%= node['elastic']['opendistro_security']['kibana']['multitenancy']['enabled'].casecmp?("true") %>
-      server_username: "<%= node['elastic']['opendistro_security']['kibana']['username'] %>"
-      index: "<%= node['elastic']['opendistro_security']['kibana']['index'] %>"
+      multitenancy_enabled: <%= node['elastic']['opensearch_security']['kibana']['multitenancy']['enabled'].casecmp?("true") %>
+      server_username: "<%= node['elastic']['opensearch_security']['kibana']['username'] %>"
+      index: "<%= node['elastic']['opensearch_security']['kibana']['index'] %>"
     http:
       anonymous_auth_enabled: false
       xff:
@@ -121,8 +122,8 @@ config:
           type: noop
       jwt_auth_domain:
         description: "Authenticate via Json Web Token"
-        http_enabled: <%= node['elastic']['opendistro_security']['jwt']['enabled'].casecmp?("true") %>
-        transport_enabled: <%= node['elastic']['opendistro_security']['jwt']['enabled'].casecmp?("true") %>
+        http_enabled: <%= node['elastic']['opensearch_security']['jwt']['enabled'].casecmp?("true") %>
+        transport_enabled: <%= node['elastic']['opensearch_security']['jwt']['enabled'].casecmp?("true") %>
         order: 0
         http_authenticator:
           type: jwt
@@ -130,9 +131,9 @@ config:
           config:
             signing_key: "<%= @signing_key %>"
             jwt_header: "Authorization"
-            jwt_url_parameter: <%=node['elastic']['opendistro_security']['jwt']['url_parameter']%>
-            roles_key: <%=node['elastic']['opendistro_security']['jwt']['roles_key']%>
-            subject_key: <%=node['elastic']['opendistro_security']['jwt']['subject_key']%>
+            jwt_url_parameter: <%=node['elastic']['opensearch_security']['jwt']['url_parameter']%>
+            roles_key: <%=node['elastic']['opensearch_security']['jwt']['roles_key']%>
+            subject_key: <%=node['elastic']['opensearch_security']['jwt']['subject_key']%>
         authentication_backend:
           type: noop
       clientcert_auth_domain:

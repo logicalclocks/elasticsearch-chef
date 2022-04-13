@@ -1,12 +1,12 @@
 module Elastic
   module Helpers
 
-    def opendistro_security?
-      return node['elastic']['opendistro_security']['enabled'].casecmp?("true")
+    def opensearch_security?
+      return node['elastic']['opensearch_security']['enabled'].casecmp?("true")
     end
 
-    def opendistro_security_https?
-      return node['elastic']['opendistro_security']['https']['enabled'].casecmp?("true")
+    def opensearch_security_https?
+      return node['elastic']['opensearch_security']['https']['enabled'].casecmp?("true")
     end
 
     def all_elastic_nodes_dns()
@@ -58,7 +58,7 @@ module Elastic
 
     def get_elastic_url(elastic_ip)
       my_ip = my_private_ip()
-      if opendistro_security?() && opendistro_security_https?()
+      if opensearch_security?() && opensearch_security_https?()
         if my_ip.eql? elastic_ip
           return "https://#{my_host()}:#{node['elastic']['port']}"
         else
@@ -83,10 +83,10 @@ module Elastic
     end
 
     def get_my_es_master_uri()
-      if opendistro_security?() && opendistro_security_https?()
-        return "https://#{node['elastic']['opendistro_security']['elastic_exporter']['username']}:#{node['elastic']['opendistro_security']['elastic_exporter']['password']}@#{my_host()}:#{node['elastic']['port']}"
-      elsif opendistro_security?()
-        return "http://#{node['elastic']['opendistro_security']['elastic_exporter']['username']}:#{node['elastic']['opendistro_security']['elastic_exporter']['password']}@#{my_private_ip()}:#{node['elastic']['port']}"
+      if opensearch_security?() && opensearch_security_https?()
+        return "https://#{node['elastic']['opensearch_security']['elastic_exporter']['username']}:#{node['elastic']['opensearch_security']['elastic_exporter']['password']}@#{my_host()}:#{node['elastic']['port']}"
+      elsif opensearch_security?()
+        return "http://#{node['elastic']['opensearch_security']['elastic_exporter']['username']}:#{node['elastic']['opensearch_security']['elastic_exporter']['password']}@#{my_private_ip()}:#{node['elastic']['port']}"
       else
         return "http://#{my_private_ip()}:#{node['elastic']['port']}"
       end

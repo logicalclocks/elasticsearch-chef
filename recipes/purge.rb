@@ -34,23 +34,13 @@ else # systemd
 
 end
 
-# elasticsearch_install 'my_es_installation' do
-#   type :tarball
-#   dir "#{node['elastic']['dir']}"
-#   owner node['elastic']['user']
-#   group node['elastic']['group']
-#   tarball_url node['elastic']['url']
-#   ignore_failure true
-#   action :remove
-# end
-
-directory node['elastic']['version_dir'] do
+directory node['elastic']['home'] do
   recursive true
   action :delete
   ignore_failure true
 end
 
-link node['elastic']['home_dir'] do
+link node['elastic']['base_dir'] do
   action :delete
   ignore_failure true
 end

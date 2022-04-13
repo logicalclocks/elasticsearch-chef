@@ -1,16 +1,20 @@
 [Unit]
-Description = Elasticsearch daemon.
+Description = Opensearch daemon.
 StartLimitIntervalSec=80
 StartLimitBurst=15
 
 [Service]
 User = <%= node['elastic']['user'] %>
-PIDFile = /tmp/elasticsearch.pid
+PIDFile = <%= node['elastic']['pid_file'] %>
 ExecStart = <%= @start_script %>
 ExecStop = <%= @stop_script %>
 WorkingDirectory=<%= @install_dir %>
 LimitNOFILE=<%= @nofile_limit %>
 LimitMEMLOCK=<%= @memlock_limit %>
+#LimitAS=infinity
+#LimitRSS=infinity
+#LimitCORE=infinity
+
 Restart=on-failure
 RestartSec=2
 

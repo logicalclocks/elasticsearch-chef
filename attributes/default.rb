@@ -1,10 +1,10 @@
 include_attribute "kagent"
-include_attribute "elasticsearch"
 
-default['elastic']['version']               = "7.2.0"
+default['elastic']['opensearch']['version'] = "1.3.1"
+default['elastic']['version']               = node['elastic']['opensearch']['version']
 default['elastic']['install_type']          = "tarball"
-default['elastic']['checksum']              = "4c77cfce006de44f4657469523c6305e2ae06b60021cabb4398c2d0a48e8920a"
-default['elastic']['url']                   = node['download_url'] + "/elasticsearch-oss-#{node['elastic']['version']}-linux-x86_64.tar.gz"
+#default['elastic']['checksum']              = "8ba8a7c1e32e02056d054638e144290c396b9c0656806a4249ac83fcd28b3c84f89eccf437200ffa435e3edb9f362d20c0a296d70d5a6fa583fd61f21047b16b"
+default['elastic']['url']                   = node['download_url'] + "/opensearch/opensearch-#{node['elastic']['opensearch']['version']}-linux-x64.tar.gz"
 default['elastic']['user']                  = node['install']['user'].empty? ? "elastic" : node['install']['user']
 default['elastic']['user_id']               = '1501'
 default['elastic']['elk-user']              = node['install']['user'].empty? ? "elkadmin" : node['install']['user']
@@ -26,32 +26,35 @@ default['elastic']['data']                  = "true"
 # Data volume directories
 default['elastic']['data_volume']['root_dir'] = "#{node['data']['dir']}/elasticsearch"
 default['elastic']['data_volume']['data_dir'] = "#{node['elastic']['data_volume']['root_dir']}/elasticsearch-data"
+
 default['elastic']['data_volume']['backup_dir'] = "#{node['elastic']['data_volume']['root_dir']}/elasticsearch-backup"
 default['elastic']['data_volume']['log_dir']  = "#{node['elastic']['data_volume']['root_dir']}/logs"
 
 default['elastic']['dir']                   = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
-default['elastic']['version_dir']           = "#{node['elastic']['dir']}/elasticsearch-#{node['elastic']['version']}"
-default['elastic']['home_dir']              = "#{node['elastic']['dir']}/elasticsearch"
-default['elastic']['data_dir']              = "#{node['elastic']['dir']}/elasticsearch-data"
-default['elastic']['backup_dir']            = "#{node['elastic']['dir']}/elasticsearch-backup"
-default['elastic']['config_dir']            = "#{node['elastic']['home_dir']}/config"
-default['elastic']['log_dir']               = "#{node['elastic']['home_dir']}/logs"
-default['elastic']['bin_dir']               = "#{node['elastic']['home_dir']}/bin"
-default['elastic']['plugins_dir']           = "#{node['elastic']['home_dir']}/plugins"
+default['elastic']['home']           = "#{node['elastic']['dir']}/opensearch-#{node['elastic']['opensearch']['version']}"
+default['elastic']['base_dir']              = "#{node['elastic']['dir']}/opensearch"
+default['elastic']['data_dir']              = "#{node['elastic']['dir']}/opensearch-data"
+default['elastic']['backup_dir']            = "#{node['elastic']['dir']}/opensearch-backup"
+default['elastic']['config_dir']            = "#{node['elastic']['base_dir']}/config"
+default['elastic']['log_dir']               = "#{node['elastic']['base_dir']}/logs"
+default['elastic']['bin_dir']               = "#{node['elastic']['base_dir']}/bin"
+default['elastic']['plugins_dir']           = "#{node['elastic']['base_dir']}/plugins"
+
+default['elastic']['pid_file']              = "#{node['elastic']['base_dir']}/opensearch.pid"
 
 default['elastic']['limits']['nofile']      = "65536"
 default['elastic']['limits_nproc']          = '65536'
+default['elastic']['limits']['memory_limit'] = 'infinity'
 
 default['elastic']['systemd']               = "true"
 
-default['elastic']['memory']['Xms']         = "1024m"
-default['elastic']['memory']['Xmx']         = "1024m"
+# You should make Xms and Xmx the same size
+default['elastic']['memory']['Xms']         = "2g"
+default['elastic']['memory']['Xmx']         = "2g"
 default['elastic']['cluster']['max_shards_per_node'] = "3000"
 
 default['elastic']['thread_stack_size']     = "512k"
 
-
-default['elastic']['pid_file']              = "/tmp/elasticsearch.pid"
 
 # Kernel tuning
 default['elastic']['kernel']['vm.max_map_count']      = "262144"
@@ -76,60 +79,71 @@ default['elastic']['exporter']['flags']         = %w[--es.all
     --es.shards
 ]
 
-#OpenDistro Security Plugin
-default['elastic']['opendistro']['version']                                         = "1.2.0.0"
-default['elastic']['opendistro_security']['enabled']                                = "true"
-default['elastic']['opendistro_security']['url']                                    = "#{node['download_url']}/opendistro_security-#{node['elastic']['opendistro']['version']}.zip"
-default['elastic']['opendistro_security']['base_dir']                               = "#{node['elastic']['plugins_dir']}/opendistro_security"
-default['elastic']['opendistro_security']['config_dir']                             = "#{node['elastic']['opendistro_security']['base_dir']}/securityconfig"
-default['elastic']['opendistro_security']['tools_dir']                              = "#{node['elastic']['opendistro_security']['base_dir']}/tools"
-default['elastic']['opendistro_security']['tools']['hash']                          = "#{node['elastic']['opendistro_security']['tools_dir']}/hash.sh"
-default['elastic']['opendistro_security']['tools']['securityadmin']                 = "#{node['elastic']['opendistro_security']['tools_dir']}/securityadmin.sh"
+#Opensearch Security Plugin
+default['elastic']['opensearch_security']['enabled']                                = "true"
+#default['elastic']['opensearch_security']['url']                                    = "#{node['download_url']}/opensearch_security-#{node['elastic']['opensearch']['version']}.zip"
+default['elastic']['opensearch_security']['base_dir']                               = "#{node['elastic']['plugins_dir']}/opensearch-security"
+default['elastic']['opensearch_security']['config_dir']                             = "#{node['elastic']['opensearch_security']['base_dir']}/securityconfig"
+default['elastic']['opensearch_security']['tools_dir']                              = "#{node['elastic']['opensearch_security']['base_dir']}/tools"
+default['elastic']['opensearch_security']['tools']['hash']                          = "#{node['elastic']['opensearch_security']['tools_dir']}/hash.sh"
+default['elastic']['opensearch_security']['tools']['securityadmin']                 = "#{node['elastic']['opensearch_security']['tools_dir']}/securityadmin.sh"
 
-default['elastic']['opendistro_security']['admin']['username']                      = "admin"
-default['elastic']['opendistro_security']['admin']['password']                      = "adminpw"
-default['elastic']['opendistro_security']['kibana']['username']                     = "kibanaserver"
-default['elastic']['opendistro_security']['kibana']['password']                     = "kibanaserver"
-default['elastic']['opendistro_security']['logstash']['username']                   = "logstash"
-default['elastic']['opendistro_security']['logstash']['password']                   = "logstash"
-default['elastic']['opendistro_security']['elastic_exporter']['username']           = "elastic_exporter"
-default['elastic']['opendistro_security']['elastic_exporter']['password']           = "elastic_exporter"
-default['elastic']['opendistro_security']['epipe']['username']                      = "epipeuser"
-default['elastic']['opendistro_security']['epipe']['password']                      = "epipepassword"
-default['elastic']['opendistro_security']['service_log_viewer']['username']         = "service_log_viewer"
-default['elastic']['opendistro_security']['service_log_viewer']['password']         = "service_log_viewer"
+default['elastic']['opensearch_security']['admin']['username']                      = "admin"
+default['elastic']['opensearch_security']['admin']['password']                      = "adminpw"
+default['elastic']['opensearch_security']['kibana']['username']                     = "kibanaserver"
+default['elastic']['opensearch_security']['kibana']['password']                     = "kibanaserver"
+default['elastic']['opensearch_security']['logstash']['username']                   = "logstash"
+default['elastic']['opensearch_security']['logstash']['password']                   = "logstash"
+default['elastic']['opensearch_security']['elastic_exporter']['username']           = "elastic_exporter"
+default['elastic']['opensearch_security']['elastic_exporter']['password']           = "elastic_exporter"
+default['elastic']['opensearch_security']['epipe']['username']                      = "epipeuser"
+default['elastic']['opensearch_security']['epipe']['password']                      = "epipepassword"
+default['elastic']['opensearch_security']['service_log_viewer']['username']         = "service_log_viewer"
+default['elastic']['opensearch_security']['service_log_viewer']['password']         = "service_log_viewer"
 
-default['elastic']['opendistro_security']['keystore']['type']                       = "JKS"
-default['elastic']['opendistro_security']['keystore']['file']                       = "kstore.jks"
-default['elastic']['opendistro_security']['keystore']['location']                   = "#{node['elastic']['config_dir']}/#{node['elastic']['opendistro_security']['keystore']['file']}"
-default['elastic']['opendistro_security']['keystore']['password']                   = node['hopsworks']['master']['password']
+default['elastic']['opensearch_security']['keystore']['type']                       = "JKS"
+default['elastic']['opensearch_security']['keystore']['file']                       = "kstore.jks"
+default['elastic']['opensearch_security']['keystore']['location']                   = "#{node['elastic']['config_dir']}/#{node['elastic']['opensearch_security']['keystore']['file']}"
+default['elastic']['opensearch_security']['keystore']['password']                   = node['hopsworks']['master']['password']
 
-default['elastic']['opendistro_security']['truststore']['type']                     = "JKS"
-default['elastic']['opendistro_security']['truststore']['file']                     = "tstore.jks"
-default['elastic']['opendistro_security']['truststore']['location']                 = "#{node['elastic']['config_dir']}/#{node['elastic']['opendistro_security']['truststore']['file']}"
-default['elastic']['opendistro_security']['truststore']['password']                 = node['hopsworks']['master']['password']
+default['elastic']['opensearch_security']['truststore']['type']                     = "JKS"
+default['elastic']['opensearch_security']['truststore']['file']                     = "tstore.jks"
+default['elastic']['opensearch_security']['truststore']['location']                 = "#{node['elastic']['config_dir']}/#{node['elastic']['opensearch_security']['truststore']['file']}"
+default['elastic']['opensearch_security']['truststore']['password']                 = node['hopsworks']['master']['password']
 
-default['elastic']['opendistro_security']['https']['enabled']                       = "true"
-default['elastic']['opendistro_security']['kibana']['multitenancy']['enabled']      = "true"
-default['elastic']['opendistro_security']['kibana']['index']                        = ".kibana"
+default['elastic']['opensearch_security']['https']['enabled']                       = "true"
+default['elastic']['opensearch_security']['kibana']['multitenancy']['enabled']      = "true"
+default['elastic']['opensearch_security']['kibana']['index']                        = ".kibana" # ".opensearch-dashboards" 
 
-default['elastic']['opendistro_security']['jwt']['enabled']                         = "true"
-default['elastic']['opendistro_security']['jwt']['url_parameter']                   = "jt"
-default['elastic']['opendistro_security']['jwt']['roles_key']                       = "roles"
-default['elastic']['opendistro_security']['jwt']['subject_key']                     = "sub"
-default['elastic']['opendistro_security']['jwt']['exp_ms']                          = "1800000"
+default['elastic']['opensearch_security']['jwt']['enabled']                         = "true"
+default['elastic']['opensearch_security']['jwt']['url_parameter']                   = "jt"
+default['elastic']['opensearch_security']['jwt']['roles_key']                       = "roles"
+default['elastic']['opensearch_security']['jwt']['subject_key']                     = "sub"
+default['elastic']['opensearch_security']['jwt']['exp_ms']                          = "1800000"
 
-default['elastic']['opendistro_security']['roles']['data_owner']['role_name']       = 'data_owner'
-default['elastic']['opendistro_security']['roles']['data_scientist']['role_name']   = 'data_scientist'
+default['elastic']['opensearch_security']['roles']['data_owner']['role_name']       = 'data_owner'
+default['elastic']['opensearch_security']['roles']['data_scientist']['role_name']   = 'data_scientist'
 
-default['elastic']['opendistro_security']['audit']['enable_rest']                   = "true"
-default['elastic']['opendistro_security']['audit']['enable_transport']              = "false"
-default['elastic']['opendistro_security']['audit']['type']                          = "internal_elasticsearch"
-default['elastic']['opendistro_security']['audit']['threadpool']['size']            = 10
-default['elastic']['opendistro_security']['audit']['threadpool']['max_queue_len']   = 100000
+default['elastic']['opensearch_security']['audit']['enable_rest']                   = "true"
+default['elastic']['opensearch_security']['audit']['enable_transport']              = "false"
+default['elastic']['opensearch_security']['audit']['type']                          = "internal_elasticsearch"
+default['elastic']['opensearch_security']['audit']['threadpool']['size']            = 10
+default['elastic']['opensearch_security']['audit']['threadpool']['max_queue_len']   = 100000
 
 
 default['elastic']['epipe']['search_index']                                         = "projects"
 default['elastic']['epipe']['app_provenance_index']                                 = "app_provenance"
 default['elastic']['epipe']['file_provenance_index_pattern']                        = "*__file_prov"
 default['elastic']['epipe']['featurestore_index']                                   = "featurestore"
+
+
+# kNN settings
+
+default['elastic']['knn']['enabled']                                   = "true"
+default['elastic']['knn']['index_threads']                             = 1
+default['elastic']['knn']['cache_expire']['enabled']                   = "false"
+default['elastic']['knn']['circuit_breaker']['percent']                = "75.0"
+default['elastic']['knn']['circuit_breaker']['triggered']              = "true"
+default['elastic']['knn']['memory_circuit_breaker']['limit']           = "50%"
+default['elastic']['knn']['memory_circuit_breaker']['enabled']         = "true"
+

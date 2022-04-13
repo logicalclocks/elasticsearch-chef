@@ -1,0 +1,7 @@
+#!/bin/bash
+
+export ES_PATH_CONF=<%= node['elastic']['base_dir'] %>/config
+export ES_HOME=<%= node['elastic']['base_dir'] %>
+export OPENSEARCH_JAVA_HOME=<%= node['elastic']['base_dir'] %>/jdk
+
+<%= node['elastic']['base_dir'] %>/bin/kill-process.sh Elasticsearch <%= node['elastic']['pid_file'] %>

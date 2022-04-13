@@ -43,3 +43,67 @@ group node["kagent"]["certs_group"] do
   not_if { node['install']['external_users'].casecmp("true") == 0 }
   only_if { conda_helpers.is_upgrade }
 end
+
+user node['elastic']['user'] do
+  home node['elastic']['user-home']
+  uid node['elastic']['user_id'].to_i  
+  gid node['elastic']['group']
+  gid node['elastic']['group_id']  
+  shell "/bin/bash"
+  manage_home true
+  system true
+  action :create
+  not_if "getent passwd #{node['elastic']['user']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
+
+#
+# Cleanup/Disable elasticsearch service to handle upgrades to OpenSearch
+#
+if node['install']['current_version'] != "" and node['install']['current_version'].to_f <= 2.5
+
+  # If the data-dir is not in a separate directory, refuse to upgrade
+  if node['hopsworks']['current_version'].to_f <= 2.3
+    Chef::Log.fatal('You cannot upgrade from a version earlier than 2.4 to 2.6+')
+  end
+
+  service "elasticsearch" do
+    provider Chef::Provider::Service::Systemd
+    supports :restart => true, :stop => true, :start => true, :status => true
+    action [:disable, :stop]
+  end
+
+  old_elastic = "/lib/systemd/system/elasticsearch.service"
+
+  case node['platform_family']
+  when "rhel"
+    old_elastic =  "/usr/lib/systemd/system/elasticsearch.service"
+  end
+
+  # file old_elastic do
+  #   action :delete
+  # end
+
+  # directory "{node['install']['dir']}/elasticsearch-#{node['hopsworks']['current_version']}" do
+  #   recursive true
+  #   action :delete
+  # end
+
+  # link "{node['install']['dir']}/elasticsearch" do
+  #   action :delete
+  # end
+  
+  # link "{node['install']['dir']}/elasticsearch-plugin" do
+  #   action :delete
+  # end
+
+
+  if node['kagent']['enabled'] == "true"
+    kagent_config "elasticsearch" do
+      service "ELK"
+      action :remove
+    end
+  end
+  
+end
