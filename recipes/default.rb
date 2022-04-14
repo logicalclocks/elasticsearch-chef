@@ -139,7 +139,8 @@ node.override['elasticsearch']['url'] = node['elastic']['url']
 node.override['elasticsearch']['version'] = node['elastic']['version']
 
 all_elastic_hosts = all_elastic_host_names()
-all_elastic_admin_dns = get_all_elastic_admin_dns()
+all_elastic_nodes_dns = all_elastic_nodes_dns()
+all_elastic_admin_dns = all_elastic_admin_dns()
 elastic_host = my_host()
 
 template "#{node['elastic']['config_dir']}/opensearch.yml" do
@@ -157,7 +158,7 @@ template "#{node['elastic']['config_dir']}/opensearch.yml" do
               :cluster_initial_master_nodes => all_elastic_hosts,
               :opensearch_security_disabled => node['elastic']['opensearch_security']['enabled'].casecmp?("false"),
               :opensearch_security_ssl_http_enabled => node['elastic']['opensearch_security']['https']['enabled'].casecmp?("true"),
-              :opensearch_security_nodes_dn => all_elastic_hosts,
+              :opensearch_security_nodes_dn => all_elastic_nodes_dns,
               :opensearch_security_authcz_admin_dn => all_elastic_admin_dns,
               :opensearch_security_audit_enable_rest => node['elastic']['opensearch_security']['audit']['enable_rest'].casecmp?("true"),
               :opensearch_security_audit_enable_transport => node['elastic']['opensearch_security']['audit']['enable_transport'].casecmp?("true"),
