@@ -1,7 +1,5 @@
 [Unit]
 Description = Opensearch daemon.
-StartLimitIntervalSec=80
-StartLimitBurst=15
 
 [Service]
 User = <%= node['elastic']['user'] %>
@@ -14,6 +12,8 @@ LimitMEMLOCK=<%= @memlock_limit %>
 #LimitAS=infinity
 #LimitRSS=infinity
 #LimitCORE=infinity
+StartLimitIntervalSec=80
+StartLimitBurst=15
 
 Restart=on-failure
 RestartSec=2
