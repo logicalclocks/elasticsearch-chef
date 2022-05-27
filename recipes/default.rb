@@ -207,8 +207,11 @@ template "#{node['elastic']['opensearch_security']['config_dir']}/action_groups.
   mode "650"
 end
 
-file node['elastic']['opensearch_security']['tools']['hash'] do
-  mode '750'
+template node['elastic']['opensearch_security']['tools']['hash'] do
+  source "hash.sh.erb"
+  user node['elastic']['user']
+  group node['elastic']['group']
+  mode "750"
 end
 
 file node['elastic']['opensearch_security']['tools']['securityadmin'] do

@@ -81,7 +81,6 @@ default['elastic']['exporter']['flags']         = %w[--es.all
 
 #Opensearch Security Plugin
 default['elastic']['opensearch_security']['enabled']                                = "true"
-#default['elastic']['opensearch_security']['url']                                    = "#{node['download_url']}/opensearch_security-#{node['elastic']['opensearch']['version']}.zip"
 default['elastic']['opensearch_security']['base_dir']                               = "#{node['elastic']['plugins_dir']}/opensearch-security"
 default['elastic']['opensearch_security']['config_dir']                             = "#{node['elastic']['config_dir']}/opensearch-security"
 default['elastic']['opensearch_security']['tools_dir']                              = "#{node['elastic']['opensearch_security']['base_dir']}/tools"

@@ -1,3 +1,7 @@
 #!/usr/bin/env bash
 
+export OPENSEARCH_HOME=<%= node['elastic']['base_dir'] %>
+export JAVA_HOME=<%= node['elastic']['base_dir'] %>/jdk
+export OPENSEARCH_JAVA_HOME=<%=node['elastic']['base_dir']%>/jdk
+
 <%=node['elastic']['opensearch_security']['tools']['securityadmin']%> -cd <%=node['elastic']['opensearch_security']['config_dir'] %> -icl -nhnv -h <%=node['fqdn']%>  -cacert <%= @hopsCAFile %> -cert <%= @elkUserCert %> -key <%= @elkUserKey %>
