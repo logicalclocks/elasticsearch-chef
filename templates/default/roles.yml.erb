@@ -179,6 +179,7 @@ logstash_hopsworks:
       - "*_logs-*"
       - "*_serving-*"
       - ".services-*"
+      - "onlinefs_*"
       allowed_actions:
         - crud
         - create_index
@@ -229,6 +230,13 @@ elastic_exporter_hopsworks:
         - read
         - search
         - get
+    - index_patterns:
+        - "onlinefs_${attr.jwt.projid}-*"
+      allowed_actions:
+        - read
+        - search
+        - get
+        - index
   cluster_permissions:
     - cluster_composite_ops
     - cluster:monitor/main
@@ -261,6 +269,13 @@ elastic_exporter_hopsworks:
         - read
         - search
         - get
+    - index_patterns:
+      - "onlinefs_${attr.jwt.projid}-*"
+      allowed_actions:
+        - read
+        - search
+        - get
+        - index
   cluster_permissions:
     - cluster_composite_ops_ro
     - cluster:monitor/main
