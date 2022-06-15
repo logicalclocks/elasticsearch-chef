@@ -180,6 +180,14 @@ attribute "elastic/opensearch_security/elastic_exporter/password",
           :description =>  "Password used by elastic_exporter to interact with Opensearch.",
           :type => 'string'
 
+attribute "elastic/opensearch_security/service_log_viewer/username",
+          :description =>  "Username of the user viewing service logs",
+          :type => 'string'
+
+attribute "elastic/opensearch_security/service_log_viewer/password",
+          :description =>  "Password of the user viewing service logs",
+          :type => 'string'
+
 attribute "elastic/opensearch_security/jwt/exp_ms",
           :description =>  "The expiration time in milliseconds for a jwt token generated for Opensearch security.",
           :type => 'string'
