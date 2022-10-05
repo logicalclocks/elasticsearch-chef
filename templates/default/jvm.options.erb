@@ -48,7 +48,9 @@
 14-:-XX:InitiatingHeapOccupancyPercent=30
 
 ## JVM temporary directory
--Djava.io.tmpdir=${OPENSEARCH_TMPDIR}
+<% if not node['install']['tmp_directory'].eql?("") %>
+-Djava.io.tmpdir=<%= node['install']['tmp_directory'] %>
+<% end %>
 
 ## heap dumps
 
