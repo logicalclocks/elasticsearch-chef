@@ -10,7 +10,6 @@ recipe            "elastic::default",  "Configures and starts an opensearch serv
 recipe            "elastic::purge",  "Deletes an opensearch server"
 
 
-depends "java", '~> 7.0.0'
 depends "ulimit2", '~> 0.2.0'
 depends "sysctl", '~> 1.0.3'
 depends "ark", '= 5.1.1'
@@ -18,6 +17,7 @@ depends "yum", '= 6.1.1'
 depends 'conda'
 depends 'kagent'
 depends 'ndb'
+depends "java"
 
 
 %w{ ubuntu debian rhel centos }.each do |os|
