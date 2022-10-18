@@ -8,35 +8,35 @@ _meta:
 
 
 <%=node['elastic']['opensearch_security']['admin']['username']%>:
-  hash: "<%=`#{node['elastic']['opensearch_security']['tools']['hash']} -p #{node['elastic']['opensearch_security']['admin']['password']}`.strip %>"
+  hash: "<%=`JAVA_HOME=#{node['java']['java_home']} #{node['elastic']['opensearch_security']['tools']['hash']} -p #{node['elastic']['opensearch_security']['admin']['password']}`.strip %>"
   reserved: true
   backend_roles:
   - "admin"
   description: "Admin user"
 
 <%=node['elastic']['opensearch_security']['kibana']['username']%>:
-  hash: "<%=`#{node['elastic']['opensearch_security']['tools']['hash']} -p #{node['elastic']['opensearch_security']['kibana']['password']}`.strip %>"
+  hash: "<%=`JAVA_HOME=#{node['java']['java_home']} #{node['elastic']['opensearch_security']['tools']['hash']} -p #{node['elastic']['opensearch_security']['kibana']['password']}`.strip %>"
   reserved: true
   description: "Kibanaserver user"
 
 <%=node['elastic']['opensearch_security']['logstash']['username']%>:
-  hash: "<%=`#{node['elastic']['opensearch_security']['tools']['hash']} -p #{node['elastic']['opensearch_security']['logstash']['password']}`.strip %>"
+  hash: "<%=`JAVA_HOME=#{node['java']['java_home']} #{node['elastic']['opensearch_security']['tools']['hash']} -p #{node['elastic']['opensearch_security']['logstash']['password']}`.strip %>"
   reserved: true
   backend_roles:
   - "logstash"
   description: "Logstash user"
 
 <%=node['elastic']['opensearch_security']['elastic_exporter']['username']%>:
-  hash: "<%=`#{node['elastic']['opensearch_security']['tools']['hash']} -p #{node['elastic']['opensearch_security']['elastic_exporter']['password']}`.strip %>"
+  hash: "<%=`JAVA_HOME=#{node['java']['java_home']} #{node['elastic']['opensearch_security']['tools']['hash']} -p #{node['elastic']['opensearch_security']['elastic_exporter']['password']}`.strip %>"
   reserved: true
   description: "Elastic exporter user"
 
 <%=node['elastic']['opensearch_security']['epipe']['username']%>:
-  hash: "<%=`#{node['elastic']['opensearch_security']['tools']['hash']} -p #{node['elastic']['opensearch_security']['epipe']['password']}`.strip %>"
+  hash: "<%=`JAVA_HOME=#{node['java']['java_home']} #{node['elastic']['opensearch_security']['tools']['hash']} -p #{node['elastic']['opensearch_security']['epipe']['password']}`.strip %>"
   reserved: true
   description: "ePipe user"
 
 <%=node['elastic']['opensearch_security']['service_log_viewer']['username']%>:
-  hash: "<%=`#{node['elastic']['opensearch_security']['tools']['hash']} -p #{node['elastic']['opensearch_security']['service_log_viewer']['password']}`.strip %>"
+  hash: "<%=`JAVA_HOME=#{node['java']['java_home']} #{node['elastic']['opensearch_security']['tools']['hash']} -p #{node['elastic']['opensearch_security']['service_log_viewer']['password']}`.strip %>"
   reserved: true
   description: "User allow to only see the service logs"
