@@ -98,6 +98,7 @@ cluster.max_shards_per_node: <%= node['elastic']['cluster']['max_shards_per_node
 
 plugins.security.allow_unsafe_democertificates: false
 plugins.security.disabled: <%= @opensearch_security_disabled %>
+
 plugins.security.ssl.transport.enabled: true
 plugins.security.ssl.transport.keystore_type: <%= node['elastic']['opensearch_security']['keystore']['type'] %>
 plugins.security.ssl.transport.keystore_filepath: <%= node['elastic']['opensearch_security']['keystore']['file'] %>
@@ -105,7 +106,15 @@ plugins.security.ssl.transport.keystore_password: <%=  node['elastic']['opensear
 plugins.security.ssl.transport.truststore_type: <%= node['elastic']['opensearch_security']['truststore']['type'] %>
 plugins.security.ssl.transport.truststore_filepath: <%= node['elastic']['opensearch_security']['truststore']['file'] %>
 plugins.security.ssl.transport.truststore_password: <%= node['elastic']['opensearch_security']['truststore']['password'] %>
-plugins.security.ssl.transport.enabled_protocols: ['TLSv1.2', 'TLSv1.3']
+plugins.security.ssl.transport.enabled_protocols: ['TLSv1.2']
+plugins.security.ssl.transport.enabled_ciphers:
+  - "TLS_DHE_DSS_WITH_AES_128_GCM_SHA256"
+  - "TLS_DHE_DSS_WITH_AES_256_GCM_SHA384"
+  - "TLS_ECDHE_ECDSA_WITH_AES_128_CCM"
+  - "TLS_ECDHE_ECDSA_WITH_AES_256_CCM"
+  - "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+  - "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+
 plugins.security.ssl.http.enabled: <%= @opensearch_security_ssl_http_enabled %>
 plugins.security.ssl.http.keystore_type: <%= node['elastic']['opensearch_security']['keystore']['type'] %>
 plugins.security.ssl.http.keystore_filepath: <%= node['elastic']['opensearch_security']['keystore']['file'] %>
@@ -113,7 +122,15 @@ plugins.security.ssl.http.keystore_password: <%= node['elastic']['opensearch_sec
 plugins.security.ssl.http.truststore_type: <%= node['elastic']['opensearch_security']['truststore']['type'] %>
 plugins.security.ssl.http.truststore_filepath: <%= node['elastic']['opensearch_security']['truststore']['file'] %>
 plugins.security.ssl.http.truststore_password: <%=  node['elastic']['opensearch_security']['truststore']['password'] %>
-plugins.security.ssl.http.enabled_protocols: ['TLSv1.2', 'TLSv1.3']
+plugins.security.ssl.http.enabled_protocols: ['TLSv1.2']
+plugins.security.ssl.http.enabled_ciphers:
+  - "TLS_DHE_DSS_WITH_AES_128_GCM_SHA256"
+  - "TLS_DHE_DSS_WITH_AES_256_GCM_SHA384"
+  - "TLS_ECDHE_ECDSA_WITH_AES_128_CCM"
+  - "TLS_ECDHE_ECDSA_WITH_AES_256_CCM"
+  - "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+  - "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+
 plugins.security.allow_default_init_securityindex: true
 plugins.security.restapi.roles_enabled: ["all_access", "security_rest_api_access"] 
 plugins.security.roles_mapping_resolution: 'BOTH'
