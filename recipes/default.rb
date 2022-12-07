@@ -7,7 +7,10 @@ service_name = "opensearch"
 
 case node['platform_family']
 when 'rhel'
-  package 'unzip'
+  package 'unzip' do
+    retries 10
+    retry_delay 30
+  end
 end
 
 # User certs must belong to elastic group to be able to rotate x509 material
