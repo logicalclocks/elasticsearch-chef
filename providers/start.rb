@@ -229,6 +229,12 @@ action :run do
              },
              "logdate":{
                 "type":"date"
+             },
+             "rondb_node":{
+                "type":"keyword"
+             },
+             "rondb_nodeid":{
+                "type":"keyword"
              }
           }
        }
