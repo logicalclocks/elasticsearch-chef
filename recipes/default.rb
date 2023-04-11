@@ -40,7 +40,7 @@ end
 directory node['elastic']['data_volume']['root_dir'] do
   owner node['elastic']['user']
   group node['elastic']['group']
-  mode '0710'
+  mode '0700'
 end
 
 directory node['elastic']['data_volume']['data_dir'] do
@@ -304,41 +304,6 @@ template "#{node['elastic']['base_dir']}/bin/kill-process.sh" do
   mode "751"
 end
 
-template "#{node['elastic']['base_dir']}/bin/snapshot_indices.sh" do
-  source "snapshot_indices.sh.erb"
-  user node['elastic']['elk-user']
-  group node['elastic']['group']
-  mode "0750"
-  variables({
-    :elkadminKey => "#{elk_crypto_dir}/#{x509_helper.get_private_key_pkcs8_name(node['elastic']['elk-user'])}",
-    :elkadminCert => "#{elk_crypto_dir}/#{x509_helper.get_certificate_bundle_name(node['elastic']['elk-user'])}",
-    :caCert => "#{elk_crypto_dir}/#{x509_helper.get_hops_ca_bundle_name()}"
-  })
-end
-
-directory "#{node['elastic']['data_volume']['root_dir']}/snapshots_registry" do
-  owner node['elastic']['elk-user']
-  group node['elastic']['group']
-  mode '0750'
-end
-
-link "#{node['elastic']['base_dir']}/snapshots_registry" do
-  owner node['elastic']['elk-user']
-  group node['elastic']['group']
-  mode '0750'
-  to "#{node['elastic']['data_volume']['root_dir']}/snapshots_registry"
-end
-
-# Although this is a single file directory, it is necessary because elk-admin
-# user needs to be able to create temporary files after creating a snapshot
-# All other directories belong to elastic user
-file "#{node['elastic']['base_dir']}/snapshots_registry/snapshots_registry.json" do
-  content '[]'
-  mode '0750'
-  owner node['elastic']['elk-user']
-  group node['elastic']['group']
-  action :create_if_missing
-end
 
 if node['kagent']['enabled'] == "true"
 # Note, the service below cannot have a '-' in its name, so we call it just
@@ -414,9 +379,6 @@ elastic_start "start_install_elastic" do
   service_name service_name
   action :run
 end
-
-include_recipe "elastic::install_repository"
-include_recipe "elastic::restore_snapshot"
 
 # Download exporter
 base_package_filename = File.basename(node['elastic']['exporter']['url'])
@@ -514,3 +476,4 @@ if conda_helpers.is_upgrade
     action :systemd_reload
   end
 end
+
