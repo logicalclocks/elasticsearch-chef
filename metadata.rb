@@ -18,7 +18,6 @@ depends 'conda'
 depends 'kagent'
 depends 'ndb'
 depends "java"
-depends "hops"
 
 
 %w{ ubuntu debian rhel centos }.each do |os|
@@ -139,18 +138,6 @@ attribute "elastic/master",
 
 attribute "elastic/data",
           :description =>  "Data node. Default is true.",
-          :type => 'string'
-
-attribute "elastic/snapshot/type",
-          :description =>  "Type of snapshot repository. Valid values are S3 and none. Default: none",
-          :type => 'string'
-
-attribute "elastic/snapshot/indices",
-          :description =>  "Regular expression of indices to snapshot. Default: *file_prov,app_provenance",
-          :type => 'string'
-
-attribute "elastic/snapshot/restore/id",
-          :description =>  "Snapshot ID to restore. Default: empty",
           :type => 'string'
 
 attribute "elastic/opensearch_security/admin/username",

@@ -1,27 +1,3 @@
-action :install_plugin do
-   Chef::Log.info  "Installing OpenSearch plugin from path: #{new_resource.plugin_path}"
-  
-   elastic_http 'poll elasticsearch' do
-      action :get
-      url "#{new_resource.elastic_url}/"
-      user new_resource.user
-      password new_resource.password
-   end
-
-   bash "Install #{new_resource.plugin_path} plugin" do
-      user node['elastic']['user']
-      group node['elastic']['group']
-      code <<-EOH
-         #{node['elastic']['bin_dir']}/opensearch-plugin install --batch file:#{new_resource.plugin_path}
-      EOH
-   end
-
-   Chef::Log.info  "Installed plugin"
-   systemd_unit "#{new_resource.service_name}.service" do
-      action [:restart]
-   end
-end
-
 action :run do
 
   kagent_config "#{new_resource.service_name}" do
@@ -368,20 +344,7 @@ action :run do
     password new_resource.password
     only_if_exists false
     message ''
-    only_if { node['elastic']['snapshot']['restore']['id'].empty? }
   end
-
-  # Delete the app_provenance index because it will be restored from the backup
-  elastic_http 'elastic-delete-app-provenance-index' do
-   action :delete
-   url "#{new_resource.elastic_url}/#{node['elastic']['epipe']['app_provenance_index']}"
-   user new_resource.user
-   password new_resource.password
-   only_if_exists true
-   message ''
-   not_if { node['elastic']['snapshot']['restore']['id'].empty? }
-   only_if { node['elastic']['snapshot']['indices'].include?("app_provenances") }
- end
   
   elastic_http 'delete featurestore index' do
     action :delete 

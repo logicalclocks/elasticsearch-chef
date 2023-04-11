@@ -155,8 +155,3 @@ knn.memory.circuit_breaker.limit: <%= node['elastic']['knn']['memory_circuit_bre
 knn.memory.circuit_breaker.enabled: <%= node['elastic']['knn']['memory_circuit_breaker']['enabled'] %>
 
 
-<% if node['elastic']['snapshot']['type'].casecmp?("s3") -%>
-  <% if not node['elastic']['snapshot']['s3']['endpoint'].empty? -%>
-s3.client.default.endpoint: <%= node['elastic']['snapshot']['s3']['endpoint'] %>
-  <% end -%>
-<% end -%>
