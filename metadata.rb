@@ -18,7 +18,6 @@ depends 'conda'
 depends 'kagent'
 depends 'ndb'
 depends "java"
-depends "hops"
 
 
 %w{ ubuntu debian rhel centos }.each do |os|

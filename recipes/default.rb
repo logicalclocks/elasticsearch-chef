@@ -147,6 +147,12 @@ all_elastic_hosts = all_elastic_host_names()
 all_elastic_admin_dns = get_all_elastic_admin_dns()
 elastic_host = my_host()
 
+if node['elastic']['snapshot']['type'].casecmp?("s3") && node['elastic']['snapshot']['s3']['endpoint'].empty?
+  if node['hops'].attribute?('aws_endpoint')
+      node.override['elastic']['snapshot']['s3']['endpoint'] = node['hops']['aws_endpoint']
+  end
+end
+
 template "#{node['elastic']['config_dir']}/opensearch.yml" do
   source "opensearch.yml.erb"
   user node['elastic']['user']

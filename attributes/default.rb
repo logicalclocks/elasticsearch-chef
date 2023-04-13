@@ -1,5 +1,4 @@
 include_attribute "kagent"
-include_attribute "hops"
 
 default['elastic']['opensearch']['version'] = "1.3.6"
 default['elastic']['version']               = node['elastic']['opensearch']['version']
@@ -82,12 +81,12 @@ default['elastic']['exporter']['flags']         = %w[--es.all
 
 default['elastic']['snapshot']['type']                                = "none"
 default['elastic']['snapshot']['indices']                             = "*file_prov,app_provenance"
-default['elastic']['snapshot']['bucket_name']                         = node['hops']['aws_s3_bucket']
+default['elastic']['snapshot']['bucket_name']                         = ""
 default['elastic']['snapshot']['s3']['plugin_url']                    = "#{node['download_url']}/opensearch/plugins/repository-s3-#{node['elastic']['opensearch']['version']}.zip"
-default['elastic']['snapshot']['s3']['access_key_id']                 = node['hops']['aws_access_key_id']
-default['elastic']['snapshot']['s3']['secret_access_key']             = node['hops']['aws_secret_access_key']
+default['elastic']['snapshot']['s3']['access_key_id']                 = ""
+default['elastic']['snapshot']['s3']['secret_access_key']             = ""
 default['elastic']['snapshot']['s3']['session_token']                 = ""
-default['elastic']['snapshot']['s3']['endpoint']                      = node['hops']['aws_endpoint']
+default['elastic']['snapshot']['s3']['endpoint']                      = ""
 default['elastic']['snapshot']['restore']['id']                       = ""
 
 #Opensearch Security Plugin
