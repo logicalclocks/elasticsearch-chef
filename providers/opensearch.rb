@@ -23,6 +23,10 @@ action :install_security do
     hopsworks_alt_url hopsworks_alt_url
     action :generate_x509
     not_if { node["kagent"]["enabled"] == "false" }
+    # We can't regenerate elkadmin certificate because the x509 Subject
+    # has hardcoded OU in opensearch.yml admin_dn
+    # But also we don't need to.
+    not_if { conda_helpers.is_upgrade }
   end
 
   kstore_file, tstore_file = x509_helper.get_user_keystores_name(node['elastic']['user'])
