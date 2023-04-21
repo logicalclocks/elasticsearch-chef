@@ -368,20 +368,7 @@ action :run do
     password new_resource.password
     only_if_exists false
     message ''
-    only_if { node['elastic']['snapshot']['restore']['id'].empty? }
   end
-
-  # Delete the app_provenance index because it will be restored from the backup
-  elastic_http 'elastic-delete-app-provenance-index' do
-   action :delete
-   url "#{new_resource.elastic_url}/#{node['elastic']['epipe']['app_provenance_index']}"
-   user new_resource.user
-   password new_resource.password
-   only_if_exists true
-   message ''
-   not_if { node['elastic']['snapshot']['restore']['id'].empty? }
-   only_if { node['elastic']['snapshot']['indices'].include?("app_provenances") }
- end
   
   elastic_http 'delete featurestore index' do
     action :delete 

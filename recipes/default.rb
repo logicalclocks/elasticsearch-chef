@@ -322,6 +322,18 @@ template "#{node['elastic']['base_dir']}/bin/snapshot_indices.sh" do
   })
 end
 
+template "#{node['elastic']['base_dir']}/bin/restore_snapshot.sh" do
+  source "restore_snapshot.sh.erb"
+  user node['elastic']['elk-user']
+  group node['elastic']['group']
+  mode "0750"
+  variables({
+    :elkadminKey => "#{elk_crypto_dir}/#{x509_helper.get_private_key_pkcs8_name(node['elastic']['elk-user'])}",
+    :elkadminCert => "#{elk_crypto_dir}/#{x509_helper.get_certificate_bundle_name(node['elastic']['elk-user'])}",
+    :caCert => "#{elk_crypto_dir}/#{x509_helper.get_hops_ca_bundle_name()}"
+  })
+end
+
 directory "#{node['elastic']['data_volume']['root_dir']}/snapshots_registry" do
   owner node['elastic']['elk-user']
   group node['elastic']['group']

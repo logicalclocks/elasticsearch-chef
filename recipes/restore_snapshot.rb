@@ -8,14 +8,13 @@ end
 private_ip=my_private_ip()
 should_run = private_ip.eql?(node['elastic']['default']['private_ips'].sort[0])
 
-elastic_http "Restoring snapshot #{node['elastic']['snapshot']['restore']['id']} from #{node['elastic']['snapshot']['type']}" do
-    action :post
-    url "#{my_elastic_url()}/_snapshot/#{repository_name}/#{node['elastic']['snapshot']['restore']['id']}/_restore?wait_for_completion=true"
-    if opensearch_security?()
-        user node['elastic']['opensearch_security']['admin']['username']
-        password node['elastic']['opensearch_security']['admin']['password']
-    end
-    message ''
+bash "Restore snapshot #{repository_name}/#{node['elastic']['snapshot']['restore']['id']}" do
+    user node['elastic']['elk-user']
+    group node['elastic']['group']
+    code <<-EOH
+        set -e
+        #{node['elastic']['base_dir']}/bin/restore_snapshot.sh -r #{repository_name} -n #{node['elastic']['snapshot']['restore']['id']}
+    EOH
     only_if { should_run }
     not_if { node['elastic']['snapshot']['restore']['id'].empty? }
     not_if { repository_name.empty? }
