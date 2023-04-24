@@ -1,3 +1,27 @@
+action :install_plugin do
+   Chef::Log.info  "Installing OpenSearch plugin from path: #{new_resource.plugin_path}"
+  
+   elastic_http 'poll elasticsearch' do
+      action :get
+      url "#{new_resource.elastic_url}/"
+      user new_resource.user
+      password new_resource.password
+   end
+
+   bash "Install #{new_resource.plugin_path} plugin" do
+      user node['elastic']['user']
+      group node['elastic']['group']
+      code <<-EOH
+         #{node['elastic']['bin_dir']}/opensearch-plugin install --batch file:#{new_resource.plugin_path}
+      EOH
+   end
+
+   Chef::Log.info  "Installed plugin"
+   systemd_unit "#{new_resource.service_name}.service" do
+      action [:restart]
+   end
+end
+
 action :run do
 
   kagent_config "#{new_resource.service_name}" do

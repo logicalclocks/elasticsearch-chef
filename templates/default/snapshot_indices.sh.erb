@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+set -e
+
+
+ELKADMIN_KEY=<%= @elkadminKey %>
+ELKADMIN_CERT=<%= @elkadminCert %>
+CACERT=<%= @caCert %>
+SNAPSHOTS_REGISTRY=<%= node['elastic']['base_dir'] %>/snapshots_registry/snapshots_registry.json
+_OS_PORT=<%= node['elastic']['port'] %>
+
+default_snapshot_indices=<%= node['elastic']['snapshot']['indices'] %>
+_help(){
+    echo -e "Usage $(basename $0) -r REPOSITORY_NAME [OPTIONS]\n\t-n Optionally set a snapshot id\n\t-i Optionally set the indices to snapshot, default: $default_snapshot_indices"
+}
+
+if ! command -v jq &> /dev/null
+then
+    echo "jq could not be found"
+    exit
+fi
+
+unset -v opensearch_snap_repo
+unset -v snapshot_id
+unset -v snapshot_indices
+
+while getopts 'r:n:i:h' opt; do
+    case "$opt" in
+        r)
+            opensearch_snap_repo="$OPTARG"
+            ;;
+        n)
+            snapshot_id="$OPTARG"
+            ;;
+        i)
+            snapshot_indices="$OPTARG"
+            ;;
+        ?|h)
+            _help
+            exit 1
+            ;;
+    esac
+done
+
+if [ -z "$opensearch_snap_repo" ];
+then
+    echo -e "Missing parameter for Opensearch configured repository"
+    _help
+    exit 1
+fi
+
+if [ -z "$snapshot_id" ];
+then
+    # https://www.elastic.co/guide/en/elasticsearch/reference/current/api-conventions.html#api-date-math-index-names
+    snapshot_id=%3Csnapshot_%7Bnow%2Fd%7D%3E
+fi
+
+if [ -z "$snapshot_indices" ];
+then
+    snapshot_indices=$default_snapshot_indices
+fi
+
+if [ ! -f "$SNAPSHOTS_REGISTRY" ];
+then
+    jq -n '[]' > $SNAPSHOTS_REGISTRY
+fi
+
+snap_out=$(curl --fail -k --key $ELKADMIN_KEY  --cert $ELKADMIN_CERT --cacert $CACERT -XPUT https://$HOSTNAME:${_OS_PORT}/_snapshot/${opensearch_snap_repo}/${snapshot_id}?wait_for_completion=true  -H "Content-Type: application/json" -d\
+'
+{
+  "indices": '\""$snapshot_indices\""',
+  "ignore_unavailable": true,
+  "include_global_state": false,
+  "partial": false
+}
+')
+
+jq '. += ['"$snap_out"']' $SNAPSHOTS_REGISTRY > $SNAPSHOTS_REGISTRY.staging
+mv $SNAPSHOTS_REGISTRY.staging $SNAPSHOTS_REGISTRY

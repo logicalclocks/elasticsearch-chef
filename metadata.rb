@@ -140,6 +140,34 @@ attribute "elastic/data",
           :description =>  "Data node. Default is true.",
           :type => 'string'
 
+attribute "elastic/snapshot/type",
+          :description =>  "Type of snapshot repository. Valid values are S3 and none. Default: none",
+          :type => 'string'
+
+attribute "elastic/snapshot/s3/access_key_id",
+          :description =>  "Access key ID to S3 bucket. Default: Hops access key ID",
+          :type => 'string'
+
+attribute "elastic/snapshot/s3/secret_access_key",
+          :description =>  "Secret access key to S3 bucket. Default: Hops secret access key",
+          :type => 'string'
+
+attribute "elastic/snapshot/s3/session_token",
+          :description =>  "Optionally supply a session token for S3 bucket. Default: none",
+          :type => 'string'
+
+attribute "elastic/snapshot/s3/endpoint",
+          :description =>  "Override endpoint for S3 bucket. Default: Hops endpoint",
+          :type => 'string'
+
+attribute "elastic/snapshot/indices",
+          :description =>  "Regular expression of indices to snapshot. Default: *file_prov,app_provenance",
+          :type => 'string'
+
+attribute "elastic/snapshot/restore/id",
+          :description =>  "Snapshot ID to restore. Default: empty",
+          :type => 'string'
+
 attribute "elastic/opensearch_security/admin/username",
           :description =>  "Admin username for Opensearch security.",
           :type => 'string'
