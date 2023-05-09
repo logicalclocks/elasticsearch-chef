@@ -24,6 +24,19 @@ end
 
 action :run do
 
+  elastic_http 'disable-shard-allocation' do
+   action :put
+   url "#{new_resource.elastic_url}/_cluster/settings"
+   user new_resource.user
+   password new_resource.password
+   only_if { conda_helpers.is_upgrade }
+   message "{
+      \"persistent\": {
+         \"cluster.routing.allocation.enable\": \"primaries\"
+      }
+   }"
+  end
+
   kagent_config "#{new_resource.service_name}" do
     action :systemd_reload
   end
@@ -35,6 +48,32 @@ action :run do
     url "#{new_resource.elastic_url}/"
     user new_resource.user
     password new_resource.password
+  end
+
+  elastic_http 'reenable-shard-allocation' do
+   action :put
+   url "#{new_resource.elastic_url}/_cluster/settings"
+   user new_resource.user
+   password new_resource.password
+   only_if { conda_helpers.is_upgrade }
+   message "{
+      \"persistent\": {
+         \"cluster.routing.allocation.enable\": null
+      }
+   }"
+  end
+  
+  if all_elastic_ips().length > 1
+   status_to_wait_for = "green"
+  else
+   status_to_wait_for = "yellow"
+  end
+  elastic_http 'wait-for-cluster' do
+   action :get
+   url "#{new_resource.elastic_url}/_cluster/health?wait_for_status=#{status_to_wait_for}&timeout=2m"
+   user new_resource.user
+   password new_resource.password
+   only_if { conda_helpers.is_upgrade }
   end
 
   elastic_http 'delete projects index' do
