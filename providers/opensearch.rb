@@ -26,7 +26,10 @@ action :install_security do
     # We can't regenerate elkadmin certificate because the x509 Subject
     # has hardcoded OU in opensearch.yml admin_dn
     # But also we don't need to.
-    not_if { conda_helpers.is_upgrade }
+    #
+    # Essentially execute this block only on fresh installations or restore
+    # from backup
+    not_if { conda_helpers.is_upgrade && !rondb_restoring_backup() }
   end
 
   kstore_file, tstore_file = x509_helper.get_user_keystores_name(node['elastic']['user'])
