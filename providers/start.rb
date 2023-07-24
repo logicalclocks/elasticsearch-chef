@@ -171,6 +171,44 @@ action :run do
     }'
   end
 
+  elastic_http 'elastic-create-git-logs-template' do
+    action :put
+    url "#{new_resource.elastic_url}/_template/git"
+    user new_resource.user
+    password new_resource.password
+    message '
+    {
+       "index_patterns":[
+          "*_git-*"
+       ],
+       "mappings":{
+          "properties":{
+             "priority":{
+                "type":"keyword"
+             },
+             "log_message":{
+                "type":"text"
+             },
+             "logdate":{
+                "type":"date"
+             },
+             "executionid":{
+                "type":"keyword"
+             },
+             "repository":{
+                "type":"keyword"
+             },
+             "command":{
+                "type":"keyword"
+             },
+             "project":{
+                "type":"keyword"
+             }
+          }
+       }
+    }'
+  end
+
   elastic_http 'elastic-create-experiments-template' do
     action :put
     url "#{new_resource.elastic_url}/_template/experiments"
