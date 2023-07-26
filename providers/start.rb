@@ -148,17 +148,11 @@ action :run do
              "logdate":{
                 "type":"date"
              },
-             "fgid":{
-                "type":"integer"
-             },
-             "fgversion":{
-                "type":"integer"
-             },
-             "fgname":{
+             "host":{
                 "type":"text"
              },
-             "projectid":{
-                "type":"integer"
+             "log_arguments":{
+                "type":"object"
              }
           }
        }
