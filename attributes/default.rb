@@ -1,6 +1,6 @@
 include_attribute "kagent"
 
-default['elastic']['opensearch']['version'] = "1.3.3"
+default['elastic']['opensearch']['version'] = "1.3.6"
 default['elastic']['version']               = node['elastic']['opensearch']['version']
 default['elastic']['install_type']          = "tarball"
 #default['elastic']['checksum']              = "8ba8a7c1e32e02056d054638e144290c396b9c0656806a4249ac83fcd28b3c84f89eccf437200ffa435e3edb9f362d20c0a296d70d5a6fa583fd61f21047b16b"
@@ -67,7 +67,7 @@ default['elastic']['projects']['reindex']       = "false"
 default['elastic']['featurestore']['reindex']   = "false"
 
 # Metrics
-default['elastic']['exporter']['version']       = "1.1.0"
+default['elastic']['exporter']['version']       = "1.2.0"
 default['elastic']['exporter']['url']           = "#{node['download_url']}/prometheus/elasticsearch_exporter-#{node['elastic']['exporter']['version']}.linux-amd64.tar.gz"
 default['elastic']['exporter']['home']          = "#{node['elastic']['dir']}/elasticsearch_exporter-#{node['elastic']['exporter']['version']}.linux-amd64"
 default['elastic']['exporter']['base_dir']      = "#{node['elastic']['dir']}/elasticsearch_exporter"
@@ -77,7 +77,18 @@ default['elastic']['exporter']['port']          = "9114"
 default['elastic']['exporter']['flags']         = %w[--es.all
     --es.indices
     --es.shards
+    --es.cluster_settings
 ]
+
+default['elastic']['snapshot']['type']                                = "none"
+default['elastic']['snapshot']['indices']                             = "*file_prov,app_provenance"
+default['elastic']['snapshot']['bucket_name']                         = ""
+default['elastic']['snapshot']['s3']['plugin_url']                    = "#{node['download_url']}/opensearch/plugins/repository-s3-#{node['elastic']['opensearch']['version']}.zip"
+default['elastic']['snapshot']['s3']['access_key_id']                 = ""
+default['elastic']['snapshot']['s3']['secret_access_key']             = ""
+default['elastic']['snapshot']['s3']['session_token']                 = ""
+default['elastic']['snapshot']['s3']['endpoint']                      = ""
+default['elastic']['snapshot']['restore']['id']                       = ""
 
 #Opensearch Security Plugin
 default['elastic']['opensearch_security']['enabled']                                = "true"

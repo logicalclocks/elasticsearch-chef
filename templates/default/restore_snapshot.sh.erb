@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+set -e
+
+
+ELKADMIN_KEY=<%= @elkadminKey %>
+ELKADMIN_CERT=<%= @elkadminCert %>
+CACERT=<%= @caCert %>
+_OS_PORT=<%= node['elastic']['port'] %>
+
+_help(){
+    echo -e "Usage $(basename $0) -r REPOSITORY_NAME -n SNAPSHOT_ID"
+}
+
+if ! command -v jq &> /dev/null
+then
+    echo "jq could not be found"
+    exit
+fi
+
+unset -v opensearch_snap_repo
+unset -v snapshot_id
+
+while getopts 'r:n:h' opt; do
+    case "$opt" in
+        r)
+            opensearch_snap_repo="$OPTARG"
+            ;;
+        n)
+            snapshot_id="$OPTARG"
+            ;;
+        ?|h)
+            _help
+            exit 1
+            ;;
+    esac
+done
+
+if [ -z "$opensearch_snap_repo" ];
+then
+    echo -e "Missing parameter for Opensearch configured repository"
+    _help
+    exit 1
+fi
+
+if [ -z "$snapshot_id" ];
+then
+    echo -e "Missing parameter for the snapshot id to restore"
+    _help
+    exit 1
+fi
+
+#
+# Before we restore a snapshot we have to close the indices that will be restored
+#
+snapshoted_indices=$(curl --fail -k --key $ELKADMIN_KEY --cert $ELKADMIN_CERT --cacert $CACERT -XGET https://$HOSTNAME:${_OS_PORT}/_snapshot/${opensearch_snap_repo}/${snapshot_id} | jq -r '.snapshots[0].indices')
+
+# Convert JSON array to bash array
+snapshoted_indices_str=$(echo $snapshoted_indices | sed -e 's/\[ //g' -e 's/\ ]//g' -e 's/\,//g' -e 's/\"//g')
+snapshoted_indices_array=( $snapshoted_indices_str )
+
+for i in ${snapshoted_indices_array[@]}; do
+    echo "$(date --iso-8601=seconds) - Closing index: $i"
+    curl --fail -k --key $ELKADMIN_KEY --cert $ELKADMIN_CERT --cacert $CACERT -XPOST https://$HOSTNAME:${_OS_PORT}/${i}/_close?ignore_unavailable=true
+done
+
+echo "$(date --iso-8601=seconds) - Restoring snapshot ${opensearch_snap_repo}/${snapshot_id}"
+curl --fail -k --key $ELKADMIN_KEY --cert $ELKADMIN_CERT --cacert $CACERT -XPOST https://$HOSTNAME:${_OS_PORT}/_snapshot/${opensearch_snap_repo}/${snapshot_id}/_restore?wait_for_completion=true

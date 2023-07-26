@@ -3,14 +3,13 @@ maintainer       "Jim Dowling"
 maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      'Installs/Configures/Runs opensearch'
-version          "3.1.0"
+version          "3.4.0"
 
 recipe            "elastic::install", "Experiment setup for opensearch"
 recipe            "elastic::default",  "Configures and starts an opensearch server"
 recipe            "elastic::purge",  "Deletes an opensearch server"
 
 
-depends "java", '~> 7.0.0'
 depends "ulimit2", '~> 0.2.0'
 depends "sysctl", '~> 1.0.3'
 depends "ark", '= 5.1.1'
@@ -18,6 +17,7 @@ depends "yum", '= 6.1.1'
 depends 'conda'
 depends 'kagent'
 depends 'ndb'
+depends "java"
 
 
 %w{ ubuntu debian rhel centos }.each do |os|
@@ -138,6 +138,34 @@ attribute "elastic/master",
 
 attribute "elastic/data",
           :description =>  "Data node. Default is true.",
+          :type => 'string'
+
+attribute "elastic/snapshot/type",
+          :description =>  "Type of snapshot repository. Valid values are S3 and none. Default: none",
+          :type => 'string'
+
+attribute "elastic/snapshot/s3/access_key_id",
+          :description =>  "Access key ID to S3 bucket. Default: Hops access key ID",
+          :type => 'string'
+
+attribute "elastic/snapshot/s3/secret_access_key",
+          :description =>  "Secret access key to S3 bucket. Default: Hops secret access key",
+          :type => 'string'
+
+attribute "elastic/snapshot/s3/session_token",
+          :description =>  "Optionally supply a session token for S3 bucket. Default: none",
+          :type => 'string'
+
+attribute "elastic/snapshot/s3/endpoint",
+          :description =>  "Override endpoint for S3 bucket. Default: Hops endpoint",
+          :type => 'string'
+
+attribute "elastic/snapshot/indices",
+          :description =>  "Regular expression of indices to snapshot. Default: *file_prov,app_provenance",
+          :type => 'string'
+
+attribute "elastic/snapshot/restore/id",
+          :description =>  "Snapshot ID to restore. Default: empty",
           :type => 'string'
 
 attribute "elastic/opensearch_security/admin/username",
