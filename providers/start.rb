@@ -121,6 +121,44 @@ action :run do
     message ''
   end
 
+  elastic_http 'elastic-create-onlinefs-template' do
+    action :put
+    url "#{new_resource.elastic_url}/_template/onlinefs"
+    user new_resource.user
+    password new_resource.password
+    message '
+    {
+       "index_patterns":[
+          "onlinefs_*"
+       ],
+       "mappings":{
+          "properties":{
+             "service":{
+                "type":"keyword"
+             },
+             "priority":{
+                "type":"keyword"
+             },
+             "logger_name":{
+                "type":"text"
+             },
+             "log_message":{
+                "type":"text"
+             },
+             "logdate":{
+                "type":"date"
+             },
+             "host":{
+                "type":"text"
+             },
+             "log_arguments":{
+                "type":"object"
+             }
+          }
+       }
+    }'
+  end
+
   elastic_http 'elastic-create-logs-template' do
     action :put 
     url "#{new_resource.elastic_url}/_template/logs"
