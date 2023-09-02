@@ -33,7 +33,7 @@ action :install_security do
   end
 
   kagent_keys "add ca to cinc/chef" do
-    crypto_dirk elk_crypto_dir
+    crypto_dir elk_crypto_dir
     action :append2ChefTrustAnchors
   end
 
