@@ -16,6 +16,7 @@ default['elastic']['elk-group_id']          = '1502'
 default['elastic']['user-home']             = "/home/#{node['elastic']['user']}"
 default['elastic']['elk-home']              = "/home/#{node['elastic']['elk-user']}"
 
+default['elastic']['bind_host']             = "0.0.0.0"
 default['elastic']['port']                  = "9200"
 default['elastic']['ntn_port']              = "9300" #elastic node to node communication port
 

@@ -1,16 +1,34 @@
-service {
-    id = "elastic/monitoring"
-    name = "elastic"
-    tags = [
-        "monitoring"
-    ]
-    port = <%= node['elastic']['exporter']['port'] %> 
-    check = {
-        id = "elastic-exporter-check"
-        name = "Health check for elastic exporter"
-        http = "http://localhost:<%= node['elastic']['exporter']['port'] %>/metrics"
-        interval = "20s"
-        timeout = "20s"
-        status = "passing"
+services = [
+    {
+        id = "elastic/monitoring"
+        name = "elastic"
+        tags = [
+            "monitoring"
+        ]
+        port = <%= node['elastic']['exporter']['port'] %>
+        check = {
+            id = "elastic-exporter-check"
+            name = "Health check for elastic exporter"
+            http = "http://localhost:<%= node['elastic']['exporter']['port'] %>/metrics"
+            interval = "20s"
+            timeout = "20s"
+            status = "passing"
+        }
+    },
+    {
+        id = "elastic/rest"
+        name = "elastic"
+        tags = [
+            "rest"
+        ]
+        port = <%= node['elastic']['port'] %>
+        check = {
+            id = "elastic-rest-check"
+            name = "Health check for Opensearch"
+            http = "https://<%= node['elastic']['opensearch_security']['elastic_exporter']['username'] %>:<%= node['elastic']['opensearch_security']['elastic_exporter']['password'] %>@localhost:<%= node['elastic']['port'] %>/_cluster/health"
+            tls_skip_verify = true
+            interval = "20s"
+            timeout = "20s"
+        }
     }
-} 
+]
