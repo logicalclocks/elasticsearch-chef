@@ -32,6 +32,11 @@ action :install_security do
     not_if { conda_helpers.is_upgrade && !rondb_restoring_backup() }
   end
 
+  kagent_keys "add ca to cinc/chef" do
+    crypto_dirk elk_crypto_dir
+    action :append2ChefTrustAnchors
+  end
+
   kstore_file, tstore_file = x509_helper.get_user_keystores_name(node['elastic']['user'])
   link node['elastic']['opensearch_security']['keystore']['location'] do
     owner node['elastic']['user']
