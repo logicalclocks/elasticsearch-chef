@@ -28,6 +28,10 @@ attribute "elastic/port",
           :description =>  "Port for opensearch service (default: 9200)",
           :type => 'string'
 
+attribute "elastic/bind_host",
+          :description =>  "IP on which to bind Opensearch (Default: 0.0.0.0)",
+          :type => 'string'
+
 attribute "elastic/ulimit_files",
           :description =>  "Number of files to set ulimit to.",
           :type => 'string'

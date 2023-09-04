@@ -56,6 +56,7 @@ path.repo: [<%= node['elastic']['backup_dir'] %>]
 #
 
 network.host: <%= @elastic_host %>
+network.bind_host: <%= node['elastic']['bind_host'] %>
 transport.port: <%= node['elastic']['ntn_port'] %>
 http.port: <%= node['elastic']['port'] %>
 http.cors.enabled: true
