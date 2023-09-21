@@ -447,15 +447,6 @@ action :run do
     message ''
   end
   
-  elastic_http 'delete featurestore index' do
-    action :delete 
-    url "#{new_resource.elastic_url}/#{node['elastic']['epipe']['featurestore_index']}"
-    user new_resource.user
-    password new_resource.password
-    only_if_cond node['elastic']['featurestore']['reindex'] == "true"
-    only_if_exists true
-  end
-
   elastic_http 'elastic-create-featurestore-template' do
     action :put
     url "#{new_resource.elastic_url}/_template/#{node['elastic']['epipe']['featurestore_index']}"
