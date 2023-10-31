@@ -40,3 +40,8 @@ _meta:
   hash: "<%=`JAVA_HOME=#{node['java']['java_home']} #{node['elastic']['opensearch_security']['tools']['hash']} -p #{node['elastic']['opensearch_security']['service_log_viewer']['password']}`.strip %>"
   reserved: true
   description: "User allow to only see the service logs"
+
+<%=node['elastic']['opensearch_security']['onlinefs']['username']%>:
+  hash: "<%=`JAVA_HOME=#{node['java']['java_home']} #{node['elastic']['opensearch_security']['tools']['hash']} -p #{node['elastic']['opensearch_security']['onlinefs']['password']}`.strip %>"
+  reserved: true
+  description: "onlinefs user"
