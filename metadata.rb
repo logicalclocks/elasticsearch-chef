@@ -3,7 +3,7 @@ maintainer       "Jim Dowling"
 maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      'Installs/Configures/Runs opensearch'
-version          "3.5.0"
+version          "3.7.0"
 
 recipe            "elastic::install", "Experiment setup for opensearch"
 recipe            "elastic::default",  "Configures and starts an opensearch server"
