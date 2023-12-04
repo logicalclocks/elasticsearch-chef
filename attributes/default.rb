@@ -112,6 +112,8 @@ default['elastic']['opensearch_security']['epipe']['username']                  
 default['elastic']['opensearch_security']['epipe']['password']                      = "epipepassword"
 default['elastic']['opensearch_security']['service_log_viewer']['username']         = "service_log_viewer"
 default['elastic']['opensearch_security']['service_log_viewer']['password']         = "service_log_viewer"
+default['elastic']['opensearch_security']['onlinefs']['username']                   = "onlinefsuser"
+default['elastic']['opensearch_security']['onlinefs']['password']                   = "onlinefspassword"
 
 default['elastic']['opensearch_security']['keystore']['type']                       = "JKS"
 default['elastic']['opensearch_security']['keystore']['file']                       = "kstore.jks"

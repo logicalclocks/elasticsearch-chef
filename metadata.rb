@@ -220,6 +220,14 @@ attribute "elastic/opensearch_security/service_log_viewer/password",
           :description =>  "Password of the user viewing service logs",
           :type => 'string'
 
+attribute "elastic/opensearch_security/onlinefs/username",
+          :description =>  "Username of onlinefs",
+          :type => 'string'
+
+attribute "elastic/opensearch_security/onlinefs/password",
+          :description =>  "Password of onlinefs",
+          :type => 'string'
+
 attribute "elastic/opensearch_security/jwt/exp_ms",
           :description =>  "The expiration time in milliseconds for a jwt token generated for Opensearch security.",
           :type => 'string'

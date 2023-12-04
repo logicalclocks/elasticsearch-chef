@@ -226,6 +226,7 @@ elastic_exporter_hopsworks:
         - get
     - index_patterns:
       - "${attr.jwt.piid}__file_prov"
+      - "${attr.jwt.projid}__embedding*"
       allowed_actions:
         - read
         - search
@@ -265,6 +266,7 @@ elastic_exporter_hopsworks:
         - get
     - index_patterns:
       - "${attr.jwt.piid}__file_prov"
+      - "${attr.jwt.projid}__embedding*"
       allowed_actions:
         - read
         - search
@@ -329,3 +331,18 @@ epipe_hopsworks:
         - create_index
   cluster_permissions:
     - cluster_composite_ops
+
+onlinefs_hopsworks:
+  description: "Provide the minimum permissions for onlinefs"
+  reserved: true
+  index_permissions:
+    - index_patterns:
+        - "*__embedding*"
+      allowed_actions:
+        - read
+        - write
+        - index
+        - get
+  cluster_permissions:
+    - cluster:monitor/main
+    - indices:data/write/bulk
