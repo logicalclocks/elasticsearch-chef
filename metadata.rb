@@ -165,7 +165,7 @@ attribute "elastic/snapshot/s3/endpoint",
           :type => 'string'
 
 attribute "elastic/snapshot/indices",
-          :description =>  "Regular expression of indices to snapshot. Default: *file_prov,app_provenance",
+          :description =>  "Regular expression of indices to snapshot. Default: *file_prov,app_provenance,*__embedding_*",
           :type => 'string'
 
 attribute "elastic/snapshot/restore/id",
