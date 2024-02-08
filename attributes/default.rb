@@ -82,7 +82,7 @@ default['elastic']['exporter']['flags']         = %w[--es.all
 ]
 
 default['elastic']['snapshot']['type']                                = "none"
-default['elastic']['snapshot']['indices']                             = "*file_prov,app_provenance"
+default['elastic']['snapshot']['indices']                             = "*file_prov,app_provenance,*__embedding_*"
 default['elastic']['snapshot']['bucket_name']                         = ""
 default['elastic']['snapshot']['s3']['plugin_url']                    = "#{node['download_url']}/opensearch/plugins/repository-s3-#{node['elastic']['opensearch']['version']}.zip"
 default['elastic']['snapshot']['s3']['access_key_id']                 = ""
