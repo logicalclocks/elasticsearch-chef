@@ -457,13 +457,14 @@ action :run do
       \"mappings\":{
         \"dynamic\":\"strict\",
         \"properties\":{
-          \"doc_type\"    :{\"type\":\"keyword\"},
-          \"name\"        :{\"type\":\"text\"},
-          \"version\"     :{\"type\":\"integer\"},
-          \"project_id\"  :{\"type\":\"integer\"},
-          \"project_name\":{\"type\":\"text\"},
-          \"dataset_iid\" :{\"type\":\"long\"},
-          \"xattr\"       :{\"type\":\"nested\",\"dynamic\":true}
+          \"doc_type\"         :{\"type\":\"keyword\"},
+          \"name\"             :{\"type\":\"text\"},
+          \"version\"          :{\"type\":\"integer\"},
+          \"project_id\"       :{\"type\":\"integer\"},
+          \"project_name\"     :{\"type\":\"text\"},
+          \"dataset_iid\"      :{\"type\":\"long\"},
+          \"featurestore_id\"  :{\"type\":\"integer\"},
+          \"xattr\"            :{\"type\":\"nested\",\"dynamic\":true}
         }
       }
     }"
